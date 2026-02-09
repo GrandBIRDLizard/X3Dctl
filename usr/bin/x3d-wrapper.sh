@@ -1,3 +1,4 @@
+#!/bin/bash
 set -euo pipefail
 
 ### ----------------------------
@@ -40,17 +41,20 @@ install_udev_rule() {
 
   log "Writing udev rule → $UDEV_RULE_PATH"
   cat > "$UDEV_RULE_PATH" <<EOF
-SUBSYSTEM=="platform", KERNEL=="AMDI0101:00", MODE="0664", GROUP="$X3D_GROUP"
+SUBSYSTEM=="platform", KERNEL=="AMDI0101:00", MODE="0666"
 EOF
 
   log "Reloading udev rules"
-  udevadm control --reload
-  udevadm trigger
+  udevadm control --reload-rules
+  udevadm trigger --sysname-match="AMDI0101:00"
 
   if [[ -n "${SUDO_USER:-}" ]]; then
     log "Adding user '$SUDO_USER' to group '$X3D_GROUP'"
     usermod -aG "$X3D_GROUP" "$SUDO_USER"
-    log "User must log out and back in for group changes to apply"
+    log ""
+    log "⚠️  IMPORTANT: User '$SUDO_USER' must log out and back in for group changes to apply"
+    log "   Or run: newgrp $X3D_GROUP"
+    log ""
   else
     log "NOTE: no SUDO_USER detected — add users to '$X3D_GROUP' manually"
   fi
@@ -72,8 +76,8 @@ uninstall_udev_rule() {
   fi
 
   log "Reloading udev rules"
-  udevadm control --reload
-  udevadm trigger
+  udevadm control --reload-rules
+  udevadm trigger --sysname-match="AMDI0101:00"
 
   log "Uninstall complete"
 
@@ -86,9 +90,6 @@ uninstall_udev_rule() {
   exit 0
 }
 
-
-#must run once as root: "sudo ~/Bash_Scripts/steam-wrapper.sh install" 
-
 ### ----------------------------
 ### Runtime helpers
 ### ----------------------------
@@ -99,8 +100,17 @@ require_write_access() {
 
 set_x3d_mode() {
   local mode="$1"
+  
+  # Validate mode
+  case "$mode" in
+    cache|frequency)
+      ;;
+    *)
+      die "Invalid X3D mode: $mode"
+      ;;
+  esac
+  
   local current
-
   current="$(cat "$X3D_SYSFS")"
 
   if [[ "$current" == "$mode" ]]; then
@@ -113,9 +123,14 @@ set_x3d_mode() {
 }
 
 detect_cyberpunk() {
-  for arg in "$@"; do
-    [[ "$arg" == *"Cyberpunk"* ]] && return 0
-  done
+  local cmd_str="${CMD[*]}"
+  # Check for common patterns (case-insensitive)
+  [[ "$cmd_str" =~ [Cc]yberpunk|2077 ]] && return 0
+  
+  # Check actual executable name
+  local exe="${CMD[0]}"
+  [[ "$(basename "$exe")" =~ [Cc]yberpunk ]] && return 0
+  
   return 1
 }
 
@@ -130,40 +145,39 @@ case "${1:-}" in
   uninstall)
     uninstall_udev_rule
     ;;
-esac
+  *)
+    # Runtime mode: profile-based launching
+    PROFILE="${1:-gaming}"
+    shift || true
+    CMD=("$@")
+    
+    [[ ${#CMD[@]} -eq 0 ]] && die "No command specified"
 
+    log "Profile: $PROFILE"
+    log "Command: ${CMD[*]}"
 
-PROFILE="${1:-gaming}"
-shift || true
-CMD=("$@")
+    require_write_access
 
-log "Profile: $PROFILE"
-log "Command:"
-for a in "${CMD[@]}"; do
-  log "  $a"
-done
-
-require_write_access
-
-if detect_cyberpunk "${CMD[@]}"; then
-  log "Detected Cyberpunk → forcing cache mode"
-  set_x3d_mode "cache"
-else
-  case "$PROFILE" in
-    gaming)
+    if detect_cyberpunk; then
+      log "Detected Cyberpunk → forcing cache mode"
       set_x3d_mode "cache"
-      ;;
-    default)
-      set_x3d_mode "frequency"
-      ;;
-    *)
-      die "Unknown profile '$PROFILE'"
-      ;;
-  esac
-fi
+    else
+      case "$PROFILE" in
+        gaming)
+          set_x3d_mode "cache"
+          ;;
+        default)
+          set_x3d_mode "frequency"
+          ;;
+        *)
+          die "Unknown profile '$PROFILE'"
+          ;;
+      esac
+    fi
 
-log "Final X3D mode: $(cat "$X3D_SYSFS")"
-log "Launching…"
+    log "Final X3D mode: $(cat "$X3D_SYSFS")"
+    log "Launching: ${CMD[*]}"
 
-exec "${CMD[@]}"
-
+    exec "${CMD[@]}"
+    ;;
+esac
