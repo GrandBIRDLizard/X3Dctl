@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_NAME="x3dctl"
+QUIET=0
+
+### log helpers
+
+log() {
+  if [[ "$QUIET" -eq 0 ]]; then
+    echo "[$SCRIPT_NAME] $*" >&2
+  fi
+}
+
+
+die() {
+  echo "[$SCRIPT_NAME] ERROR: $*" >&2
+  exit 1
+}
+
+### run helpers
+
+set_x3d_mode() {
+  local mode="$1"
+  sudo x3dctl-helper "$mode"
+}
+
+get_current_mode() {
+  sudo x3dctl-helper status | tr -d '\n'
+}
+
+toggle_mode() {
+  local current
+  current="$(get_current_mode)"
+
+  case "$current" in
+    cache)
+      set_x3d_mode frequency
+      ;;
+    frequency)
+      set_x3d_mode cache
+      ;;
+    *)
+      die "Unknown current mode: $current"
+      ;;
+  esac
+}
+
+
+### Parse global flags
+
+while [[ "${1:-}" == -* ]]; do
+  case "$1" in
+    -q|--quiet)
+      QUIET=1
+      shift
+      ;;
+    *)
+      die "Unknown flag: $1"
+      ;;
+  esac
+done
+
+
+### Entry point
+
+case "${1:-}" in
+
+  gaming|performance|toggle)
+    PROFILE="$1"
+    shift
+    CMD=("$@")
+
+    log "Profile: $PROFILE"
+
+    case "$PROFILE" in
+      gaming)
+        set_x3d_mode cache
+        ;;
+      performance)
+        set_x3d_mode frequency
+        ;;
+      toggle)
+        toggle_mode
+        ;;
+    esac
+
+    current="$(get_current_mode)"
+    log "Final X3D mode: $current"
+
+    if [[ ${#CMD[@]} -gt 0 ]]; then
+      log "Launching: ${CMD[*]}"
+      exec "${CMD[@]}"
+    else
+      log "Mode switched only"
+      exit 0
+    fi
+    ;;
+
+  status)
+    get_current_mode
+    exit 0
+    ;;
+
+  *)
+    die "Usage:
+      $SCRIPT_NAME [--quiet|-q] gaming [command...]
+      $SCRIPT_NAME [--quiet|-q] performance [command...]
+      $SCRIPT_NAME [--quiet|-q] toggle [command...]
+      $SCRIPT_NAME status"
+    ;;
+esac
+
+

@@ -1,0 +1,2 @@
+SUBSYSTEM=="platform", KERNEL=="AMDI0101:00", GROUP="x3d", MODE="0664"
+
