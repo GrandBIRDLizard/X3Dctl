@@ -1,0 +1,101 @@
+.TH X3DCTL 1 "2026" "x3dctl" "User Commands"
+
+.SH NAME
+x3dctl \- Control AMD X3D processor operating modes
+
+.SH SYNOPSIS
+.B x3dctl
+.RI [ options ] " command " [ application ]
+
+.SH DESCRIPTION
+x3dctl is a command-line utility for switching AMD X3D CPU operating modes
+through the kernel sysfs interface. It allows users to select CPU behavior
+optimized for gaming workloads or frequency-intensive workloads.
+
+The tool safely delegates privileged hardware operations to a restricted helper
+binary executed via sudo.
+
+.SH COMMANDS
+
+.TP
+.B gaming
+Switch CPU to cache-priority mode optimized for latency-sensitive workloads.
+
+.TP
+.B performance
+Switch CPU to frequency-priority mode optimized for throughput workloads.
+
+.TP
+.B toggle
+Switch CPU mode to the opposite of the current mode.
+
+.TP
+.B status
+Display the current CPU operating mode.
+
+.SH OPTIONS
+
+.TP
+.BR -q ", " --quiet
+Suppress informational logging output.
+
+.SH APPLICATION PASSTHROUGH
+If an application is specified after a command, x3dctl will change CPU mode
+before executing the application.
+
+Example:
+
+.B x3dctl gaming steam
+
+.SH SECURITY
+x3dctl uses sudo to execute a minimal privileged helper binary. The helper
+performs validated read and write operations against kernel sysfs controls.
+
+.SH FILES
+
+.TP
+.I /usr/local/bin/x3dctl
+Frontend command-line interface.
+
+.TP
+.I /usr/local/bin/x3dctl-helper
+Privileged helper binary.
+
+.TP
+.I /etc/sudoers.d/x3dctl
+Sudo policy allowing helper execution.
+
+.SH EXIT STATUS
+
+.TP
+0
+Success
+
+.TP
+1
+General failure or invalid argument
+
+.SH EXAMPLES
+
+Switch to gaming mode:
+
+.B x3dctl gaming
+
+Switch mode and launch application:
+
+.B x3dctl gaming mangohud steam
+
+Toggle current mode:
+
+.B x3dctl toggle
+
+Display current mode:
+
+.B x3dctl status
+
+.SH AUTHOR
+Written by GrandBirdLizard.
+
+.SH LICENSE
+//we'll see 
+
