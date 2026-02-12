@@ -12,10 +12,8 @@
 
 #define SYSFS_BASE "/sys/bus/platform/drivers/amd_x3d_vcache"
 
-// ------------------------------------------------------------
+
 // Find the amd_x3d_mode file dynamically
-// This avoids hardcoding AMDI0101:00
-// ------------------------------------------------------------
 int find_x3d_path(char *out_path, size_t size) {
     DIR *dir;
     struct dirent *entry;
@@ -36,17 +34,14 @@ int find_x3d_path(char *out_path, size_t size) {
 
         if (access(out_path, F_OK) == 0) {
             closedir(dir);
-            return 0;  // Found it
+            return 0;  
         }
     }
 
     closedir(dir);
-    return -1;  // Not found
+    return -1;  
 }
 
-// ------------------------------------------------------------
-// Write mode to sysfs
-// ------------------------------------------------------------
 int write_mode(const char *path, const char *mode) {
     FILE *f = fopen(path, "w");
     if (!f) {
@@ -59,9 +54,6 @@ int write_mode(const char *path, const char *mode) {
     return 0;
 }
 
-// ------------------------------------------------------------
-// Read current mode
-// ------------------------------------------------------------
 int read_mode(const char *path) {
     char buffer[64];
     FILE *f = fopen(path, "r");
@@ -78,9 +70,7 @@ int read_mode(const char *path) {
     return 0;
 }
 
-// ------------------------------------------------------------
-// Main
-// ------------------------------------------------------------
+
 int main(int argc, char *argv[]) {
     char sysfs_path[PATH_MAX];
 
