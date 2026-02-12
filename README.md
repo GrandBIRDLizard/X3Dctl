@@ -58,7 +58,7 @@ It provides a safe, simple interface for switching between cache-priority and fr
 Clone repository:
 
 ```bash
-git clone https://github.com/<username>/x3dctl.git
+git clone https://github.com/<GrandBirdLizard>/x3dctl.git
 cd x3dctl
 make install
 ```
