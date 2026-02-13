@@ -1,60 +1,45 @@
-.SILENT:
+PREFIX ?= /usr/local
+BINDIR := $(PREFIX)/bin
+SUDOERS := /etc/sudoers.d/x3dctl
 
-PREFIX      := /usr/local
-DESTDIR     ?=
-BINDIR      := $(DESTDIR)$(PREFIX)/bin
-SUDOERSDIR  := $(DESTDIR)/etc/sudoers.d
-MANDIR      := $(DESTDIR)$(PREFIX)/share/man/man1
+CC = gcc
+CFLAGS = -O2 -Wall -Wextra
 
+all: x3dctl-helper
 
-BIN_FRONT   := x3dctl
-BIN_HELPER  := x3dctl-helper
-SRC_HELPER  := x3dctl-helper.c
-MANPAGE     := man/x3dctl.1
+x3dctl-helper: x3dctl-helper.c
+	$(CC) $(CFLAGS) $< -o $@
 
-CC          := gcc
-CFLAGS      := -O2 -Wall -Wextra
+install: x3dctl-helper
+	# Install binaries (requires root if PREFIX is system path)
+	install -Dm755 x3dctl $(DESTDIR)$(BINDIR)/x3dctl
+	install -Dm755 x3dctl-helper $(DESTDIR)$(BINDIR)/x3dctl-helper
 
-.PHONY: all install uninstall clean
+	# Only install sudoers rule for real system installs
+	# (Skip when DESTDIR is set for packaging)
+	@if [ -z "$(DESTDIR)" ]; then \
+		if [ -z "$$SUDO_USER" ]; then \
+			echo "ERROR: Run 'sudo make install' for system installation."; \
+			exit 1; \
+		fi; \
+		echo "Installing sudoers rule for user: $$SUDO_USER"; \
+		echo "$$SUDO_USER ALL=(root) NOPASSWD: $(BINDIR)/x3dctl-helper" > $(SUDOERS); \
+		chmod 440 $(SUDOERS); \
+	fi
 
-all:
-	echo "[*] Building helper"
-	$(CC) $(CFLAGS) $(SRC_HELPER) -o $(BIN_HELPER)
-
-install: all
-	echo "[*] Installing frontend"
-	sudo install -m 0755 $(BIN_FRONT) $(BINDIR)/$(BIN_FRONT)
-
-	echo "[*] Installing helper"
-	sudo install -m 0755 $(BIN_HELPER) $(BINDIR)/$(BIN_HELPER)
-
-	echo "[*] Installing sudoers rule"
-	echo "$(USER) ALL=(root) NOPASSWD: $(PREFIX)/bin/$(BIN_HELPER)" | sudo tee $(SUDOERSDIR)/x3dctl > /dev/null
-	sudo chmod 0440 $(SUDOERSDIR)/x3dctl
-
-	echo "[*] Installing man page"
-	sudo install -Dm 0644 $(MANPAGE) $(MANDIR)/x3dctl.1
-
-	echo "[*] Install complete"
+	@echo "Ensure /etc/x3dctl.conf exists (create manually if needed)."
 
 uninstall:
-	echo "[*] Removing binaries"
-	sudo rm -f $(BINDIR)/$(BIN_FRONT)
-	sudo rm -f $(BINDIR)/$(BIN_HELPER)
+	rm -f $(DESTDIR)$(BINDIR)/x3dctl
+	rm -f $(DESTDIR)$(BINDIR)/x3dctl-helper
 
-	echo "[*] Removing man page"
-	sudo rm -f $(MANDIR)/x3dctl.1
-
-	echo "[*] Removing sudoers rule"
-	sudo rm -f $(SUDOERSDIR)/x3dctl
-	
-	echo ""
-	echo "[*] Uninstall complete"
-	echo "[*] NOTE: the x3dctl man page and build files exist only in the source tree."
-	echo "    you will need to re-clone the repository to reinstall later."
-	echo ""
-
+	# Remove sudoers rule only for real system installs
+	@if [ -z "$(DESTDIR)" ]; then \
+		rm -f $(SUDOERS); \
+	fi
 
 clean:
-	rm -f $(BIN_HELPER)
+	rm -f x3dctl-helper
+
+.PHONY: all install uninstall clean
 
