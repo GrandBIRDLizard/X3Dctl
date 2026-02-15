@@ -17,6 +17,8 @@ static cpu_set_t freq_mask;
 static int topology_initialized = 0;
 
 
+
+// Find the amd_x3d_mode file dynamically
 int find_x3d_path(char *out_path, size_t size) {
     DIR *dir = opendir(SYSFS_BASE);
     struct dirent *entry;
@@ -31,12 +33,12 @@ int find_x3d_path(char *out_path, size_t size) {
 
         if (access(out_path, F_OK) == 0) {
             closedir(dir);
-            return 0;
+            return 0;  
         }
     }
 
     closedir(dir);
-    return -1;
+    return -1;  
 }
 
 int write_mode(const char *path, const char *mode) {
@@ -133,7 +135,6 @@ int pin_pid(pid_t pid, const char *type) {
 
     return 0;
 }
-
 
 
 int main(int argc, char *argv[]) {
