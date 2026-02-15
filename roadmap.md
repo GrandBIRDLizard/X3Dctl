@@ -13,8 +13,8 @@ Interfaces and behavior may change as the project evolves.
 ### Simple Configuration System
 Introduce a lightweight configuration file supporting:
 
-- Default profile selection
-- Optional per-application profile mapping
+- Default profile selection 
+- Optional per-application profile mapping X
 - Minimal validation and safe fallback behavior
 
 Design goals:
@@ -30,10 +30,10 @@ Provide optional helpers for directing workloads to specific CCDs.
 
 Planned capabilities:
 
-- Manual process pinning helpers
-- Application launch pinning support
-- Safe CPU topology detection
-- Clear separation from automatic scheduling behavior
+- Manual process pinning helpers X
+- Application launch pinning support X
+- Safe CPU topology detection X
+- Clear separation from automatic scheduling behavior X
 
 ---
 
