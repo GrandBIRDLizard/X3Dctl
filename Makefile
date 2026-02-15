@@ -56,5 +56,7 @@ uninstall:
 
 
 clean:
-	rm -f $(BIN_HELPER)
+	rm -f x3dctl-helper
+
+.PHONY: all install uninstall clean
 
