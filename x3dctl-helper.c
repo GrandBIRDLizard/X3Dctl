@@ -17,7 +17,6 @@ static cpu_set_t freq_mask;
 static int topology_initialized = 0;
 
 
-
 int find_x3d_path(char *out_path, size_t size) {
     DIR *dir = opendir(SYSFS_BASE);
     struct dirent *entry;
@@ -59,7 +58,6 @@ int read_mode(const char *path) {
     fclose(f);
     return 0;
 }
-
 
 
 static void init_topology(void) {
@@ -111,8 +109,6 @@ static void init_topology(void) {
 
 
 //   Affinity Control
-
-
 int pin_pid(pid_t pid, const char *type) {
     init_topology();
 
@@ -137,6 +133,7 @@ int pin_pid(pid_t pid, const char *type) {
 
     return 0;
 }
+
 
 
 int main(int argc, char *argv[]) {

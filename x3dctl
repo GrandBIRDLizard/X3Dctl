@@ -9,9 +9,6 @@ QUIET=0
 VERBOSE=0
 
 log() {
-  # Default mode: show important state changes
-  # Verbose: show everything
-  # Quiet: show nothing unless error
   if [[ "$QUIET" -eq 0 ]]; then
     echo "[$SCRIPT_NAME] $*" >&2
   fi
@@ -31,7 +28,8 @@ die() {
 get_config_mode() {
   local app="$1"
   [[ -f "$CONFIG_FILE" ]] || return 0
-  grep "^${app}=" "$CONFIG_FILE" 2>/dev/null | cut -d'=' -f2
+  # Exact key match; take first match only
+  grep -E "^${app}=" "$CONFIG_FILE" 2>/dev/null | head -n1 | cut -d'=' -f2
 }
 
 validate_mode() {
@@ -81,12 +79,25 @@ while [[ "${1:-}" == -* ]]; do
 done
 
 
+# Require at least one command after flags
+if [[ $# -eq 0 ]]; then
+  die "Usage:
+  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] run <command...>
+  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] gaming [command...]
+  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] performance [command...]
+  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] toggle [command...]
+  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] status"
+fi
+
+COMMAND="$1"
+shift
 
 
-COMMAND="${1:-status}"
-shift || true
+# Ensure helper exists and is executable
+[[ -x "$HELPER" ]] || die "Helper not found at $HELPER"
 
 case "$COMMAND" in
+
   run)
     [[ $# -eq 0 ]] && die "Usage: run <command...>"
 
