@@ -6,89 +6,118 @@ It is intended to provide transparency and help guide community feedback.
 x3dctl is currently in early development (0.x series).  
 Interfaces and behavior may change as the project evolves.
 
+Current version: 0.4.x (Profile-Based Policy Engine)
+
+---
+
+## Current State (0.4)
+
+x3dctl now operates as a deterministic workload policy controller for AMD X3D systems.
+
+Key architectural changes:
+
+- Introduction of profile-based scheduling model
+- Application-to-profile mapping via `/etc/x3dctl.conf`
+- Privileged helper enforces:
+  - CCD-aware CPU affinity
+  - Scheduler class (OTHER, BATCH, IDLE)
+  - Process niceness
+  - I/O priority
+- Strict configuration ownership and permission validation
+- Removal of dynamic scheduler experimentation (e.g. ISO)
+
+Profiles are currently static and defined inside the helper:
+
+- gaming
+- workstation
+- frequency
+
+The configuration file maps applications to these profiles but does not define scheduling behavior.
+
 ---
 
 ## Near-Term Goals
 
-### Simple Configuration System
-Introduce a lightweight configuration file supporting:
+### Improved Configuration Matching
 
-- Default profile selection
-- Optional per-application profile mapping
-- Minimal validation and safe fallback behavior
+- Support for full command matching (wrappers, flatpaks, launchers)
+- Better handling of commands containing spaces
+- More robust parsing and whitespace tolerance
+- Strict fallback behavior
 
 Design goals:
 
 - Keep configuration human-readable
-- Avoid complex dependency or parsing overhead
-- Maintain predictable CLI behavior
-
----
-
-### CCD Pinning / Process Affinity Support
-Provide optional helpers for directing workloads to specific CCDs.
-
-Planned capabilities:
-
-- Manual process pinning helpers
-- Application launch pinning support
-- Safe CPU topology detection
-- Clear separation from automatic scheduling behavior
-
----
-
-### Improved Process Detection
-Enhance application passthrough behavior with:
-
-- More reliable process identification
-- Better command parsing
-- Safer handling of launch wrappers
-
----
-
-## Mid-Term Goals
-
-### Profile Expansion
-Allow users to define reusable workload profiles.
-
-Potential examples:
-
-- gaming
-- streaming
-- workstation
-- content creation
+- Maintain deterministic behavior
+- Avoid regex-heavy or dynamic evaluation logic
+- Preserve security guarantees
 
 ---
 
 ### CLI Quality Improvements
 
-- Extended validation
-- Improved error reporting
-- Debugging and status inspection tools
-- Version reporting
+- Clearer error reporting on profile lookup failures
+- Optional profile override flag
+- Profile listing command
+- Version reporting improvements
 
 ---
 
-### Packaging Support
+### Documentation & Packaging
 
-- Distribution package support (AUR and others)
-- Installation and dependency improvements
-- Documentation polish
+- Man page updates reflecting profile model
+- AUR / distribution packaging support
+- Improved install-time guidance
+
+---
+
+## Mid-Term Goals
+
+### Profile Flexibility
+
+Allow limited expansion of profile definitions while preserving:
+
+- Scheduler safety
+- No realtime scheduling
+- No arbitrary privilege escalation
+- Deterministic enforcement
+
+Possible direction:
+
+- Controlled profile definition blocks
+- Strict value validation inside helper
+
+---
+
+### Enhanced Process Handling
+
+- More reliable passthrough behavior
+- Wrapper-aware profile matching
+- Clearer execution tracing
 
 ---
 
 ## Long-Term Exploration
 
-These features are under consideration and may change based on user feedback.
+These features are exploratory and subject to change.
 
-### Automation / Policy Engine
-Allow dynamic profile switching based on workload characteristics.
+### Optional Policy Automation
+
+Investigate dynamic profile switching while preserving:
+
+- No background daemon by default
+- Explicit user control
+- Transparent behavior
+
+---
 
 ### Extended Hardware Awareness
-Improve topology awareness for future multi-CCD and heterogeneous designs.
 
-### Monitoring Integration
-Optional runtime inspection and local telemetry support.
+Improve topology detection for:
+
+- Future multi-CCD architectures
+- Heterogeneous CPU layouts
+- Evolving AMD designs
 
 ---
 
@@ -100,7 +129,21 @@ x3dctl development follows several core goals:
 - Maintain strong privilege separation
 - Prefer deterministic behavior over automation magic
 - Avoid unnecessary runtime dependencies
-- Maintain predictable and transparent configuration
+- Keep configuration explicit and transparent
+- Restrict dangerous scheduling classes
+- Preserve system stability first
+
+---
+
+## Stability Expectations
+
+While in the 0.x release series:
+
+- Configuration formats may evolve
+- CLI behavior may change
+- Backwards compatibility is not guaranteed
+
+Major architectural shifts will be documented in release notes.
 
 ---
 
@@ -112,17 +155,5 @@ Feedback is welcome through:
 - Feature discussions
 - Pull requests
 
-Early user experience feedback is especially valuable while the project is in alpha development.
-
----
-
-## Stability Expectations
-
-While in the 0.x release series:
-
-- Configuration formats may change
-- CLI behavior may evolve
-- Backwards compatibility is not guaranteed
-
-Major behavior changes will be documented in release notes.
+Early user experience feedback is especially valuable during the alpha phase.
 

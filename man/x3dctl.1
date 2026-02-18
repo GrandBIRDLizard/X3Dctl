@@ -1,117 +1,118 @@
-.TH X3DCTL 1 "2026" "x3dctl" "User Commands"
+.TH X3DCTL 1 "2026" "x3dctl 0.4" "User Commands"
 
 .SH NAME
-x3dctl \- Deterministic AMD X3D mode and affinity controller
+x3dctl \- Workload policy controller for AMD X3D processors
 
 .SH SYNOPSIS
 .B x3dctl
-.RI [ options ] " command " [ application ... ]
+.RI [ options ] " command " [ application ]
 
 .SH DESCRIPTION
-x3dctl is a command-line utility for switching AMD X3D CPU operating modes
-via the kernel sysfs interface and applying CPU affinity policies to launched
-applications.
+x3dctl is a command-line utility for controlling AMD X3D CPU operating modes
+and applying deterministic workload policies on Linux systems.
 
-The tool separates policy from mechanism:
+It provides a lightweight interface for:
 
-- The frontend determines execution policy.
-- A restricted helper binary performs privileged sysfs and affinity operations.
+- Switching global X3D operating modes
+- Applying CPU affinity to specific CCDs
+- Setting process scheduling class
+- Adjusting niceness
+- Applying I/O priority
 
-When launching an application, x3dctl pins the current shell before exec.
-The application and all of its children inherit the configured CPU affinity.
+Privileged operations are delegated to a restricted helper binary executed via sudo.
+
+.SH PROFILE MODEL
+
+Applications are mapped to predefined workload profiles using:
+
+.I /etc/x3dctl.conf
+
+Format:
+
+application=profile
+
+Supported profiles:
+
+.TP
+.B gaming
+Cache CCD, nice -5, SCHED_OTHER, high I/O priority
+
+.TP
+.B workstation
+Frequency CCD, nice 5, SCHED_BATCH, moderate I/O priority
+
+.TP
+.B frequency
+Frequency CCD, nice 0, SCHED_OTHER
+
+If no mapping exists, the default profile is "gaming".
 
 .SH COMMANDS
 
 .TP
 .B run
-Launch an application using the mode defined in
-.I /etc/x3dctl.conf.
-If no configuration entry exists, the default mode is
-.B cache.
+Launch an application and apply its configured profile.
 
-Usage:
-.B x3dctl run <command> [args...]
+Example:
+
+.B x3dctl run steam
 
 .TP
 .B gaming
-Switch to cache-priority mode.
-If an application is provided, it is executed after switching mode and
-pinning affinity.
+Switch global X3D mode to cache-priority.
 
 .TP
 .B performance
-Switch to frequency-priority mode.
-If an application is provided, it is executed after switching mode and
-pinning affinity.
+Switch global X3D mode to frequency-priority.
 
 .TP
 .B toggle
-Switch to the opposite of the current mode.
-If an application is provided, it is executed after switching mode and
-pinning affinity.
+Switch global X3D mode to the opposite of the current mode.
 
 .TP
 .B status
-Display the current X3D operating mode.
+Display current X3D operating mode.
 
 .SH OPTIONS
 
 .TP
-.BR -v ", " --verbose
-Enable verbose logging of mode changes and affinity actions.
+.BR -q ", " --quiet
+Suppress informational output.
 
 .TP
-.BR -q ", " --quiet
-Suppress informational output (errors are still displayed).
+.BR -v ", " --verbose
+Enable additional logging output.
 
 .SH CONFIGURATION
 
-.TP
+Configuration file:
+
 .I /etc/x3dctl.conf
-System-wide configuration file mapping application names to modes.
 
-Format:
-.EX
-application=cache
-application=frequency
-.EE
+Rules:
 
-Example:
-.EX
-steam=cache
-blender=frequency
-.EE
-
-The key must match the application's basename.
-
-.SH APPLICATION PASSTHROUGH
-
-When an application is specified after a command, x3dctl:
-
-1. Switches the global X3D mode.
-2. Pins the current shell to the appropriate CCD.
-3. Executes the application via exec.
-
-All child processes inherit the CPU affinity mask.
+- Must be owned by root
+- Must not be writable by group or others
+- Lines beginning with '#' are ignored
+- No whitespace allowed around '='
 
 Example:
-.EX
-x3dctl gaming steam
-x3dctl run steam
-.EE
+
+steam=gaming
+blender=workstation
+
+Profiles are enforced inside the privileged helper and cannot be defined dynamically.
 
 .SH SECURITY
 
-x3dctl delegates privileged operations to:
+x3dctl enforces strict privilege separation.
 
-.I /usr/local/bin/x3dctl-helper
+The helper binary:
 
-The helper is executed via sudo and restricted through:
-
-.I /etc/sudoers.d/x3dctl
-
-The helper performs validated sysfs writes and controlled affinity changes.
-No configuration parsing occurs in privileged context.
+- Validates configuration ownership
+- Restricts scheduler classes
+- Prevents realtime scheduling
+- Applies deterministic policy
 
 .SH FILES
 
@@ -125,11 +126,11 @@ Privileged helper binary.
 
 .TP
 .I /etc/x3dctl.conf
-System policy configuration file.
+Application-to-profile mapping file.
 
 .TP
 .I /etc/sudoers.d/x3dctl
-Sudo policy for helper execution.
+Sudo policy allowing helper execution.
 
 .SH EXIT STATUS
 
@@ -139,39 +140,17 @@ Success
 
 .TP
 1
-Invalid usage or runtime failure
+General failure or invalid argument
 
-.SH EXAMPLES
+.SH DESIGN PHILOSOPHY
 
-Switch to cache mode:
-.EX
-x3dctl gaming
-.EE
+x3dctl prioritizes:
 
-Switch to frequency mode:
-.EX
-x3dctl performance
-.EE
-
-Toggle current mode:
-.EX
-x3dctl toggle
-.EE
-
-Launch using configuration:
-.EX
-x3dctl run steam
-.EE
-
-Switch mode and launch:
-.EX
-x3dctl gaming mangohud steam
-.EE
-
-Display current mode:
-.EX
-x3dctl status
-.EE
+- Deterministic behavior
+- Clear privilege separation
+- Minimal runtime overhead
+- Transparent configuration
+- System stability
 
 .SH AUTHOR
 Written by GrandBirdLizard.
