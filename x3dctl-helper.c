@@ -1,8 +1,8 @@
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <limits.h>
 #include <sched.h>
@@ -17,10 +17,13 @@
 #define CPU_BASE   "/sys/devices/system/cpu"
 #define CONFIG_PATH "/etc/x3dctl.conf"
 
+//   Global CPU masks
 
 static cpu_set_t cache_mask;
 static cpu_set_t freq_mask;
 static int topology_initialized = 0;
+
+//   X3D sysfs logic
 
 int find_x3d_path(char *out_path, size_t size) {
     DIR *dir = opendir(SYSFS_BASE);
@@ -61,6 +64,8 @@ int read_mode(const char *path) {
     fclose(f);
     return 0;
 }
+
+//   Topology detection
 
 static void init_topology(void) {
     if (topology_initialized) return;
@@ -105,6 +110,115 @@ static void init_topology(void) {
 }
 
 
+//   IRQ Steering
+
+static void cpuset_to_hexmask(const cpu_set_t *set, char *out, size_t out_size)
+{
+    const int bits_per_chunk = 32;
+    const int total_bits = CPU_SETSIZE;
+    const int chunks = (total_bits + bits_per_chunk - 1) / bits_per_chunk;
+
+    uint32_t words[chunks];
+    memset(words, 0, sizeof(words));
+
+    for (int cpu = 0; cpu < total_bits; cpu++) {
+        if (CPU_ISSET(cpu, set)) {
+            int word = cpu / bits_per_chunk;
+            int bit  = cpu % bits_per_chunk;
+            words[word] |= (1U << bit);
+        }
+    }
+
+    int highest = chunks - 1;
+    while (highest > 0 && words[highest] == 0)
+        highest--;
+
+    char *ptr = out;
+    size_t remaining = out_size;
+
+    for (int i = highest; i >= 0; i--) {
+
+        int written = snprintf(ptr, remaining,
+                               (i == highest) ? "%x" : ",%08x",
+                               words[i]);
+
+        if (written < 0 || (size_t)written >= remaining) {
+            if (remaining > 0)
+                out[out_size - 1] = '\0';
+            return;
+        }
+
+        ptr += written;
+        remaining -= written;
+    }
+}
+
+static int is_gpu_irq_line(const char *line)
+{
+    return (
+        strstr(line, "amdgpu") ||
+        strstr(line, "nvidia") ||
+        strstr(line, "nouveau")
+    );
+}
+
+static void build_full_mask(cpu_set_t *out)
+{
+    CPU_ZERO(out);
+
+    for (int i = 0; i < CPU_SETSIZE; i++) {
+        if (CPU_ISSET(i, &cache_mask) ||
+            CPU_ISSET(i, &freq_mask)) {
+            CPU_SET(i, out);
+        }
+    }
+}
+
+
+static void steer_gpu_irqs(const cpu_set_t *target_mask)
+{
+    FILE *f = fopen("/proc/interrupts", "r");
+    if (!f)
+        return;
+
+    char line[512];
+
+    /* Large enough for CPU_SETSIZE bits */
+    char hexmask[CPU_SETSIZE / 4 + 32];
+    cpuset_to_hexmask(target_mask, hexmask, sizeof(hexmask));
+
+    while (fgets(line, sizeof(line), f)) {
+
+        if (!is_gpu_irq_line(line))
+            continue;
+
+        char *colon = strchr(line, ':');
+        if (!colon)
+            continue;
+
+        *colon = '\0';
+
+        int irq = atoi(line);
+        if (irq <= 0)
+            continue;
+
+        char path[128];
+        snprintf(path, sizeof(path),
+                 "/proc/irq/%d/smp_affinity", irq);
+
+        FILE *irqf = fopen(path, "w");
+        if (!irqf)
+            continue;
+
+        fprintf(irqf, "%s", hexmask);
+        fclose(irqf);
+    }
+
+    fclose(f);
+}
+
+
+//   Config security check
 
 static int verify_config_security(void) {
     struct stat st;
@@ -124,30 +238,65 @@ static int verify_config_security(void) {
 }
 
 static void trim(char *s) {
-    s[strcspn(s, "\r\n")] = 0;
+    char *start = s;
+    char *end;
+
+    // Skip leading whitespace
+    while (*start && isspace((unsigned char)*start))
+        start++;
+
+    if (start != s)
+        memmove(s, start, strlen(start) + 1);
+
+    // Trim trailing whitespace
+    end = s + strlen(s) - 1;
+    while (end >= s && isspace((unsigned char)*end))
+        *end-- = '\0';
 }
 
+
 static char *query_profile(const char *app) {
+
     if (verify_config_security() != 0)
         return NULL;
 
     FILE *f = fopen(CONFIG_PATH, "r");
-    if (!f) return NULL;
+    if (!f)
+        return NULL;
 
-    static char line[256];
+    static char line[512];
 
     while (fgets(line, sizeof(line), f)) {
-        trim(line);
 
+        // Remove newline
+        line[strcspn(line, "\r\n")] = 0;
+
+        // Skip comments or empty lines
         if (line[0] == '#' || line[0] == '\0')
             continue;
 
-        char key[128], val[128];
-        if (sscanf(line, "%127[^=]=%127s", key, val) == 2) {
-            if (strcmp(key, app) == 0) {
-                fclose(f);
-                return strdup(val);
-            }
+        // Find first '='
+        char *eq = strchr(line, '=');
+        if (!eq)
+            continue;
+
+        *eq = '\0';
+        char *key = line;
+        char *val = eq + 1;
+
+        trim(key);
+        trim(val);
+
+        // Ignore inline comments in value
+        char *comment = strchr(val, '#');
+        if (comment) {
+            *comment = '\0';
+            trim(val);
+        }
+
+        if (strcmp(key, app) == 0) {
+            fclose(f);
+            return strdup(val);
         }
     }
 
@@ -156,6 +305,7 @@ static char *query_profile(const char *app) {
 }
 
 
+//   Profile definitions
 
 struct profile {
     const char *core_type;
@@ -197,7 +347,7 @@ static int load_profile(const char *name, struct profile *p) {
     return 1;
 }
 
-
+//   Scheduler & IO
 
 static int apply_scheduler(pid_t pid, const char *policy_str) {
 
@@ -249,7 +399,7 @@ static int apply_ioprio(pid_t pid, int io_class, int io_level) {
     return 0;
 }
 
-
+//   Apply policy
 
 static int apply_policy(pid_t pid, const struct profile *p) {
 
@@ -287,37 +437,56 @@ static int apply_policy(pid_t pid, const struct profile *p) {
     if (apply_ioprio(pid, p->io_class, p->io_level) != 0)
         return 1;
 
+
     return 0;
 }
 
-
+//   MAIN
 
 int main(int argc, char *argv[]) {
 
     if (argc < 2) {
         fprintf(stderr,
             "Usage:\n"
-            "  x3dctl-helper cache\n"
-            "  x3dctl-helper frequency\n"
+            "  x3dctl-helper cache [--no-irq]\n"
+            "  x3dctl-helper frequency [--no-irq]\n"
             "  x3dctl-helper status\n"
             "  x3dctl-helper query <app>\n"
             "  x3dctl-helper apply <pid> <profile>\n");
         return 1;
     }
 
+
+//       Query config
+
     if (strcmp(argv[1], "query") == 0) {
-        if (argc != 3) return 1;
+        if (argc != 3)
+            return 1;
+
         char *profile = query_profile(argv[2]);
-        if (!profile) return 1;
+        if (!profile)
+            return 1;
+
         printf("%s\n", profile);
         free(profile);
         return 0;
     }
 
+//       Apply profile (PROCESS ONLY)
+
     if (strcmp(argv[1], "apply") == 0) {
-        if (argc != 4) return 1;
+
+        if (argc != 4) {
+            fprintf(stderr,
+                "Usage: x3dctl-helper apply <pid> <profile>\n");
+            return 1;
+        }
 
         pid_t pid = (pid_t)atoi(argv[2]);
+        if (pid <= 0) {
+            fprintf(stderr, "Invalid PID\n");
+            return 1;
+        }
 
         struct profile p;
         if (load_profile(argv[3], &p) != 0) {
@@ -328,21 +497,63 @@ int main(int argc, char *argv[]) {
         return apply_policy(pid, &p);
     }
 
+
+//       Sysfs Mode Commands (MODE-BOUND IRQ)
+
+
     char sysfs_path[PATH_MAX];
     if (find_x3d_path(sysfs_path, sizeof(sysfs_path)) != 0) {
         fprintf(stderr, "X3D driver not found.\n");
         return 1;
     }
 
-    if (strcmp(argv[1], "cache") == 0)
-        return write_mode(sysfs_path, "cache");
+    if (strcmp(argv[1], "cache") == 0) {
 
-    if (strcmp(argv[1], "frequency") == 0)
-        return write_mode(sysfs_path, "frequency");
+        int disable_irq = 0;
+        if (argc == 3 && strcmp(argv[2], "--no-irq") == 0)
+            disable_irq = 1;
+        else if (argc > 2)
+            return 1;
+
+        if (write_mode(sysfs_path, "cache") != 0)
+            return 1;
+
+        if (!disable_irq) {
+            init_topology();
+            steer_gpu_irqs(&freq_mask);
+        }
+
+        return 0;
+    }
+
+    if (strcmp(argv[1], "frequency") == 0) {
+
+        int disable_irq = 0;
+        if (argc == 3 && strcmp(argv[2], "--no-irq") == 0)
+            disable_irq = 1;
+        else if (argc > 2)
+            return 1;
+
+        if (write_mode(sysfs_path, "frequency") != 0)
+            return 1;
+
+        if (!disable_irq) {
+            init_topology();
+            cpu_set_t full_mask;
+            build_full_mask(&full_mask);
+            steer_gpu_irqs(&full_mask);
+        }
+
+        return 0;
+    }
 
     if (strcmp(argv[1], "status") == 0)
         return read_mode(sysfs_path);
 
+    fprintf(stderr, "Unknown command\n");
     return 1;
 }
+
+
+
 

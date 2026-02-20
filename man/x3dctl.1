@@ -1,7 +1,7 @@
-.TH X3DCTL 1 "2026" "x3dctl 0.4" "User Commands"
+.TH X3DCTL 1 "2026" "x3dctl 0.4.1" "User Commands"
 
 .SH NAME
-x3dctl \- Workload policy controller for AMD X3D processors
+x3dctl \- Deterministic workload policy controller for AMD X3D processors
 
 .SH SYNOPSIS
 .B x3dctl
@@ -18,8 +18,28 @@ It provides a lightweight interface for:
 - Setting process scheduling class
 - Adjusting niceness
 - Applying I/O priority
+- Steering GPU IRQ affinity based on system mode
 
 Privileged operations are delegated to a restricted helper binary executed via sudo.
+
+.SH MODE MODEL
+
+x3dctl defines system posture using two global modes:
+
+.TP
+.B gaming
+Switches X3D to cache-priority mode.
+
+GPU IRQs are steered to the frequency CCD to isolate interrupt handling
+from latency-sensitive 3D V-Cache workloads.
+
+.TP
+.B performance
+Switches X3D to frequency-priority mode.
+
+GPU IRQ affinity is restored to the full CPU mask.
+
+Mode transitions are deterministic and command-driven.
 
 .SH PROFILE MODEL
 
@@ -59,11 +79,11 @@ Example:
 
 .TP
 .B gaming
-Switch global X3D mode to cache-priority.
+Switch global X3D mode to cache-priority and apply IRQ steering.
 
 .TP
 .B performance
-Switch global X3D mode to frequency-priority.
+Switch global X3D mode to frequency-priority and restore IRQ distribution.
 
 .TP
 .B toggle
@@ -83,6 +103,12 @@ Suppress informational output.
 .BR -v ", " --verbose
 Enable additional logging output.
 
+.TP
+.BR --no-irq
+Disable GPU IRQ steering for the current invocation.
+
+This affects only mode commands (gaming, performance, toggle).
+
 .SH CONFIGURATION
 
 Configuration file:
@@ -94,12 +120,13 @@ Rules:
 - Must be owned by root
 - Must not be writable by group or others
 - Lines beginning with '#' are ignored
-- No whitespace allowed around '='
+- Whitespace around '=' is permitted
+- Inline comments after values are supported
 
 Example:
 
 steam=gaming
-blender=workstation
+flatpak run com.obsproject.Studio = workstation (is also permitted)
 
 Profiles are enforced inside the privileged helper and cannot be defined dynamically.
 
@@ -112,7 +139,10 @@ The helper binary:
 - Validates configuration ownership
 - Restricts scheduler classes
 - Prevents realtime scheduling
-- Applies deterministic policy
+- Applies deterministic CPU and IRQ policy
+
+x3dctl defines its own default IRQ baseline (full CPU mask).
+It does not restore the kernel/your original interrupt distribution.
 
 .SH FILES
 
@@ -151,6 +181,8 @@ x3dctl prioritizes:
 - Minimal runtime overhead
 - Transparent configuration
 - System stability
+
+No background daemon or automatic workload detection is used.
 
 .SH AUTHOR
 Written by GrandBirdLizard.

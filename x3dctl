@@ -6,6 +6,7 @@ HELPER="/usr/local/bin/x3dctl-helper"
 
 QUIET=0
 VERBOSE=0
+NO_IRQ=0
 
 log() {
   if [[ "$QUIET" -eq 0 ]]; then
@@ -31,9 +32,11 @@ while [[ "${1:-}" == -* ]]; do
   case "$1" in
     -q|--quiet) QUIET=1; shift ;;
     -v|--verbose) VERBOSE=1; shift ;;
+    --no-irq) NO_IRQ=1; shift ;;
     *) die "Unknown flag: $1" ;;
   esac
 done
+
 
 if [[ $# -eq 0 ]]; then
   die "Usage:
@@ -67,27 +70,35 @@ apply_profile_to_self() {
 
 case "$COMMAND" in
 
-  run)
-    [[ $# -eq 0 ]] && die "Usage: run <command...>"
+run)
+  [[ $# -eq 0 ]] && die "Usage: run <command...>"
 
-    APP_BIN=$(basename "$1")
+  APP_KEY="$*"
 
-    vlog "Querying profile for: $APP_BIN"
+  vlog "Querying profile for: $APP_KEY"
 
-    PROFILE=$(sudo "$HELPER" query "$APP_BIN" 2>/dev/null || true)
+  PROFILE=$(sudo "$HELPER" query "$APP_KEY" 2>/dev/null || true)
 
-    if [[ -z "$PROFILE" ]]; then
-      vlog "No profile found; defaulting to 'gaming'"
-      PROFILE="gaming"
-    fi
+  if [[ -z "$PROFILE" ]]; then
+    vlog "No profile found; defaulting to 'gaming'"
+    PROFILE="gaming"
+  fi
 
-    apply_profile_to_self "$PROFILE"
+  vlog "Applying profile: $PROFILE"
 
-    exec "$@"
-    ;;
+  sudo "$HELPER" apply "$$" "$PROFILE"
+
+  exec "$@"
+  ;;
+
 
   gaming)
-    sudo "$HELPER" cache
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" cache --no-irq
+    else
+      sudo "$HELPER" cache
+    fi
+
     log "Switched to cache"
 
     if [[ $# -gt 0 ]]; then
@@ -97,7 +108,12 @@ case "$COMMAND" in
     ;;
 
   performance)
-    sudo "$HELPER" frequency
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" frequency --no-irq
+    else
+      sudo "$HELPER" frequency
+    fi
+
     log "Switched to frequency"
 
     if [[ $# -gt 0 ]]; then
@@ -108,7 +124,13 @@ case "$COMMAND" in
 
   toggle)
     NEW_MODE=$(toggle_mode)
-    sudo "$HELPER" "$NEW_MODE"
+
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" "$NEW_MODE" --no-irq
+    else
+      sudo "$HELPER" "$NEW_MODE"
+    fi
+
     log "Switched to $NEW_MODE"
 
     if [[ $# -gt 0 ]]; then
@@ -116,6 +138,8 @@ case "$COMMAND" in
       exec "$@"
     fi
     ;;
+
+
 
   status)
     get_current_mode

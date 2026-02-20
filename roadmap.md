@@ -1,153 +1,136 @@
 # x3dctl Roadmap
 
-This document outlines planned development goals and feature direction for x3dctl.  
-It is intended to provide transparency and help guide community feedback.
+This document outlines development direction and architectural goals for x3dctl.
 
-x3dctl is currently in early development (0.x series).  
-Interfaces and behavior may change as the project evolves.
-
-Current version: 0.4.x (Profile-Based Policy Engine)
+x3dctl is currently in the 0.x series.  
+Interfaces and behavior may evolve as the project matures.
 
 ---
 
-## Current State (0.4)
+# Current State (0.5.x)
 
-x3dctl now operates as a deterministic workload policy controller for AMD X3D systems.
+As of v0.5.x, x3dctl provides:
 
-Key architectural changes:
+## Implemented Capabilities
 
-- Introduction of profile-based scheduling model
-- Application-to-profile mapping via `/etc/x3dctl.conf`
-- Privileged helper enforces:
-  - CCD-aware CPU affinity
-  - Scheduler class (OTHER, BATCH, IDLE)
-  - Process niceness
-  - I/O priority
-- Strict configuration ownership and permission validation
-- Removal of dynamic scheduler experimentation (e.g. ISO)
+### Deterministic Mode Control
+- Explicit cache (gaming) and frequency (performance) X3D mode switching
+- Toggle support
+- No background daemon or automation
 
-Profiles are currently static and defined inside the helper:
+### Topology-Aware CCD Detection
+- Automatic detection of cache vs frequency CCD
+- Dynamic CPU mask generation
+- No hardcoded CPU numbering assumptions
 
-- gaming
-- workstation
-- frequency
+### Process Policy Engine
+- Per-process affinity control
+- Scheduler class selection
+- Nice level management
+- I/O priority configuration
+- Deterministic inheritance model for launched applications
 
-The configuration file maps applications to these profiles but does not define scheduling behavior.
+### Mode-Bound GPU IRQ Steering
+- Gaming mode steers GPU IRQs to frequency CCD
+- Performance mode restores full CPU mask
+- Optional `--no-irq` override
+- No state drift between transitions
 
----
-
-## Near-Term Goals
-
-### Improved Configuration Matching
-
-- Support for full command matching (wrappers, flatpaks, launchers)
-- Better handling of commands containing spaces
-- More robust parsing and whitespace tolerance
-- Strict fallback behavior
-
-Design goals:
-
-- Keep configuration human-readable
-- Maintain deterministic behavior
-- Avoid regex-heavy or dynamic evaluation logic
-- Preserve security guarantees
+### Privilege Separation
+- Restricted helper binary
+- Sudo rule isolation
+- Configuration ownership validation
+- No realtime scheduling exposure
 
 ---
 
-### CLI Quality Improvements
+# Near-Term Goals (0.5.x Direction)
 
-- Clearer error reporting on profile lookup failures
-- Optional profile override flag
-- Profile listing command
-- Version reporting improvements
+### Profile Refinement
+- Cleaner internal profile model
+- Optional user-defined profile expansion
+- Maintain static validation and deterministic behavior
 
----
+### Improved CLI Feedback
+- Version reporting
+- Extended validation messages
+- Optional inspection tools (topology / IRQ state reporting)
 
-### Documentation & Packaging
-
-- Man page updates reflecting profile model
-- AUR / distribution packaging support
-- Improved install-time guidance
-
----
-
-## Mid-Term Goals
-
-### Profile Flexibility
-
-Allow limited expansion of profile definitions while preserving:
-
-- Scheduler safety
-- No realtime scheduling
-- No arbitrary privilege escalation
-- Deterministic enforcement
-
-Possible direction:
-
-- Controlled profile definition blocks
-- Strict value validation inside helper
+### Steam / Launcher Integration Improvements
+- Clean support for Steam launch options
+- Improved wrapper clarity
+- Better documentation for gaming workflows
 
 ---
 
-### Enhanced Process Handling
-
-- More reliable passthrough behavior
-- Wrapper-aware profile matching
-- Clearer execution tracing
-
----
-
-## Long-Term Exploration
-
-These features are exploratory and subject to change.
-
-### Optional Policy Automation
-
-Investigate dynamic profile switching while preserving:
-
-- No background daemon by default
-- Explicit user control
-- Transparent behavior
-
----
+# Mid-Term Goals
 
 ### Extended Hardware Awareness
+- Improved handling for future multi-CCD designs
+- Safer behavior on single-CCD systems
+- Better detection heuristics where needed
 
-Improve topology detection for:
+### Advanced Profile Expansion
+Allow users to define reusable workload profiles, such as:
 
-- Future multi-CCD architectures
-- Heterogeneous CPU layouts
-- Evolving AMD designs
+- gaming
+- streaming
+- workstation
+- content creation
+
+Without introducing runtime automation.
+
+### Packaging Support
+- Distribution packages (AUR and others)
+- Installation improvements
+- Documentation polish
 
 ---
 
-## Design Principles
+# Long-Term Exploration
 
-x3dctl development follows several core goals:
+These features are exploratory and may change based on user feedback.
+
+### Optional Inspection Utilities
+- IRQ mask display helpers
+- CCD topology visualization
+- Debug-focused system state reporting
+
+### Limited Automation (Carefully Scoped)
+- Optional dynamic switching experiments
+- Only if deterministic guarantees can be preserved
+
+Automation will not be added at the expense of predictability.
+
+---
+
+# Design Principles
+
+x3dctl development follows these core goals:
 
 - Keep the tool lightweight and script-friendly
-- Maintain strong privilege separation
+- Maintain strict privilege separation
 - Prefer deterministic behavior over automation magic
-- Avoid unnecessary runtime dependencies
-- Keep configuration explicit and transparent
-- Restrict dangerous scheduling classes
-- Preserve system stability first
+- Avoid background daemons
+- Avoid PID chasing or polling
+- Maintain predictable and transparent configuration
+- Minimize runtime dependencies
 
 ---
 
-## Stability Expectations
+# Stability Expectations
 
 While in the 0.x release series:
 
-- Configuration formats may evolve
-- CLI behavior may change
+- CLI behavior may evolve
+- Configuration formats may change
 - Backwards compatibility is not guaranteed
 
-Major architectural shifts will be documented in release notes.
+Major behavior changes will always be documented in release notes.
 
 ---
 
-## Community Feedback
+# Community Feedback
 
 Feedback is welcome through:
 
@@ -155,5 +138,4 @@ Feedback is welcome through:
 - Feature discussions
 - Pull requests
 
-Early user experience feedback is especially valuable during the alpha phase.
-
+Measurement-driven feedback (performance impact, workload results) is especially valuable.

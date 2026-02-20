@@ -5,12 +5,13 @@ SYSTEM_CONFIG := /etc/x3dctl.conf
 PROJECT_CONFIG := etc/x3dctl.conf
 
 CC = gcc
-CFLAGS = -O2 -Wall -Wextra
+CFLAGS = -O2 -Wall -Wextra -Werror -std=gnu11 -D_GNU_SOURCE
 
 all: x3dctl-helper
 
 x3dctl-helper: x3dctl-helper.c
 	$(CC) $(CFLAGS) $< -o $@
+	@echo -e  "Local build complete.\nFor use outside this dir, 'sudo make install' is required." 
 
 install: x3dctl-helper
 	@if [ "$$(id -u)" -ne 0 ]; then \
@@ -20,8 +21,8 @@ install: x3dctl-helper
 
 	@install -Dm755 x3dctl $(BINDIR)/x3dctl
 	@install -Dm755 x3dctl-helper $(BINDIR)/x3dctl-helper
-
-	# Install sudoers rule
+	
+	@# Install sudoers rule
 	@if [ -n "$$SUDO_USER" ]; then \
 		echo "Installing sudoers rule for user: $$SUDO_USER"; \
 		echo "$$SUDO_USER ALL=(root) NOPASSWD: $(BINDIR)/x3dctl-helper" > $(SUDOERS); \
@@ -31,7 +32,7 @@ install: x3dctl-helper
 	fi
 	@chmod 440 $(SUDOERS)
 
-	# Install default config only if missing
+	@# Install default config only if missing
 	@if [ ! -f $(SYSTEM_CONFIG) ]; then \
 		echo "Installing default config to $(SYSTEM_CONFIG)"; \
 		install -Dm644 $(PROJECT_CONFIG) $(SYSTEM_CONFIG); \
