@@ -1,148 +1,117 @@
 .TH X3DCTL 1 "2026" "x3dctl 0.4.1" "User Commands"
 
 .SH NAME
-x3dctl \- Deterministic workload policy controller for AMD X3D processors
+x3dctl \- Deterministic AMD X3D mode and affinity controller
 
 .SH SYNOPSIS
 .B x3dctl
-.RI [ options ] " command " [ application ]
+.RI [ options ] " command " [ application ... ]
 
 .SH DESCRIPTION
-x3dctl is a command-line utility for controlling AMD X3D CPU operating modes
-and applying deterministic workload policies on Linux systems.
+x3dctl is a command-line utility for switching AMD X3D CPU operating modes
+via the kernel sysfs interface and applying CPU affinity policies to launched
+applications.
 
-It provides a lightweight interface for:
+The tool separates policy from mechanism:
 
-- Switching global X3D operating modes
-- Applying CPU affinity to specific CCDs
-- Setting process scheduling class
-- Adjusting niceness
-- Applying I/O priority
-- Steering GPU IRQ affinity based on system mode
+- The frontend determines execution policy.
+- A restricted helper binary performs privileged sysfs and affinity operations.
 
-Privileged operations are delegated to a restricted helper binary executed via sudo.
-
-.SH MODE MODEL
-
-x3dctl defines system posture using two global modes:
-
-.TP
-.B gaming
-Switches X3D to cache-priority mode.
-
-GPU IRQs are steered to the frequency CCD to isolate interrupt handling
-from latency-sensitive 3D V-Cache workloads.
-
-.TP
-.B performance
-Switches X3D to frequency-priority mode.
-
-GPU IRQ affinity is restored to the full CPU mask.
-
-Mode transitions are deterministic and command-driven.
-
-.SH PROFILE MODEL
-
-Applications are mapped to predefined workload profiles using:
-
-.I /etc/x3dctl.conf
-
-Format:
-
-application=profile
-
-Supported profiles:
-
-.TP
-.B gaming
-Cache CCD, nice -5, SCHED_OTHER, high I/O priority
-
-.TP
-.B workstation
-Frequency CCD, nice 5, SCHED_BATCH, moderate I/O priority
-
-.TP
-.B frequency
-Frequency CCD, nice 0, SCHED_OTHER
-
-If no mapping exists, the default profile is "gaming".
+When launching an application, x3dctl pins the current shell before exec.
+The application and all of its children inherit the configured CPU affinity.
 
 .SH COMMANDS
 
 .TP
 .B run
-Launch an application and apply its configured profile.
+Launch an application using the mode defined in
+.I /etc/x3dctl.conf.
+If no configuration entry exists, the default mode is
+.B cache.
 
-Example:
-
-.B x3dctl run steam
+Usage:
+.B x3dctl run <command> [args...]
 
 .TP
 .B gaming
-Switch global X3D mode to cache-priority and apply IRQ steering.
+Switch to cache-priority mode.
+If an application is provided, it is executed after switching mode and
+pinning affinity.
 
 .TP
 .B performance
-Switch global X3D mode to frequency-priority and restore IRQ distribution.
+Switch to frequency-priority mode.
+If an application is provided, it is executed after switching mode and
+pinning affinity.
 
 .TP
 .B toggle
-Switch global X3D mode to the opposite of the current mode.
+Switch to the opposite of the current mode.
+If an application is provided, it is executed after switching mode and
+pinning affinity.
 
 .TP
 .B status
-Display current X3D operating mode.
+Display the current X3D operating mode.
 
 .SH OPTIONS
 
 .TP
-.BR -q ", " --quiet
-Suppress informational output.
-
-.TP
 .BR -v ", " --verbose
-Enable additional logging output.
+Enable verbose logging of mode changes and affinity actions.
 
 .TP
-.BR --no-irq
-Disable GPU IRQ steering for the current invocation.
-
-This affects only mode commands (gaming, performance, toggle).
+.BR -q ", " --quiet
+Suppress informational output (errors are still displayed).
 
 .SH CONFIGURATION
 
-Configuration file:
-
+.TP
 .I /etc/x3dctl.conf
+System-wide configuration file mapping application names to modes.
 
-Rules:
-
-- Must be owned by root
-- Must not be writable by group or others
-- Lines beginning with '#' are ignored
-- Whitespace around '=' is permitted
-- Inline comments after values are supported
+Format:
+.EX
+application=cache
+application=frequency
+.EE
 
 Example:
+.EX
+steam=cache
+blender=frequency
+.EE
 
-steam=gaming
-flatpak run com.obsproject.Studio = workstation (is also permitted)
+The key must match the application's basename.
 
-Profiles are enforced inside the privileged helper and cannot be defined dynamically.
+.SH APPLICATION PASSTHROUGH
+
+When an application is specified after a command, x3dctl:
+
+1. Switches the global X3D mode.
+2. Pins the current shell to the appropriate CCD.
+3. Executes the application via exec.
+
+All child processes inherit the CPU affinity mask.
+
+Example:
+.EX
+x3dctl gaming steam
+x3dctl run steam
+.EE
 
 .SH SECURITY
 
-x3dctl enforces strict privilege separation.
+x3dctl delegates privileged operations to:
 
-The helper binary:
+.I /usr/local/bin/x3dctl-helper
 
-- Validates configuration ownership
-- Restricts scheduler classes
-- Prevents realtime scheduling
-- Applies deterministic CPU and IRQ policy
+The helper is executed via sudo and restricted through:
 
-x3dctl defines its own IRQ baseline (full CPU mask).
-It does not restore kernel-original interrupt distribution.
+.I /etc/sudoers.d/x3dctl
+
+The helper performs validated sysfs writes and controlled affinity changes.
+No configuration parsing occurs in privileged context.
 
 .SH FILES
 
@@ -156,11 +125,11 @@ Privileged helper binary.
 
 .TP
 .I /etc/x3dctl.conf
-Application-to-profile mapping file.
+System policy configuration file.
 
 .TP
 .I /etc/sudoers.d/x3dctl
-Sudo policy allowing helper execution.
+Sudo policy for helper execution.
 
 .SH EXIT STATUS
 
@@ -170,23 +139,43 @@ Success
 
 .TP
 1
-General failure or invalid argument
+Invalid usage or runtime failure
 
-.SH DESIGN PHILOSOPHY
+.SH EXAMPLES
 
-x3dctl prioritizes:
+Switch to cache mode:
+.EX
+x3dctl gaming
+.EE
 
-- Deterministic behavior
-- Clear privilege separation
-- Minimal runtime overhead
-- Transparent configuration
-- System stability
+Switch to frequency mode:
+.EX
+x3dctl performance
+.EE
 
-No background daemon or automatic workload detection is used.
+Toggle current mode:
+.EX
+x3dctl toggle
+.EE
+
+Launch using configuration:
+.EX
+x3dctl run steam
+.EE
+
+Switch mode and launch:
+.EX
+x3dctl gaming mangohud steam
+.EE
+
+Display current mode:
+.EX
+x3dctl status
+.EE
 
 .SH AUTHOR
 Written by GrandBirdLizard.
 
 .SH LICENSE
-MIT
+MIT 
 
