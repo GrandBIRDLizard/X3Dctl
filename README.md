@@ -1,4 +1,4 @@
-# x3dctl
+# X3Dctl
 
 x3dctl is a lightweight command-line utility for controlling AMD X3D CPU operating modes on Linux systems.
 
@@ -13,89 +13,76 @@ All behavior is explicit and command-driven.
 
 ---
 
-## Features
+### Features
 
-### Mode Control (System-Level)
+## Mode Control (System-Level)
 
-- Toggle AMD X3D CPU operating modes
-  ```bash
-  x3dctl toggle
-  ``` 
+## Toggle AMD X3D CPU operating modes
+```bash
+x3dctl toggle
+``` 
 
--   Explicit cache and frequency mode switching
-    ```bash
-    x3dctl gaming
-    x3dctl performance
-    ```
+## Explicit cache and frequency mode switching
+```bash
+x3dctl gaming
+x3dctl performance
+```
 
-###Deterministic GPU IRQ Steering
--
-    In gaming mode, GPU IRQs are steered to the frequency CCD.
+## Deterministic GPU IRQ Steering
 
-    In performance mode, GPU IRQs are restored to the full CPU mask.
+ - In gaming mode, GPU IRQs are steered to the frequency CCD.
+ - In performance mode, GPU IRQs are restored to the full CPU mask.
+ - IRQ steering can be disabled for testing:   
+   ```bash
+   x3dctl --no-irq gaming
+   ```
 
-    IRQ steering can be disabled for testing:
--    
-    ```bash
-    x3dctl --no-irq gaming
-    ```
+### Application Launch With CCD-Aware Affinity
+```bash
+x3dctl gaming steam
+```
 
-###Application Launch With CCD-Aware Affinity
--
-    ```bash
-    x3dctl gaming steam
-    ```
-
-When launching an application:
+## When launching an application:
 
 1. The global X3D mode is set.
-
 2. CPU topology is detected (cache CCD vs frequency CCD).
-
 3. The launching process is pinned to the appropriate CCD.
-
 4. the application is executed.
-
 5. All child processes inherit the assigned CPU affinity.
 
-##Altertively:
--
-    ```bash
-    xedctl run steam
-    ```
+## Altertively:
+```bash
+xedctl run steam
+```
 
-<run> applies the configured profile without changing global mode.
-
-If no configuration entry exists, the default profile is <gaming>.
+- <run> applies the configured profile without changing global mode.
+- If no configuration entry exists, the default profile is <gaming>.
 
 
-Verbose and Quiet Modes
--
-    ```bash
-    x3dctl -q run <command>
-    x3dctl -v gaming <command>
-    ```
+## Verbose and Quiet Modes
+```bash
+x3dctl -q run <command>
+x3dctl -v gaming <command>
+```
     
-Documentation
--
-    ```bash
-    man x3dctl
-    ```
+## Documentation
+```bash
+man x3dctl
+```
     
-Build and Install
--
-    ```bash
-    make
-    sudo make install
-    sudo make uninstall
-    ```
-Installation:
--
-    Installs binaries to `/usr/local/bin`
+## Build and Install
+```bash
+make
+sudo make install
+sudo make uninstall
+```
+### Installation:
 
-    Installs a restricted sudoers rule for x3dctl-helper
+- Installs binaries to `/usr/local/bin`
+- Installs a restricted sudoers rule for x3dctl-helper
+- Installs a default `/etc/x3dctl.conf` if one does not already exist
 
-    Installs a default `/etc/x3dctl.conf` if one does not already exist
+---
 
 
 | Command     | Description                                               |
@@ -108,68 +95,53 @@ Installation:
 
 ---
 
-###Profile Model
--
-Applications are mapped in:
 
-    `/etc/x3dctl.conf`
+## Profile Model
 
-Format:
--
-    ```ini
-    application=profile
-    ```
+- Applications are mapped in:
+  `/etc/x3dctl.conf`
 
-###Supported profiles:
--
-    <gaming> → Cache CCD, nice -5, SCHED_OTHER
+- Format:
+  ```ini
+  application=profile
+  ```
 
-    <workstation> → Frequency CCD, nice 5, SCHED_BATCH
+### Supported profiles:
 
-    <frequency> → Frequency CCD, nice 0, SCHED_OTHER
-
-Profiles are enforced inside the privileged helper and cannot be defined dynamically.
+- <gaming> → Cache CCD, nice -5, SCHED_OTHER
+- <workstation> → Frequency CCD, nice 5, SCHED_BATCH
+- <frequency> → Frequency CCD, nice 0, SCHED_OTHER
+- Profiles are enforced inside the privileged helper and cannot be defined dynamically.
 
 ---
 
 
-###Design Goals
--
-    Deterministic behavior
+## Design Goals
 
-    No background daemon
-
-    No polling or PID chasing
-
-    Mode defines system posture
-
-    Clear separation between system policy and process policy
-
-    Minimal privileged attack surface
-
-    Transparent configuratio
+- Deterministic behavior
+- No background daemon
+- No polling or PID chasing
+- Mode defines system posture
+- Clear separation between system policy and process policy
+- Minimal privileged attack surface
+- Transparent configuratio
 
 ---
 
 
-###Requirements
--
-    Linux kernel with AMD X3D sysfs interface support
+## Requirements
 
-    sudo configured for helper execution
+- Linux kernel with AMD X3D sysfs interface support
+- sudo configured for helper execution
+- GCC for building helper binary
+- Make
 
-    GCC for building helper binary
+---  
 
-    Make
 
-###Stability Notice 
--
-    x3dctl is currently in the 0,x release series.
+## Stability Notice
 
-    Behabior may change between releases
-
-    CLI semantics may evolve
-
-    Backwards compatibility is not garanteed
-
----
+- x3dctl is currently in the 0,x release series.
+- Behabior may change between releases
+- CLI semantics may evolve
+- Backwards compatibility is not garanteed
