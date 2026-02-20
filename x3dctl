@@ -2,12 +2,22 @@
 set -euo pipefail
 
 SCRIPT_NAME="x3dctl"
-QUIET=0
+HELPER="/usr/local/bin/x3dctl-helper"
 
-### log helpers
+QUIET=0
+VERBOSE=0
+NO_IRQ=0
+
 
 log() {
   if [[ "$QUIET" -eq 0 ]]; then
+    echo "[$SCRIPT_NAME] $*" >&2
+  fi
+}
+
+
+vlog() {
+  if [[ "$QUIET" -eq 0 && "$VERBOSE" -eq 1 ]]; then
     echo "[$SCRIPT_NAME] $*" >&2
   fi
 }
@@ -18,97 +28,134 @@ die() {
   exit 1
 }
 
-### run helpers
 
-set_x3d_mode() {
-  local mode="$1"
-  sudo x3dctl-helper "$mode"
-}
-
-get_current_mode() {
-  sudo x3dctl-helper status | tr -d '\n'
-}
-
-toggle_mode() {
-  local current
-  current="$(get_current_mode)"
-
-  case "$current" in
-    cache)
-      set_x3d_mode frequency
-      ;;
-    frequency)
-      set_x3d_mode cache
-      ;;
-    *)
-      die "Unknown current mode: $current"
-      ;;
-  esac
-}
+[[ -x "$HELPER" ]] || die "Helper not found at $HELPER"
 
 
-### Parse global flags
-
+### Parse Flags
 while [[ "${1:-}" == -* ]]; do
   case "$1" in
-    -q|--quiet)
-      QUIET=1
-      shift
-      ;;
-    *)
-      die "Unknown flag: $1"
-      ;;
+    -q|--quiet) QUIET=1; shift ;;
+    -v|--verbose) VERBOSE=1; shift ;;
+    --no-irq) NO_IRQ=1; shift ;;
+    *) die "Unknown flag: $1" ;;
   esac
 done
 
+if [[ $# -eq 0 ]]; then
+  die "Usage:
+  $SCRIPT_NAME run <command...>
+  $SCRIPT_NAME gaming [command...]
+  $SCRIPT_NAME performance [command...]
+  $SCRIPT_NAME toggle [command...]
+  $SCRIPT_NAME status"
+fi
 
-### Entry point
+COMMAND="$1"
+shift
 
-case "${1:-}" in
 
-  gaming|performance|toggle)
-    PROFILE="$1"
-    shift
-    CMD=("$@")
+get_current_mode() {
+  sudo "$HELPER" status | tr -d '\n'
+}
 
-    log "Profile: $PROFILE"
 
-    case "$PROFILE" in
-      gaming)
-        set_x3d_mode cache
-        ;;
-      performance)
-        set_x3d_mode frequency
-        ;;
-      toggle)
-        toggle_mode
-        ;;
-    esac
+toggle_mode() {
+  case "$(get_current_mode)" in
+    cache) echo "frequency" ;;
+    frequency) echo "cache" ;;
+    *) die "Unknown current mode" ;;
+  esac
+}
 
-    current="$(get_current_mode)"
-    log "Final X3D mode: $current"
 
-    if [[ ${#CMD[@]} -gt 0 ]]; then
-      log "Launching: ${CMD[*]}"
-      exec "${CMD[@]}"
+apply_profile_to_self() {
+  local profile="$1"
+  vlog "Applying profile: $profile"
+  sudo "$HELPER" apply "$$" "$profile"
+}
+
+
+case "$COMMAND" in
+
+run)
+  [[ $# -eq 0 ]] && die "Usage: run <command...>"
+
+  APP_KEY="$*"
+
+  vlog "Querying profile for: $APP_KEY"
+
+  PROFILE=$(sudo "$HELPER" query "$APP_KEY" 2>/dev/null || true)
+
+  if [[ -z "$PROFILE" ]]; then
+    vlog "No profile found; defaulting to 'gaming'"
+    PROFILE="gaming"
+  fi
+
+  vlog "Applying profile: $PROFILE"
+
+  sudo "$HELPER" apply "$$" "$PROFILE"
+
+  exec "$@"
+  ;;
+
+
+  gaming)
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" cache --no-irq
     else
-      log "Mode switched only"
-      exit 0
+      sudo "$HELPER" cache
+    fi
+
+    log "Switched to cache"
+
+    if [[ $# -gt 0 ]]; then
+      apply_profile_to_self "gaming"
+      exec "$@"
     fi
     ;;
 
+
+  performance)
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" frequency --no-irq
+    else
+      sudo "$HELPER" frequency
+    fi
+
+    log "Switched to frequency"
+
+    if [[ $# -gt 0 ]]; then
+      apply_profile_to_self "frequency"
+      exec "$@"
+    fi
+    ;;
+
+
+  toggle)
+    NEW_MODE=$(toggle_mode)
+
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" "$NEW_MODE" --no-irq
+    else
+      sudo "$HELPER" "$NEW_MODE"
+    fi
+
+    log "Switched to $NEW_MODE"
+
+    if [[ $# -gt 0 ]]; then
+      apply_profile_to_self "$NEW_MODE"
+      exec "$@"
+    fi
+    ;;
+
+
   status)
     get_current_mode
-    exit 0
     ;;
 
   *)
-    die "Usage:
-      $SCRIPT_NAME [--quiet|-q] gaming [command...]
-      $SCRIPT_NAME [--quiet|-q] performance [command...]
-      $SCRIPT_NAME [--quiet|-q] toggle [command...]
-      $SCRIPT_NAME status"
+    die "Unknown command"
     ;;
 esac
-
 
