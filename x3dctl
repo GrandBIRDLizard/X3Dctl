@@ -20,6 +20,13 @@ vlog() {
   fi
 }
 
+vlog() {
+  if [[ "$QUIET" -eq 0 && "$VERBOSE" -eq 1 ]]; then
+    echo "[$SCRIPT_NAME] $*" >&2
+  fi
+}
+
+
 die() {
   echo "[$SCRIPT_NAME] ERROR: $*" >&2
   exit 1
@@ -78,6 +85,7 @@ while [[ "${1:-}" == -* ]]; do
   esac
 done
 
+  APP_KEY="$*"
 
 # Require at least one command after flags
 if [[ $# -eq 0 ]]; then
@@ -152,6 +160,7 @@ case "$COMMAND" in
       log "Switched to $NEW_MODE"
     fi
     ;;
+
 
   status)
     get_current_mode
