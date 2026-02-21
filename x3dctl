@@ -3,10 +3,10 @@ set -euo pipefail
 
 SCRIPT_NAME="x3dctl"
 HELPER="/usr/local/bin/x3dctl-helper"
-CONFIG_FILE="/etc/x3dctl.conf"
 
 QUIET=0
 VERBOSE=0
+NO_IRQ=0
 
 log() {
   if [[ "$QUIET" -eq 0 ]]; then
@@ -20,44 +20,38 @@ vlog() {
   fi
 }
 
-vlog() {
-  if [[ "$QUIET" -eq 0 && "$VERBOSE" -eq 1 ]]; then
-    echo "[$SCRIPT_NAME] $*" >&2
-  fi
-}
-
-
 die() {
   echo "[$SCRIPT_NAME] ERROR: $*" >&2
   exit 1
 }
 
-get_config_mode() {
-  local app="$1"
-  [[ -f "$CONFIG_FILE" ]] || return 0
-  # Exact key match; take first match only
-  grep -E "^${app}=" "$CONFIG_FILE" 2>/dev/null | head -n1 | cut -d'=' -f2
-}
+[[ -x "$HELPER" ]] || die "Helper not found at $HELPER"
 
-validate_mode() {
+### Parse Flags
+while [[ "${1:-}" == -* ]]; do
   case "$1" in
-    cache|frequency) ;;
-    *) die "Invalid mode: $1" ;;
+    -q|--quiet) QUIET=1; shift ;;
+    -v|--verbose) VERBOSE=1; shift ;;
+    --no-irq) NO_IRQ=1; shift ;;
+    *) die "Unknown flag: $1" ;;
   esac
-}
+done
 
-set_global_mode() {
-  vlog "Setting global mode to: $1"
-  sudo "$HELPER" "$1"
-}
+
+if [[ $# -eq 0 ]]; then
+  die "Usage:
+  $SCRIPT_NAME run <command...>
+  $SCRIPT_NAME gaming [command...]
+  $SCRIPT_NAME performance [command...]
+  $SCRIPT_NAME toggle [command...]
+  $SCRIPT_NAME status"
+fi
+
+COMMAND="$1"
+shift
 
 get_current_mode() {
   sudo "$HELPER" status | tr -d '\n'
-}
-
-pin_self() {
-  vlog "Pinning PID $$ to: $1"
-  sudo "$HELPER" pin "$$" "$1"
 }
 
 toggle_mode() {
@@ -68,111 +62,89 @@ toggle_mode() {
   esac
 }
 
-### Parse Flags
-while [[ "${1:-}" == -* ]]; do
-  case "$1" in
-    -q|--quiet)
-      QUIET=1
-      shift
-      ;;
-    -v|--verbose)
-      VERBOSE=1
-      shift
-      ;;
-    *)
-      die "Unknown flag: $1"
-      ;;
-  esac
-done
-
-  APP_KEY="$*"
-
-# Require at least one command after flags
-if [[ $# -eq 0 ]]; then
-  die "Usage:
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] run <command...>
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] gaming [command...]
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] performance [command...]
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] toggle [command...]
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] status"
-fi
-
-COMMAND="$1"
-shift
-
-
-# Ensure helper exists and is executable
-[[ -x "$HELPER" ]] || die "Helper not found at $HELPER"
+apply_profile_to_self() {
+  local profile="$1"
+  vlog "Applying profile: $profile"
+  sudo "$HELPER" apply "$$" "$profile"
+}
 
 case "$COMMAND" in
 
-  run)
-    [[ $# -eq 0 ]] && die "Usage: run <command...>"
+run)
+  [[ $# -eq 0 ]] && die "Usage: run <command...>"
 
-    APP_BIN=$(basename "$1")
-    TARGET_MODE=$(get_config_mode "$APP_BIN")
+  APP_KEY="$*"
 
-    if [[ -z "$TARGET_MODE" ]]; then
-      TARGET_MODE="cache"
-      vlog "No config entry for $APP_BIN; defaulting to cache"
-    else
-      vlog "Config entry for $APP_BIN: $TARGET_MODE"
-    fi
+  vlog "Querying profile for: $APP_KEY"
 
-    validate_mode "$TARGET_MODE"
+  PROFILE=$(sudo "$HELPER" query "$APP_KEY" 2>/dev/null || true)
 
-    set_global_mode "$TARGET_MODE"
-    pin_self "$TARGET_MODE"
+  if [[ -z "$PROFILE" ]]; then
+    vlog "No profile found; defaulting to 'gaming'"
+    PROFILE="gaming"
+  fi
 
-    exec "$@"
-    ;;
+  vlog "Applying profile: $PROFILE"
+
+  sudo "$HELPER" apply "$$" "$PROFILE"
+
+  exec "$@"
+  ;;
+
 
   gaming)
-    set_global_mode cache
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" cache --no-irq
+    else
+      sudo "$HELPER" cache
+    fi
+
+    log "Switched to cache"
 
     if [[ $# -gt 0 ]]; then
-      pin_self cache
+      apply_profile_to_self "gaming"
       exec "$@"
-    else
-      log "Switched to cache"
     fi
     ;;
 
   performance)
-    set_global_mode frequency
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" frequency --no-irq
+    else
+      sudo "$HELPER" frequency
+    fi
+
+    log "Switched to frequency"
 
     if [[ $# -gt 0 ]]; then
-      pin_self frequency
+      apply_profile_to_self "frequency"
       exec "$@"
-    else
-      log "Switched to frequency"
     fi
     ;;
 
   toggle)
     NEW_MODE=$(toggle_mode)
-    set_global_mode "$NEW_MODE"
+
+    if [[ "$NO_IRQ" -eq 1 ]]; then
+      sudo "$HELPER" "$NEW_MODE" --no-irq
+    else
+      sudo "$HELPER" "$NEW_MODE"
+    fi
+
+    log "Switched to $NEW_MODE"
 
     if [[ $# -gt 0 ]]; then
-      pin_self "$NEW_MODE"
+      apply_profile_to_self "$NEW_MODE"
       exec "$@"
-    else
-      log "Switched to $NEW_MODE"
     fi
     ;;
-
 
   status)
     get_current_mode
     ;;
 
   *)
-    die "Usage:
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] run <command...>
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] gaming [command...]
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] performance [command...]
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] toggle [command...]
-  $SCRIPT_NAME [-v|--verbose] [-q|--quiet] status"
+    die "Unknown command"
     ;;
 esac
 

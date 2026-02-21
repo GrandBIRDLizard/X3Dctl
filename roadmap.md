@@ -1,110 +1,136 @@
 # x3dctl Roadmap
 
-This document outlines planned development goals and feature direction for x3dctl.  
-It is intended to provide transparency and help guide community feedback.
+This document outlines development direction and architectural goals for x3dctl.
 
-x3dctl is currently in early development (0.x series).  
-Interfaces and behavior may change as the project evolves.
-
----
-
-## Near-Term Goals
-
-### Simple Configuration System
-Introduce a lightweight configuration file supporting:
-
-- Default profile selection 
-- Optional per-application profile mapping X
-- Minimal validation and safe fallback behavior
-
-Design goals:
-
-- Keep configuration human-readable
-- Avoid complex dependency or parsing overhead
-- Maintain predictable CLI behavior
+x3dctl is currently in the 0.x series.  
+Interfaces and behavior may evolve as the project matures.
 
 ---
 
-### CCD Pinning / Process Affinity Support
-Provide optional helpers for directing workloads to specific CCDs.
+# Current State (0.5.x)
 
-Planned capabilities:
+As of v0.5.x, x3dctl provides:
 
-- Manual process pinning helpers X
-- Application launch pinning support X
-- Safe CPU topology detection X
-- Clear separation from automatic scheduling behavior X
+## Implemented Capabilities
+
+### Deterministic Mode Control
+- Explicit cache (gaming) and frequency (performance) X3D mode switching
+- Toggle support
+- No background daemon or automation
+
+### Topology-Aware CCD Detection
+- Automatic detection of cache vs frequency CCD
+- Dynamic CPU mask generation
+- No hardcoded CPU numbering assumptions
+
+### Process Policy Engine
+- Per-process affinity control
+- Scheduler class selection
+- Nice level management
+- I/O priority configuration
+- Deterministic inheritance model for launched applications
+
+### Mode-Bound GPU IRQ Steering
+- Gaming mode steers GPU IRQs to frequency CCD
+- Performance mode restores full CPU mask
+- Optional `--no-irq` override
+- No state drift between transitions
+
+### Privilege Separation
+- Restricted helper binary
+- Sudo rule isolation
+- Configuration ownership validation
+- No realtime scheduling exposure
 
 ---
 
-### Improved Process Detection
-Enhance application passthrough behavior with:
+# Near-Term Goals (0.5.x Direction)
 
-- More reliable process identification
-- Better command parsing
-- Safer handling of launch wrappers
+### Profile Refinement
+- Cleaner internal profile model
+- Optional user-defined profile expansion
+- Maintain static validation and deterministic behavior
+
+### Improved CLI Feedback
+- Version reporting
+- Extended validation messages
+- Optional inspection tools (topology / IRQ state reporting)
+
+### Steam / Launcher Integration Improvements
+- Clean support for Steam launch options
+- Improved wrapper clarity
+- Better documentation for gaming workflows
 
 ---
 
-## Mid-Term Goals
+# Mid-Term Goals
 
-### Profile Expansion
-Allow users to define reusable workload profiles.
+### Extended Hardware Awareness
+- Improved handling for future multi-CCD designs
+- Safer behavior on single-CCD systems
+- Better detection heuristics where needed
 
-Potential examples:
+### Advanced Profile Expansion
+Allow users to define reusable workload profiles, such as:
 
 - gaming
 - streaming
 - workstation
 - content creation
 
----
-
-### CLI Quality Improvements
-
-- Extended validation
-- Improved error reporting
-- Debugging and status inspection tools
-- Version reporting
-
----
+Without introducing runtime automation.
 
 ### Packaging Support
-
-- Distribution package support (AUR and others)
-- Installation and dependency improvements
+- Distribution packages (AUR and others)
+- Installation improvements
 - Documentation polish
 
 ---
 
-## Long-Term Exploration
+# Long-Term Exploration
 
-These features are under consideration and may change based on user feedback.
+These features are exploratory and may change based on user feedback.
 
-### Automation / Policy Engine
-Allow dynamic profile switching based on workload characteristics.
+### Optional Inspection Utilities
+- IRQ mask display helpers
+- CCD topology visualization
+- Debug-focused system state reporting
 
-### Extended Hardware Awareness
-Improve topology awareness for future multi-CCD and heterogeneous designs.
+### Limited Automation (Carefully Scoped)
+- Optional dynamic switching experiments
+- Only if deterministic guarantees can be preserved
 
-### Monitoring Integration
-Optional runtime inspection and local telemetry support.
+Automation will not be added at the expense of predictability.
 
 ---
 
-## Design Principles
+# Design Principles
 
-x3dctl development follows several core goals:
+x3dctl development follows these core goals:
 
 - Keep the tool lightweight and script-friendly
-- Maintain strong privilege separation
+- Maintain strict privilege separation
 - Prefer deterministic behavior over automation magic
-- Avoid unnecessary runtime dependencies
+- Avoid background daemons
+- Avoid PID chasing or polling
 - Maintain predictable and transparent configuration
+- Minimize runtime dependencies
 
 ---
 
-## Community Feedback
+# Stability Expectations
+
+While in the 0.x release series:
+
+- CLI behavior may evolve
+- Configuration formats may change
+- Backwards compatibility is not guaranteed
+
+Major behavior changes will always be documented in release notes.
+
+---
+
+# Community Feedback
 
 Feedback is welcome through:
 
@@ -112,17 +138,4 @@ Feedback is welcome through:
 - Feature discussions
 - Pull requests
 
-Early user experience feedback is especially valuable while the project is in alpha development.
-
----
-
-## Stability Expectations
-
-While in the 0.x release series:
-
-- Configuration formats may change
-- CLI behavior may evolve
-- Backwards compatibility is not guaranteed
-
-Major behavior changes will be documented in release notes.
-
+Measurement-driven feedback (performance impact, workload results) is especially valuable.
