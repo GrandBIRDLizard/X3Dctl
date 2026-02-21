@@ -118,7 +118,7 @@ sudo make uninstall
 ### Supported profiles:
 
 - <gaming> → Cache CCD, nice -5, SCHED_OTHER
-- <workstation> → Frequency CCD, nice 5, SCHED_BATCH(todo)
+- <workstation> → Frequency CCD, nice 5, SCHED_BATCH
 - <frequency> → Frequency CCD, nice 0, SCHED_OTHER
 - Profiles are enforced inside the privileged helper and cannot be defined dynamically or during runtime.
 
