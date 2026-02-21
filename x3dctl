@@ -139,8 +139,6 @@ run)
     fi
     ;;
 
-
-
   status)
     get_current_mode
     ;;

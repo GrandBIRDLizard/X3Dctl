@@ -5,7 +5,7 @@ x3dctl \- Deterministic workload policy controller for AMD X3D processors
 
 .SH SYNOPSIS
 .B x3dctl
-.RI [ options ] " command " [ application ]
+.RI [ options ] " command " [ application ... ]
 
 .SH DESCRIPTION
 x3dctl is a command-line utility for controlling AMD X3D CPU operating modes
@@ -96,6 +96,10 @@ Display current X3D operating mode.
 .SH OPTIONS
 
 .TP
+.BR -v ", " --verbose
+Enable verbose logging of mode changes and affinity actions.
+
+.TP
 .BR -q ", " --quiet
 Suppress informational output.
 
@@ -124,6 +128,20 @@ Rules:
 - Inline comments after values are supported
 
 Example:
+.EX
+steam=cache
+blender=frequency
+.EE
+
+The key must match the application's basename.
+
+.SH APPLICATION PASSTHROUGH
+
+When an application is specified after a command, x3dctl:
+
+1. Switches the global X3D mode.
+2. Pins the current shell to the appropriate CCD.
+3. Executes the application via exec.
 
 steam=gaming
 flatpak run com.obsproject.Studio = workstation (is also permitted)
@@ -160,7 +178,7 @@ Application-to-profile mapping file.
 
 .TP
 .I /etc/sudoers.d/x3dctl
-Sudo policy allowing helper execution.
+Sudo policy for helper execution.
 
 .SH EXIT STATUS
 
@@ -170,7 +188,7 @@ Success
 
 .TP
 1
-General failure or invalid argument
+Invalid usage or runtime failure
 
 .SH DESIGN PHILOSOPHY
 

@@ -13,7 +13,7 @@ All behavior is explicit and command-driven.
 
 ---
 
-### Features
+## Features
 
 ## Mode Control (System-Level)
 
@@ -37,7 +37,7 @@ x3dctl performance
    x3dctl --no-irq gaming
    ```
 
-### Application Launch With CCD-Aware Affinity
+## Application Launch With CCD-Aware Affinity
 ```bash
 x3dctl gaming steam
 ```
@@ -58,7 +58,6 @@ xedctl run steam
 - <run> applies the configured profile without changing global mode.
 - If no configuration entry exists, the default profile is <gaming>.
 
-
 ## Verbose and Quiet Modes
 ```bash
 x3dctl -q run <command>
@@ -76,11 +75,18 @@ make
 sudo make install
 sudo make uninstall
 ```
+  
 ### Installation:
 
 - Installs binaries to `/usr/local/bin`
 - Installs a restricted sudoers rule for x3dctl-helper
 - Installs a default `/etc/x3dctl.conf` if one does not already exist
+
+### Uninstall 
+- Program will clean itself from your system.
+- Remove binaries at `usr/local/bin`.
+- Remove sudoers rule for helper.
+- Program does not remove config at `/etc/x3dctl.conf` per UNIX tradition
 
 ---
 
@@ -111,7 +117,7 @@ sudo make uninstall
 - <gaming> → Cache CCD, nice -5, SCHED_OTHER
 - <workstation> → Frequency CCD, nice 5, SCHED_BATCH
 - <frequency> → Frequency CCD, nice 0, SCHED_OTHER
-- Profiles are enforced inside the privileged helper and cannot be defined dynamically.
+- Profiles are enforced inside the privileged helper and cannot be defined dynamically or during runtime.
 
 ---
 
@@ -124,7 +130,7 @@ sudo make uninstall
 - Mode defines system posture
 - Clear separation between system policy and process policy
 - Minimal privileged attack surface
-- Transparent configuratio
+- Transparent configuration
 
 ---
 
@@ -142,6 +148,6 @@ sudo make uninstall
 ## Stability Notice
 
 - x3dctl is currently in the 0,x release series.
-- Behabior may change between releases
+- Behavior may change between releases
 - CLI semantics may evolve
 - Backwards compatibility is not garanteed
