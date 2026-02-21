@@ -71,6 +71,8 @@ man x3dctl
     
 ## Build and Install
 ```bash
+git clone https://github.com/GrandBIRDLizard/X3Dctl.git
+cd X3Dctl
 make
 sudo make install
 sudo make uninstall
