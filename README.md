@@ -56,8 +56,8 @@ x3dctl gaming steam
 x3dctl run steam
 ```
 
-- <run> applies the configured profile without changing global mode.
-- If no configuration entry exists, the default profile is <gaming>.
+- run applies the configured profile without changing global mode.
+- If no configuration entry exists, the default profile is gaming.
 
 ## Verbose and Quiet Modes
 ```bash
@@ -117,10 +117,13 @@ sudo make uninstall
 
 ### Supported profiles:
 
-- <gaming> → Cache CCD, nice -5, SCHED_OTHER
-- <workstation> → Frequency CCD, nice 5, SCHED_BATCH
-- <frequency> → Frequency CCD, nice 0, SCHED_OTHER
-- Profiles are enforced inside the privileged helper and cannot be defined dynamically or during runtime.
+ gaming -> Cache CCD, nice -5, SCHED_OTHER
+ 
+ workstation -> Frequency CCD, nice 5, SCHED_BATCH
+ 
+ frequency -> Frequency CCD, nice 0, SCHED_OTHER
+ 
+ Profiles are enforced inside the privileged helper and cannot be defined dynamically or during runtime.
 
 ---
 
