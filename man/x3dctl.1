@@ -55,15 +55,15 @@ Supported profiles:
 
 .TP
 .B gaming
-Cache CCD, nice -5, SCHED_OTHER, high I/O priority
+Cache CCD, nice -5, SCHED_OTHER, BE/0 I/O priority.
 
 .TP
 .B workstation
-Frequency CCD, nice 5, SCHED_BATCH, moderate I/O priority
+Frequency CCD, nice 5, SCHED_BATCH, BE/4 I/O priority. 
 
 .TP
 .B frequency
-Frequency CCD, nice 0, SCHED_OTHER
+Frequency CCD, nice 0, SCHED_OTHER, BE/0 I/O priority
 
 If no mapping exists, the default profile is "gaming".
 
@@ -131,22 +131,23 @@ Example:
 .EX
 steam=cache
 blender=frequency
+flatpak run com.obsproject.Studio = workstation (is also permitted)
 .EE
 
 The key must match the application's basename.
+Profiles are enforced inside the privileged helper and cannot be defined dynamically.
 
 .SH APPLICATION PASSTHROUGH
 
-When an application is specified after a command, x3dctl:
+When an application is specified after a command:
+
+.EX
+x3dctl run steam
+.EE
 
 1. Switches the global X3D mode.
 2. Pins the current shell to the appropriate CCD.
 3. Executes the application via exec.
-
-steam=gaming
-flatpak run com.obsproject.Studio = workstation (is also permitted)
-
-Profiles are enforced inside the privileged helper and cannot be defined dynamically.
 
 .SH SECURITY
 
@@ -161,6 +162,7 @@ The helper binary:
 
 x3dctl defines its own default IRQ baseline (full CPU mask).
 It does not restore the kernel/your original interrupt distribution.
+IRQ affinity changes are runtime-only and are not persistent across system reboots.
 
 .SH FILES
 

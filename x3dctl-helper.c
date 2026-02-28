@@ -441,21 +441,61 @@ static int apply_policy(pid_t pid, const struct profile *p) {
     return 0;
 }
 
+
+static void print_cpu_model(void)
+{
+    FILE *f = fopen("/proc/cpuinfo", "r");
+    if (!f) return;
+
+    char line[512];
+    while (fgets(line, sizeof(line), f)) {
+        if (strncmp(line, "model name", 10) == 0) {
+            char *colon = strchr(line, ':');
+            if (colon)
+                printf("CPU: %s", colon + 2);
+            break;
+        }
+    }
+
+    fclose(f);
+}
+
+
+static int irqbalance_active(void)
+{
+    int ret = system("systemctl is-active --quiet irqbalance 2>/dev/null");
+    return ret == 0;
+}
+
+
+static int read_irq_mask(int irq, char *buf, size_t size)
+{
+    char path[128];
+    snprintf(path, sizeof(path),
+             "/proc/irq/%d/smp_affinity", irq);
+
+    FILE *f = fopen(path, "r");
+    if (!f) return -1;
+
+    if (!fgets(buf, size, f)) {
+        fclose(f);
+        return -1;
+    }
+
+    buf[strcspn(buf, "\n")] = 0;
+    fclose(f);
+    return 0;
+}
+
+
 //   MAIN
 
 int main(int argc, char *argv[]) {
 
-    if (argc < 2) {
-        fprintf(stderr,
-            "Usage:\n"
-            "  x3dctl-helper cache [--no-irq]\n"
-            "  x3dctl-helper frequency [--no-irq]\n"
-            "  x3dctl-helper status\n"
-            "  x3dctl-helper query <app>\n"
-            "  x3dctl-helper apply <pid> <profile>\n");
-        return 1;
-    }
-
+	if (argc < 2) {
+    	fprintf(stderr, "No command specified\n");
+    	return 1;
+	}
 
 //       Query config
 
@@ -507,48 +547,164 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if (strcmp(argv[1], "cache") == 0) {
+	if (strcmp(argv[1], "cache") == 0) {
 
-        int disable_irq = 0;
-        if (argc == 3 && strcmp(argv[2], "--no-irq") == 0)
-            disable_irq = 1;
-        else if (argc > 2)
-            return 1;
+    	int disable_irq = 0;
 
-        if (write_mode(sysfs_path, "cache") != 0)
-            return 1;
+   		if (argc == 3 && strcmp(argv[2], "--no-irq") == 0)
+        	disable_irq = 1;
+    	else if (argc > 2)
+        	return 1;
 
-        if (!disable_irq) {
-            init_topology();
-            steer_gpu_irqs(&freq_mask);
+    	if (write_mode(sysfs_path, "cache") != 0)
+        	return 1;
+
+    	init_topology();
+
+    	cpu_set_t full_mask;
+    	build_full_mask(&full_mask);
+
+    	if (disable_irq)
+        	steer_gpu_irqs(&full_mask);
+    	else
+        	steer_gpu_irqs(&freq_mask);
+
+    	return 0;
+	}
+
+	if (strcmp(argv[1], "frequency") == 0) {
+
+	    if (argc > 3)
+    	    return 1;
+
+    	if (write_mode(sysfs_path, "frequency") != 0)
+    	    return 1;
+
+    	init_topology();
+
+    	cpu_set_t full_mask;
+    	build_full_mask(&full_mask);
+
+    	// Always restore full mask
+    	steer_gpu_irqs(&full_mask);
+
+    	return 0;
+	}
+
+if (strcmp(argv[1], "status") == 0) {
+
+    printf("o=========================================o\n");
+    printf("          X3DCTL SYSTEM STATUS\n");
+    printf("o=========================================o\n");
+
+    print_cpu_model();
+
+    // Read mode 
+    char mode_buf[32] = {0};
+    {
+        FILE *f = fopen(sysfs_path, "r");
+        if (f && fgets(mode_buf, sizeof(mode_buf), f)) {
+            mode_buf[strcspn(mode_buf, "\n")] = 0;
         }
+        if (f) fclose(f);
+    }
 
+    printf("\nMode: %s\n", mode_buf[0] ? mode_buf : "Unknown");
+
+    // irqbalance state 
+    if (irqbalance_active())
+        printf("irqbalance Service: ACTIVE (may override steering)\n");
+    else
+        printf("irqbalance Service: OFF\n");
+
+    // Build masks 
+    init_topology();
+
+    char cache_hex[CPU_SETSIZE/4 + 32];
+    char freq_hex[CPU_SETSIZE/4 + 32];
+    char full_hex[CPU_SETSIZE/4 + 32];
+
+    cpuset_to_hexmask(&cache_mask, cache_hex, sizeof(cache_hex));
+    cpuset_to_hexmask(&freq_mask, freq_hex, sizeof(freq_hex));
+
+    cpu_set_t full_mask;
+    build_full_mask(&full_mask);
+    cpuset_to_hexmask(&full_mask, full_hex, sizeof(full_hex));
+
+    // Audit IRQs 
+    FILE *f = fopen("/proc/interrupts", "r");
+    if (!f) {
+        printf("\nGPU IRQ Audit: unavailable\n");
+        printf("o=========================================o\n");
         return 0;
     }
 
-    if (strcmp(argv[1], "frequency") == 0) {
+    printf("\nGPU IRQ Audit:\n");
 
-        int disable_irq = 0;
-        if (argc == 3 && strcmp(argv[2], "--no-irq") == 0)
-            disable_irq = 1;
-        else if (argc > 2)
-            return 1;
+    char line[512];
 
-        if (write_mode(sysfs_path, "frequency") != 0)
-            return 1;
+    int all_full = 1;
+    int all_freq = 1;
+    int all_cache = 1;
+    int irq_found = 0;
 
-        if (!disable_irq) {
-            init_topology();
-            cpu_set_t full_mask;
-            build_full_mask(&full_mask);
-            steer_gpu_irqs(&full_mask);
-        }
+    while (fgets(line, sizeof(line), f)) {
 
-        return 0;
+        if (!is_gpu_irq_line(line))
+            continue;
+
+        char *colon = strchr(line, ':');
+        if (!colon)
+            continue;
+
+        *colon = '\0';
+
+        int irq = atoi(line);
+        if (irq <= 0)
+            continue;
+
+        char current_mask[256];
+        if (read_irq_mask(irq, current_mask, sizeof(current_mask)) != 0)
+            continue;
+
+        irq_found = 1;
+
+        printf("  IRQ %d → 0x%s\n", irq, current_mask);
+
+        if (strcasecmp(current_mask, full_hex) != 0)
+            all_full = 0;
+
+        if (strcasecmp(current_mask, freq_hex) != 0)
+            all_freq = 0;
+
+        if (strcasecmp(current_mask, cache_hex) != 0)
+            all_cache = 0;
     }
 
-    if (strcmp(argv[1], "status") == 0)
-        return read_mode(sysfs_path);
+    fclose(f);
+
+    // Steering state summary 
+    printf("\nIRQ Steering: ");
+
+    if (!irq_found) {
+        printf("No GPU IRQs detected\n");
+    }
+    else if (all_full) {
+        printf("DISABLED (Full Mask)\n");
+    }
+    else if (all_freq) {
+        printf("Pinned to Frequency CCD\n");
+    }
+    else if (all_cache) {
+        printf("Pinned to Cache CCD\n");
+    }
+    else {
+        printf("Custom / Mixed\n");
+    }
+
+    printf("o=========================================o\n");
+    return 0;
+}
 
     fprintf(stderr, "Unknown command\n");
     return 1;

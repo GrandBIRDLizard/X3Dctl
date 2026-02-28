@@ -27,7 +27,7 @@ die() {
 
 [[ -x "$HELPER" ]] || die "Helper not found at $HELPER"
 
-### Parse Flags
+# Global Flag Parsing
 while [[ "${1:-}" == -* ]]; do
   case "$1" in
     -q|--quiet) QUIET=1; shift ;;
@@ -36,7 +36,6 @@ while [[ "${1:-}" == -* ]]; do
     *) die "Unknown flag: $1" ;;
   esac
 done
-
 
 if [[ $# -eq 0 ]]; then
   die "Usage:
@@ -50,8 +49,9 @@ fi
 COMMAND="$1"
 shift
 
+# Helpers
 get_current_mode() {
-  sudo "$HELPER" status | tr -d '\n'
+  sudo "$HELPER" status | awk '/^Mode:/ {print $2}'
 }
 
 toggle_mode() {
@@ -68,35 +68,33 @@ apply_profile_to_self() {
   sudo "$HELPER" apply "$$" "$profile"
 }
 
+# Command Dispatch
 case "$COMMAND" in
 
-run)
-  [[ $# -eq 0 ]] && die "Usage: run <command...>"
+  run)
+    [[ $# -eq 0 ]] && die "Usage: run <command...>"
 
-  APP_KEY="$*"
+    APP_KEY="$*"
+    vlog "Querying profile for: $APP_KEY"
 
-  vlog "Querying profile for: $APP_KEY"
+    PROFILE=$(sudo "$HELPER" query "$APP_KEY" 2>/dev/null || true)
 
-  PROFILE=$(sudo "$HELPER" query "$APP_KEY" 2>/dev/null || true)
+    if [[ -z "$PROFILE" ]]; then
+      vlog "No profile found; defaulting to 'gaming'"
+      PROFILE="gaming"
+    fi
 
-  if [[ -z "$PROFILE" ]]; then
-    vlog "No profile found; defaulting to 'gaming'"
-    PROFILE="gaming"
-  fi
+    vlog "Applying profile: $PROFILE"
+    sudo "$HELPER" apply "$$" "$PROFILE" || exit 1
 
-  vlog "Applying profile: $PROFILE"
-
-  sudo "$HELPER" apply "$$" "$PROFILE"
-
-  exec "$@"
-  ;;
-
+    exec "$@"
+    ;;
 
   gaming)
     if [[ "$NO_IRQ" -eq 1 ]]; then
-      sudo "$HELPER" cache --no-irq
+      sudo "$HELPER" cache --no-irq || exit 1
     else
-      sudo "$HELPER" cache
+      sudo "$HELPER" cache || exit 1
     fi
 
     log "Switched to cache"
@@ -109,9 +107,9 @@ run)
 
   performance)
     if [[ "$NO_IRQ" -eq 1 ]]; then
-      sudo "$HELPER" frequency --no-irq
+      sudo "$HELPER" frequency --no-irq || exit 1
     else
-      sudo "$HELPER" frequency
+      sudo "$HELPER" frequency || exit 1
     fi
 
     log "Switched to frequency"
@@ -126,9 +124,9 @@ run)
     NEW_MODE=$(toggle_mode)
 
     if [[ "$NO_IRQ" -eq 1 ]]; then
-      sudo "$HELPER" "$NEW_MODE" --no-irq
+      sudo "$HELPER" "$NEW_MODE" --no-irq || exit 1
     else
-      sudo "$HELPER" "$NEW_MODE"
+      sudo "$HELPER" "$NEW_MODE" || exit 1
     fi
 
     log "Switched to $NEW_MODE"
@@ -140,11 +138,10 @@ run)
     ;;
 
   status)
-    get_current_mode
+    sudo "$HELPER" status
     ;;
 
   *)
-    die "Unknown command"
+    die "Unknown command: $COMMAND"
     ;;
 esac
-
