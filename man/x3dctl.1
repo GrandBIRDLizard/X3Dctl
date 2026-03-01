@@ -5,7 +5,7 @@ x3dctl \- Deterministic workload policy controller for AMD X3D processors
 
 .SH SYNOPSIS
 .B x3dctl
-.RI [ options ] " command " [ application ]
+.RI [ options ] " command " [ application ... ]
 
 .SH DESCRIPTION
 x3dctl is a command-line utility for controlling AMD X3D CPU operating modes
@@ -37,7 +37,7 @@ from latency-sensitive 3D V-Cache workloads.
 .B performance
 Switches X3D to frequency-priority mode.
 
-GPU IRQ affinity is restored to the full CPU mask.
+GPU IRQ affinity is set to the full CPU mask (all cores available).
 
 Mode transitions are deterministic and command-driven.
 
@@ -55,15 +55,15 @@ Supported profiles:
 
 .TP
 .B gaming
-Cache CCD, nice -5, SCHED_OTHER, high I/O priority
+Cache CCD, nice -5, SCHED_OTHER, BE/0 I/O priority.
 
 .TP
 .B workstation
-Frequency CCD, nice 5, SCHED_BATCH, moderate I/O priority
+Frequency CCD, nice 5, SCHED_BATCH, BE/4 I/O priority. 
 
 .TP
 .B frequency
-Frequency CCD, nice 0, SCHED_OTHER
+Frequency CCD, nice 0, SCHED_OTHER, BE/0 I/O priority.
 
 If no mapping exists, the default profile is "gaming".
 
@@ -91,21 +91,23 @@ Switch global X3D mode to the opposite of the current mode.
 
 .TP
 .B status
-Display current X3D operating mode.
+Display current X3D operating mode, GPU IRQ steering state,
+and irqbalance service status. 
 
 .SH OPTIONS
+
+.TP
+.BR -v ", " --verbose
+Enable verbose logging of mode changes and affinity actions.
 
 .TP
 .BR -q ", " --quiet
 Suppress informational output.
 
 .TP
-.BR -v ", " --verbose
-Enable additional logging output.
-
-.TP
 .BR --no-irq
-Disable GPU IRQ steering for the current invocation.
+Disable GPU IRQ steering and restore GPU IRQ affinity  
+to the full mask for the current invocation.
 
 This affects only mode commands (gaming, performance, toggle).
 
@@ -124,11 +126,26 @@ Rules:
 - Inline comments after values are supported
 
 Example:
-
-steam=gaming
+.EX
+steam=cache
+blender=frequency
 flatpak run com.obsproject.Studio = workstation (is also permitted)
+.EE
 
+The key must match the application's basename.
 Profiles are enforced inside the privileged helper and cannot be defined dynamically.
+
+.SH APPLICATION PASSTHROUGH
+
+When an application is specified after a command:
+
+.EX
+x3dctl run steam
+.EE
+
+1. Switches the global X3D mode.
+2. Pins the current shell to the appropriate CCD.
+3. Executes the application via exec.
 
 .SH SECURITY
 
@@ -143,6 +160,7 @@ The helper binary:
 
 x3dctl defines its own default IRQ baseline (full CPU mask).
 It does not restore the kernel/your original interrupt distribution.
+IRQ affinity changes are runtime-only and are not persistent across system reboots.
 
 .SH FILES
 
@@ -157,10 +175,11 @@ Privileged helper binary.
 .TP
 .I /etc/x3dctl.conf
 Application-to-profile mapping file.
+Profiles affect only launched processes and do not modify global system posture.
 
 .TP
 .I /etc/sudoers.d/x3dctl
-Sudo policy allowing helper execution.
+Sudo policy for helper execution.
 
 .SH EXIT STATUS
 
@@ -170,7 +189,7 @@ Success
 
 .TP
 1
-General failure or invalid argument
+Invalid usage or runtime failure
 
 .SH DESIGN PHILOSOPHY
 

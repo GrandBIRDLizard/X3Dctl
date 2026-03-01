@@ -42,6 +42,11 @@ As of v0.5.x, x3dctl provides:
 - Configuration ownership validation
 - No realtime scheduling exposure
 
+### Improved CLI Feedback
+- Version reporting
+- Extended validation messages
+- Optional inspection tools (topology / IRQ state reporting)[X]
+
 ---
 
 # Near-Term Goals (0.5.x Direction)
@@ -51,10 +56,7 @@ As of v0.5.x, x3dctl provides:
 - Optional user-defined profile expansion
 - Maintain static validation and deterministic behavior
 
-### Improved CLI Feedback
-- Version reporting
-- Extended validation messages
-- Optional inspection tools (topology / IRQ state reporting)
+---
 
 ### Steam / Launcher Integration Improvements
 - Clean support for Steam launch options
@@ -66,7 +68,7 @@ As of v0.5.x, x3dctl provides:
 # Mid-Term Goals
 
 ### Extended Hardware Awareness
-- Improved handling for future multi-CCD designs
+- Improved handling for future multi-CCD designs[X]
 - Safer behavior on single-CCD systems
 - Better detection heuristics where needed
 
@@ -92,9 +94,9 @@ Without introducing runtime automation.
 These features are exploratory and may change based on user feedback.
 
 ### Optional Inspection Utilities
-- IRQ mask display helpers
+- IRQ mask display helpers[X]
 - CCD topology visualization
-- Debug-focused system state reporting
+- Debug-focused system state reporting[X]
 
 ### Limited Automation (Carefully Scoped)
 - Optional dynamic switching experiments

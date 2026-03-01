@@ -58,4 +58,3 @@ clean:
 	@rm -f x3dctl-helper
 
 .PHONY: all install uninstall clean
-
