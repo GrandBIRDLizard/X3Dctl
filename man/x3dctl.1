@@ -37,7 +37,7 @@ from latency-sensitive 3D V-Cache workloads.
 .B performance
 Switches X3D to frequency-priority mode.
 
-GPU IRQ affinity is restored to the full CPU mask.
+GPU IRQ affinity is set to the full CPU mask (all cores available).
 
 Mode transitions are deterministic and command-driven.
 
@@ -63,7 +63,7 @@ Frequency CCD, nice 5, SCHED_BATCH, BE/4 I/O priority.
 
 .TP
 .B frequency
-Frequency CCD, nice 0, SCHED_OTHER, BE/0 I/O priority
+Frequency CCD, nice 0, SCHED_OTHER, BE/0 I/O priority.
 
 If no mapping exists, the default profile is "gaming".
 
@@ -91,7 +91,8 @@ Switch global X3D mode to the opposite of the current mode.
 
 .TP
 .B status
-Display current X3D operating mode.
+Display current X3D operating mode, GPU IRQ steering state,
+and irqbalance service status. 
 
 .SH OPTIONS
 
@@ -104,12 +105,9 @@ Enable verbose logging of mode changes and affinity actions.
 Suppress informational output.
 
 .TP
-.BR -v ", " --verbose
-Enable additional logging output.
-
-.TP
 .BR --no-irq
-Disable GPU IRQ steering for the current invocation.
+Disable GPU IRQ steering and restore GPU IRQ affinity  
+to the full mask for the current invocation.
 
 This affects only mode commands (gaming, performance, toggle).
 
@@ -177,6 +175,7 @@ Privileged helper binary.
 .TP
 .I /etc/x3dctl.conf
 Application-to-profile mapping file.
+Profiles affect only launched processes and do not modify global system posture.
 
 .TP
 .I /etc/sudoers.d/x3dctl
