@@ -1,4 +1,5 @@
-# X3Dctl
+<img width="1408" height="538" alt="X3Dctl_logo_final_butcltleft" src="https://github.com/user-attachments/assets/4ae01d22-af40-4112-a47a-4791f61a98e1" />
+
 
 x3dctl is a lightweight command-line utility for controlling AMD X3D CPU operating modes on Linux systems.
 
@@ -52,11 +53,11 @@ x3dctl gaming steam
 
 ## Altertively:
 ```bash
-xedctl run steam
+x3dctl run steam
 ```
 
-- <run> applies the configured profile without changing global mode.
-- If no configuration entry exists, the default profile is <gaming>.
+- run applies the configured profile without changing global mode.
+- If no configuration entry exists, the default profile is gaming.
 
 ## Verbose and Quiet Modes
 ```bash
@@ -71,6 +72,8 @@ man x3dctl
     
 ## Build and Install
 ```bash
+git clone https://github.com/GrandBIRDLizard/X3Dctl.git
+cd X3Dctl
 make
 sudo make install
 sudo make uninstall
@@ -114,10 +117,13 @@ sudo make uninstall
 
 ### Supported profiles:
 
-- <gaming> → Cache CCD, nice -5, SCHED_OTHER
-- <workstation> → Frequency CCD, nice 5, SCHED_BATCH
-- <frequency> → Frequency CCD, nice 0, SCHED_OTHER
-- Profiles are enforced inside the privileged helper and cannot be defined dynamically or during runtime.
+ gaming -> Cache CCD, nice -5, SCHED_OTHER
+ 
+ workstation -> Frequency CCD, nice 5, SCHED_BATCH
+ 
+ frequency -> Frequency CCD, nice 0, SCHED_OTHER
+ 
+ Profiles are enforced inside the privileged helper and cannot be defined dynamically or during runtime.
 
 ---
 
