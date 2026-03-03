@@ -1,0 +1,643 @@
+=================================================
+            Trace Event Information  (Freq-CCD1)            
+=================================================
+  Total records                     :    2420893
+  Locked Load/Store Operations      :       4307
+  Load Operations                   :     522684
+  Loads - uncacheable               :          0
+  Loads - IO                        :         19
+  Loads - Miss                      :          0
+  Loads - no mapping                :      84447
+  Load Fill Buffer Hit              :          0
+  Load L1D hit                      :     403547
+  Load L2D hit                      :      13873
+  Load LLC hit                      :      14465
+  Load Local HITM                   :       7813
+  Load Remote HITM                  :        446
+  Load Remote HIT                   :          0
+  Load Local DRAM                   :       5728
+  Load Remote DRAM                  :          0
+  Load MESI State Exclusive         :       5728
+  Load MESI State Shared            :          0
+  Load LLC Misses                   :       6174
+  Load access blocked by data       :          0
+  Load access blocked by address    :          0
+  Load HIT Local Peer               :          0
+  Load HIT Remote Peer              :          0
+  LLC Misses to Local DRAM          :       92.8%
+  LLC Misses to Remote DRAM         :        0.0%
+  LLC Misses to Remote cache (HIT)  :        0.0%
+  LLC Misses to Remote cache (HITM) :        7.2%
+  Store Operations                  :     396626
+  Store - uncacheable               :         41
+  Store - no mapping                :      37602
+  Store L1D Hit                     :     347142
+  Store L1D Miss                    :          0
+  Store No available memory level   :       4526
+  No Page Map Rejects               :       2846
+  Unable to parse data source       :    1501583
+
+=================================================
+    Global Shared Cache Line Event Information   
+=================================================
+  Total Shared Cache Lines          :       6421
+  Load HITs on shared lines         :      79934
+  Fill Buffer Hits on shared lines  :          0
+  L1D hits on shared lines          :      69431
+  L2D hits on shared lines          :       1597
+  LLC hits on shared lines          :       8311
+  Load hits on peer cache or nodes  :          0
+  Locked Access on shared lines     :       2034
+  Blocked Access on shared lines    :          0
+  Store HITs on shared lines        :      27846
+  Store L1D hits on shared lines    :      27259
+  Store No available memory level   :        206
+  Total Merged records              :      36105
+
+=================================================
+                 c2c details                     
+=================================================
+  Events                            : ibs_op/ldlat=0/
+                                    : dummy:u
+  Cachelines sort on                : Total HITMs
+  Cacheline data grouping           : offset,iaddr
+
+=================================================
+           Shared Data Cache Line Table          
+=================================================
+#
+#        ----------- Cacheline ----------      Tot  ------- Load Hitm -------    Total    Total    Total  --------- Stores --------  ----- Core Load Hit -----  - LLC Load Hit --  - RMT Load Hit --  --- Load Dram ----
+# Index             Address  Node  PA cnt     Hitm    Total  LclHitm  RmtHitm  records    Loads   Stores    L1Hit   L1Miss      N/A       FB       L1       L2    LclHit  LclHitm    RmtHit  RmtHitm       Lcl       Rmt
+# .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  ........  .......  ........  .......  ........  ........
+#
+      0  0xffff8d0e2b026d00     0      67    1.38%      114      114        0      322      289       40       27        0        6        0      115       15        45      114         0        0         0         0
+      1        0x15987ae280     0       5    0.79%       65       65        0       69       69        0        0        0        0        0        4        0         0       65         0        0         0         0
+      2         0x580021c80     0      51    0.65%       54       54        0    14003    14003        0        0        0        0        0    13868       23        58       54         0        0         0         0
+      3         0x58cafb440     0      42    0.47%       39       39        0       89       89        0        0        0        0        0       39        4         7       39         0        0         0         0
+      4  0xffff8d1a9fef2f80     0      28    0.36%       30        0       30       84       79        5        5        0        0        0       49        0         0        0         0       30         0         0
+      5  0xffff8d0c0b24da80     0      55    0.35%       29       29        0      160      160        0        0        0        0        0      125        3         3       29         0        0         0         0
+      6        0x159beee280     0      44    0.34%       28       28        0       57       57        0        0        0        0        0       25        1         3       28         0        0         0         0
+      7         0x580021b00     0       1    0.29%       24       24        0       99       99        0        0        0        0        0       40       20        15       24         0        0         0         0
+      8        0x159872e280     0      42    0.29%       24       24        0      287      287        0        0        0        0        0      253        6         4       24         0        0         0         0
+      9        0x159c0d7b80     0      35    0.28%       23       23        0       53       53        0        0        0        0        0       24        5         1       23         0        0         0         0
+     10         0x580021ac0     0       1    0.27%       22       22        0       82       82        0        0        0        0        0       25       12        23       22         0        0         0         0
+     11      0x7f66821e4000     0      22    0.27%       22       22        0       37       37        0        0        0        0        0       10        5         0       22         0        0         0         0
+     12  0xffff8d0c012c0240     0      44    0.24%       20        6       14       83       77        6        6        0        0        0       57        0         0        6         0       14         0         0
+     13  0xffff8d0c00bf4300     0       8    0.22%       18       17        1       79       79        1        0        0        0        0       48       13         0       17         0        1         0         0
+     14      0x7f6636921d00     0      36    0.21%       17       17        0       58       53        6        5        0        0        0       36        0         0       17         0        0         0         0
+     15        0x1589e0df80     0      28    0.21%       17       17        0       38       38        0        0        0        0        0       18        3         0       17         0        0         0         0
+     16      0x7fff1a90c040     0      35    0.19%       16        6       10       42       39        4        3        0        0        0       18        2         0        6         0       10         3         0
+     17  0xffff8d0c00c24300     0       8    0.17%       14       14        0       67       67        0        0        0        0        0       45        8         0       14         0        0         0         0
+     18      0x7ffc9a48cf80     0      15    0.17%       14        6        8       27       27        0        0        0        0        0        8        5         0        6         0        8         0         0
+     19            0x11f0c0     0       6    0.17%       14       14        0       22       19        3        3        0        0        0        0        5         0       14         0        0         0         0
+     20         0x5945e6dc0     0       9    0.17%       14       14        0       27       27        0        0        0        0        0       12        1         0       14         0        0         0         0
+     21  0xffff8d0c00c28000     0      22    0.16%       13        6        7      100       99        1        1        0        0        0       69       16         1        6         0        7         0         0
+     22  0xffff8d0d6116ee40     0      21    0.16%       13        0       13       34       33        1        1        0        0        0       20        0         0        0         0       13         0         0
+     23      0x7f23fe7fb9c0     0      44    0.16%       13       13        0       65       64        1        1        0        0        0       39       12         0       13         0        0         0         0
+     24            0x11f0c0     0      12    0.16%       13       13        0       31       27        4        4        0        0        0        2       12         0       13         0        0         0         0
+     25         0x5800219c0     0       1    0.16%       13       13        0       32       32        0        0        0        0        0        6        5         8       13         0        0         0         0
+     26  0xffff8d0c00c22180     0       9    0.15%       12       11        1       65       65        0        0        0        0        0       38       15         0       11         0        1         0         0
+     27  0xffff8d0c3a64c7c0     0       7    0.15%       12       12        0       15       15        0        0        0        0        0        3        0         0       12         0        0         0         0
+     28  0xffff8d0e2b026d40     0      46    0.15%       12       12        0       86       81        7        3        0        2        0       61        4         4       12         0        0         0         0
+     29        0x158f05c840     0       7    0.15%       12       12        0       22       19        3        3        0        0        0        6        1         0       12         0        0         0         0
+     30        0x15983d7a80     0      51    0.15%       12       12        0      118       99       19       19        0        0        0       86        1         0       12         0        0         0         0
+     31          0x717afd00     0     146    0.13%       11       11        0      173      134       41       39        0        0        0      120        3         0       11         0        0         0         0
+     32          0x71b2fd00     0     164    0.13%       11       11        0      188      132       58       56        0        0        0      119        2         0       11         0        0         0         0
+     33         0x100c0dd40     0     119    0.13%       11       11        0      162       55      107      107        0        0        0       42        2         0       11         0        0         0         0
+     34         0x143b7d4c0     0       9    0.13%       11       11        0       44       44        0        0        0        0        0       29        4         0       11         0        0         0         0
+     35         0x1973b9980     0       6    0.13%       11       11        0       25       25        0        0        0        0        0        8        5         1       11         0        0         0         0
+     36  0xffff8d1a9ff72f80     0      17    0.12%       10        1        9       33       29        4        4        0        0        0       18        1         0        1         0        9         0         0
+     37  0xffffffffb8412940     0       3    0.12%       10       10        0       62       62        0        0        0        0        0       41       11         0       10         0        0         0         0
+     38         0x10040dc00     0     108    0.12%       10       10        0      128       81       48       47        0        0        0       67        4         0       10         0        0         0         0
+     39         0x1a0c31f00     0       9    0.12%       10       10        0       18       18        0        0        0        0        0        3        3         2       10         0        0         0         0
+     40         0x596f038c0     0      23    0.12%       10       10        0       34       29        5        5        0        0        0       17        0         2       10         0        0         0         0
+     41        0x15998f2040     0       6    0.12%       10       10        0       28       27        1        1        0        0        0       15        2         0       10         0        0         0         0
+     42  0xffff8d0c00b6a180     0      11    0.11%        9        9        0       51       51        0        0        0        0        0       39        3         0        9         0        0         0         0
+     43         0x143445880     0      66    0.11%        9        9        0       83       83        0        0        0        0        0       63        6         5        9         0        0         0         0
+     44         0x143586f00     0      41    0.11%        9        9        0       51       51        0        0        0        0        0       35        1         6        9         0        0         0         0
+     45        0x159924c880     0       8    0.11%        9        9        0       13       13        0        0        0        0        0        4        0         0        9         0        0         0         0
+     46        0x159bca0000     0       1    0.11%        9        9        0       10       10        0        0        0        0        0        1        0         0        9         0        0         0         0
+
+=================================================
+      Shared Cache Line Distribution Pareto      
+=================================================
+#
+# ----- HITM -----  ------- Store Refs ------  ------- CL --------                      ---------- cycles ----------    Total       cpu                                             Shared                                      
+# RmtHitm  LclHitm   L1 Hit  L1 Miss      N/A    Off  Node  PA cnt        Code address  rmt hitm  lcl hitm      load  records       cnt                          Symbol             Object                     Source:Line  Node
+# .......  .......  .......  .......  .......  .....  ....  ......  ..................  ........  ........  ........  .......  ........  ..............................  .................  ..............................  ....
+#
+  ----------------------------------------------------------------------
+      0        0      114       27        0        6  0xffff8d0e2b026d00
+  ----------------------------------------------------------------------
+    0.00%   32.46%    0.00%    0.00%    0.00%   0x20     0       1  0xffffffffb7297fb4         0        62        30      114        12  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%   28.07%    0.00%    0.00%    0.00%   0x20     0       1  0xffffffffb7298199         0        63        23       98        12  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%   12.28%    0.00%    0.00%    0.00%   0x20     0       1  0xffffffffb7297d47         0       130        28       15        11  [k] _raw_spin_lock              [kernel.kallsyms]  _raw_spin_lock+23                0
+    0.00%    2.63%    0.00%    0.00%    0.00%   0x20     0       1  0xffffffffb7297fe1         0        54         0        4         4  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%    1.75%    0.00%    0.00%    0.00%   0x20     0       1  0xffffffffb7297f88         0        98         0        8         5  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%    0.88%    0.00%    0.00%    0.00%   0x20     0       1  0xffffffffb7297fd0         0        97        32        3         3  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%    0.88%    0.00%    0.00%    0.00%   0x20     0       1  0xffffffffb729821a         0       170         0        3         3  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%    0.00%   44.44%    0.00%   33.33%   0x20     0       1  0xffffffffb7297df9         0         0         0       14         8  [k] _raw_spin_unlock            [kernel.kallsyms]  _raw_spin_unlock+9               0
+    0.00%    0.00%   33.33%    0.00%   66.67%   0x20     0       1  0xffffffffb7297fc0         0         0         0       13         6  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%    0.00%   22.22%    0.00%    0.00%   0x20     0       1  0xffffffffb72981a5         0         0         0        6         7  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%    0.88%    0.00%    0.00%    0.00%   0x22     0       1  0xffffffffb7298182         0       230         0        2         2  [k] native_queued_spin_lock_sl  [kernel.kallsyms]  native_queued_spin_lock_slowpa   0
+    0.00%    1.75%    0.00%    0.00%    0.00%   0x24     0       1  0xffffffffc0690998         0        43         9        3         3  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+1560           0
+    0.00%    0.88%    0.00%    0.00%    0.00%   0x24     0       1  0xffffffffc068fd4e         0        52         0        1         1  [k] ntsync_obj_ioctl            [kernel.kallsyms]  ntsync_obj_ioctl+1374            0
+    0.00%    0.88%    0.00%    0.00%    0.00%   0x24     0       1  0xffffffffc0690b49         0        65         0        3         3  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+1993           0
+    0.00%    0.88%    0.00%    0.00%    0.00%   0x24     0       1  0xffffffffc0690c8f         0        49         0        2         2  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+2319           0
+    0.00%    0.88%    0.00%    0.00%    0.00%   0x28     0       1  0xffffffffc068fd33         0        78         0        1         1  [k] ntsync_obj_ioctl            [kernel.kallsyms]  ntsync_obj_ioctl+1347            0
+    0.00%    2.63%    0.00%    0.00%    0.00%   0x30     0       1  0xffffffffc0690d09         0        92         0        4         4  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+2441           0
+    0.00%    6.14%    0.00%    0.00%    0.00%   0x38     0       1  0xffffffffc068fd07         0       103        45       12         7  [k] ntsync_obj_ioctl            [kernel.kallsyms]  ntsync_obj_ioctl+1303            0
+    0.00%    3.51%    0.00%    0.00%    0.00%   0x38     0       1  0xffffffffc0690987         0        90         0        4         4  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+1543           0
+    0.00%    1.75%    0.00%    0.00%    0.00%   0x38     0       1  0xffffffffc0690c7e         0        94         0        2         2  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+2302           0
+    0.00%    0.88%    0.00%    0.00%    0.00%   0x38     0       1  0xffffffffc0690b3d         0        76         0        2         2  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+1981           0
+
+  ----------------------------------------------------------------------
+      1        0       65        0        0        0        0x15987ae280
+  ----------------------------------------------------------------------
+    0.00%   93.85%    0.00%    0.00%    0.00%   0x20     0       1         0x14291d5a6         0        66         0       63        12  [.] 0x000000014291d5a6  [JIT] tid 96374   [JIT] tid 96374[14291d5a6]   0
+    0.00%    6.15%    0.00%    0.00%    0.00%   0x20     0       1         0x14291d729         0        55         0        4         4  [.] 0x000000014291d729  [JIT] tid 96374   [JIT] tid 96374[14291d729]   0
+
+  ----------------------------------------------------------------------
+      2        0       54        0        0        0         0x580021c80
+  ----------------------------------------------------------------------
+    0.00%   33.33%    0.00%    0.00%    0.00%    0x0     0       1         0x1401430e0         0       150         1    13918        12  [.] 0x00000001401430e0  [JIT] tid 96374   [JIT] tid 96374[1401430e0]   0
+    0.00%   33.33%    0.00%    0.00%    0.00%    0x0     0       1         0x14014344e         0       338         7       23         8  [.] 0x000000014014344e  [JIT] tid 96374   [JIT] tid 96374[14014344e]   0
+    0.00%   11.11%    0.00%    0.00%    0.00%    0x0     0       1         0x1401430fb         0       108         0        6         6  [.] 0x00000001401430fb  [JIT] tid 96374   [JIT] tid 96374[1401430fb]   0
+    0.00%    7.41%    0.00%    0.00%    0.00%    0x0     0       1         0x14014331c         0       151         0        6         5  [.] 0x000000014014331c  [JIT] tid 96374   [JIT] tid 96374[14014331c]   0
+    0.00%    5.56%    0.00%    0.00%    0.00%    0x0     0       1         0x14014249e         0       252         0        3         3  [.] 0x000000014014249e  [JIT] tid 96374   [JIT] tid 96374[14014249e]   0
+    0.00%    3.70%    0.00%    0.00%    0.00%    0x0     0       1         0x140142aba         0        68         0        3         3  [.] 0x0000000140142aba  [JIT] tid 96374   [JIT] tid 96374[140142aba]   0
+    0.00%    1.85%    0.00%    0.00%    0.00%    0x0     0       1         0x14014af1e         0       101         0       17         9  [.] 0x000000014014af1e  [JIT] tid 96374   [JIT] tid 96374[14014af1e]   0
+    0.00%    1.85%    0.00%    0.00%    0.00%    0x0     0       1         0x140218d9f         0       207         0        1         1  [.] 0x0000000140218d9f  [JIT] tid 96374   [JIT] tid 96374[140218d9f]   0
+    0.00%    1.85%    0.00%    0.00%    0.00%    0x8     0       1         0x140143335         0        85        56        7         5  [.] 0x0000000140143335  [JIT] tid 96374   [JIT] tid 96374[140143335]   0
+
+  ----------------------------------------------------------------------
+      3        0       39        0        0        0         0x58cafb440
+  ----------------------------------------------------------------------
+    0.00%    7.69%    0.00%    0.00%    0.00%    0x0     0       1         0x1402165fa         0       173         0        5         4  [.] 0x00000001402165fa  [JIT] tid 96374   [JIT] tid 96374[1402165fa]   0
+    0.00%   25.64%    0.00%    0.00%    0.00%    0xd     0       1         0x1402f0993         0       250         0       13         9  [.] 0x00000001402f0993  [JIT] tid 96374   [JIT] tid 96374[1402f0993]   0
+    0.00%   20.51%    0.00%    0.00%    0.00%    0xd     0       1         0x1402f098b         0        63        26       40        12  [.] 0x00000001402f098b  [JIT] tid 96374   [JIT] tid 96374[1402f098b]   0
+    0.00%    2.56%    0.00%    0.00%    0.00%    0xd     0       1         0x140216601         0       158       203        4         4  [.] 0x0000000140216601  [JIT] tid 96374   [JIT] tid 96374[140216601]   0
+    0.00%   20.51%    0.00%    0.00%    0.00%    0xf     0       1         0x140216814         0       135         0        8         8  [.] 0x0000000140216814  [JIT] tid 96374   [JIT] tid 96374[140216814]   0
+    0.00%   12.82%    0.00%    0.00%    0.00%    0xf     0       1         0x140215f13         0       275         0        5         3  [.] 0x0000000140215f13  [JIT] tid 96374   [JIT] tid 96374[140215f13]   0
+    0.00%   10.26%    0.00%    0.00%    0.00%    0xf     0       1         0x14021681d         0       163         0        6         5  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+
+  ----------------------------------------------------------------------
+      4       30        0        5        0        0  0xffff8d1a9fef2f80
+  ----------------------------------------------------------------------
+   70.00%    0.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fd22a5       177         0         0       23         2  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+453              0
+   20.00%    0.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fd22c3       109         0         0       12         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+483              0
+    0.00%    0.00%   20.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fd210e         0         0         0        1         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+46               0
+    0.00%    0.00%   40.00%    0.00%    0.00%    0x0     0       1  0xffffffffb72894b5         0         0         0        2         1  [k] __schedule                  [kernel.kallsyms]  __schedule+261                   0
+   10.00%    0.00%    0.00%    0.00%    0.00%    0x8     0       1  0xffffffffb5fd22b5       529         0         0        8         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+469              0
+    0.00%    0.00%   40.00%    0.00%    0.00%    0x8     0       1  0xffffffffb5fd212a         0         0         0        2         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+74               0
+
+  ----------------------------------------------------------------------
+      5        0       29        0        0        0  0xffff8d0c0b24da80
+  ----------------------------------------------------------------------
+    0.00%   20.69%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7289777         0       100        29        9         7  [k] __schedule                  [kernel.kallsyms]  __schedule+967                   0
+    0.00%   20.69%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffb5f6ecb9         0        65         0       38        10  [k] get_task_mm                 [kernel.kallsyms]  get_task_mm+57                   0
+    0.00%   10.34%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffb5f70816         0       107         0       77        12  [k] mmput                       [kernel.kallsyms]  mmput+22                         0
+    0.00%    6.90%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffb5fdb03c         0        57         0        4         3  [k] sched_mm_cid_migrate_to     [kernel.kallsyms]  sched_mm_cid_migrate_to+92       0
+    0.00%    3.45%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffb5fd44c7         0        99         0        1         1  [k] activate_task               [kernel.kallsyms]  activate_task+119                0
+    0.00%    3.45%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffc0a1d426         0        26         0        1         1  [k] amdgpu_ttm_tt_get_user_pag  [kernel.kallsyms]  amdgpu_ttm_tt_get_user_pages+5   0
+    0.00%    3.45%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffc0a1d43d         0        98         0        3         2  [k] amdgpu_ttm_tt_get_user_pag  [kernel.kallsyms]  amdgpu_ttm_tt_get_user_pages+7   0
+    0.00%   17.24%    0.00%    0.00%    0.00%    0x8     0       1  0xffffffffb728a1d7         0       101        97        6         5  [k] __schedule                  [kernel.kallsyms]  __schedule+3623                  0
+    0.00%    3.45%    0.00%    0.00%    0.00%    0x8     0       1  0xffffffffb728a1b6         0        95         0        1         1  [k] __schedule                  [kernel.kallsyms]  __schedule+3590                  0
+    0.00%    3.45%    0.00%    0.00%    0.00%    0x8     0       1  0xffffffffb728a20b         0       105        52        3         2  [k] __schedule                  [kernel.kallsyms]  __schedule+3675                  0
+    0.00%    3.45%    0.00%    0.00%    0.00%   0x10     0       1  0xffffffffb5fd7a6b         0        97         0        1         1  [k] sched_tick                  [kernel.kallsyms]  sched_tick+699                   0
+    0.00%    3.45%    0.00%    0.00%    0.00%   0x30     0       1  0xffffffffb632f32c         0        96         0        1         1  [k] vms_complete_munmap_vmas    [kernel.kallsyms]  vms_complete_munmap_vmas+60      0
+
+  ----------------------------------------------------------------------
+      6        0       28        0        0        0        0x159beee280
+  ----------------------------------------------------------------------
+    0.00%    7.14%    0.00%    0.00%    0.00%    0x0     0       1         0x140216814         0       100         0        5         4  [.] 0x0000000140216814  [JIT] tid 96374   [JIT] tid 96374[140216814]   0
+    0.00%    7.14%    0.00%    0.00%    0.00%    0x1     0       1         0x1402162a4         0        76        15        9         5  [.] 0x00000001402162a4  [JIT] tid 96374   [JIT] tid 96374[1402162a4]   0
+    0.00%    7.14%    0.00%    0.00%    0.00%    0x1     0       1         0x14021681d         0       198         0        3         3  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+    0.00%    3.57%    0.00%    0.00%    0.00%    0x1     0       1         0x1402162af         0        56         0        1         1  [.] 0x00000001402162af  [JIT] tid 96374   [JIT] tid 96374[1402162af]   0
+    0.00%    3.57%    0.00%    0.00%    0.00%    0x1     0       1         0x14021639b         0       256         0        2         2  [.] 0x000000014021639b  [JIT] tid 96374   [JIT] tid 96374[14021639b]   0
+    0.00%   39.29%    0.00%    0.00%    0.00%    0x4     0       1         0x1402164f4         0       119        26       13         9  [.] 0x00000001402164f4  [JIT] tid 96374   [JIT] tid 96374[1402164f4]   0
+    0.00%   14.29%    0.00%    0.00%    0.00%    0x4     0       1         0x1402163bd         0        98         0        8         6  [.] 0x00000001402163bd  [JIT] tid 96374   [JIT] tid 96374[1402163bd]   0
+    0.00%   14.29%    0.00%    0.00%    0.00%    0x4     0       1         0x1402163c8         0       143         0        5         4  [.] 0x00000001402163c8  [JIT] tid 96374   [JIT] tid 96374[1402163c8]   0
+    0.00%    3.57%    0.00%    0.00%    0.00%    0xc     0       1         0x1402164bb         0       101         0        2         2  [.] 0x00000001402164bb  [JIT] tid 96374   [JIT] tid 96374[1402164bb]   0
+
+  ----------------------------------------------------------------------
+      7        0       24        0        0        0         0x580021b00
+  ----------------------------------------------------------------------
+    0.00%   83.33%    0.00%    0.00%    0.00%    0x0     0       1         0x140143765         0      1241       996       43        11  [.] 0x0000000140143765  [JIT] tid 96374   [JIT] tid 96374[140143765]   0
+    0.00%   16.67%    0.00%    0.00%    0.00%    0x0     0       1         0x140143138         0        97        45       54        12  [.] 0x0000000140143138  [JIT] tid 96374   [JIT] tid 96374[140143138]   0
+
+  ----------------------------------------------------------------------
+      8        0       24        0        0        0        0x159872e280
+  ----------------------------------------------------------------------
+    0.00%   95.83%    0.00%    0.00%    0.00%    0x8     0       1         0x14291d5fd         0       164         0       24        12  [.] 0x000000014291d5fd  [JIT] tid 96374   [JIT] tid 96374[14291d5fd]   0
+    0.00%    4.17%    0.00%    0.00%    0.00%   0x10     0       1         0x14291d532         0        97         3      174        12  [.] 0x000000014291d532  [JIT] tid 96374   [JIT] tid 96374[14291d532]   0
+
+  ----------------------------------------------------------------------
+      9        0       23        0        0        0        0x159c0d7b80
+  ----------------------------------------------------------------------
+    0.00%   13.04%    0.00%    0.00%    0.00%   0x20     0       1         0x1401da435         0        76        34        5         5  [.] 0x00000001401da435  [JIT] tid 96374   [JIT] tid 96374[1401da435]   0
+    0.00%   21.74%    0.00%    0.00%    0.00%   0x24     0       1         0x1401da43e         0       183       232        8         5  [.] 0x00000001401da43e  [JIT] tid 96374   [JIT] tid 96374[1401da43e]   0
+    0.00%   39.13%    0.00%    0.00%    0.00%   0x30     0       1         0x1401da556         0        86         7       14         9  [.] 0x00000001401da556  [JIT] tid 96374   [JIT] tid 96374[1401da556]   0
+    0.00%   21.74%    0.00%    0.00%    0.00%   0x30     0       1         0x14021681d         0       192         0        7         5  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+    0.00%    4.35%    0.00%    0.00%    0.00%   0x30     0       1         0x140216814         0       112        52        4         4  [.] 0x0000000140216814  [JIT] tid 96374   [JIT] tid 96374[140216814]   0
+
+  ----------------------------------------------------------------------
+     10        0       22        0        0        0         0x580021ac0
+  ----------------------------------------------------------------------
+    0.00%   50.00%    0.00%    0.00%    0.00%    0x0     0       1         0x140143176         0       107         0       14         8  [.] 0x0000000140143176  [JIT] tid 96374   [JIT] tid 96374[140143176]   0
+    0.00%   27.27%    0.00%    0.00%    0.00%    0x0     0       1         0x140143131         0        97        69       32        11  [.] 0x0000000140143131  [JIT] tid 96374   [JIT] tid 96374[140143131]   0
+    0.00%   22.73%    0.00%    0.00%    0.00%    0x0     0       1         0x14014371c         0        87        50       33        11  [.] 0x000000014014371c  [JIT] tid 96374   [JIT] tid 96374[14014371c]   0
+
+  ----------------------------------------------------------------------
+     11        0       22        0        0        0      0x7f66821e4000
+  ----------------------------------------------------------------------
+    0.00%   31.82%    0.00%    0.00%    0.00%   0x10     0       1      0x7f6682135f18         0        96        12        9         7  [.] inproc_wait                 ntdll.so  inproc_wait+488                 0
+    0.00%   22.73%    0.00%    0.00%    0.00%   0x10     0       1      0x7f6682134bc0         0        91         6        7         7  [.] get_cached_inproc_sync_obj  ntdll.so  get_cached_inproc_sync_obj+64   0
+    0.00%    9.09%    0.00%    0.00%    0.00%   0x10     0       1      0x7f6682134bd5         0        98         6        4         4  [.] get_cached_inproc_sync_obj  ntdll.so  get_cached_inproc_sync_obj+85   0
+    0.00%   18.18%    0.00%    0.00%    0.00%   0x14     0       1      0x7f6682135f15         0       102         0        4         4  [.] inproc_wait                 ntdll.so  inproc_wait+485                 0
+    0.00%    9.09%    0.00%    0.00%    0.00%   0x14     0       1      0x7f6682136919         0        96         3        6         5  [.] NtReleaseSemaphore          ntdll.so  NtReleaseSemaphore+185          0
+    0.00%    4.55%    0.00%    0.00%    0.00%   0x14     0       1      0x7f6682135ddd         0        82         0        3         3  [.] inproc_wait                 ntdll.so  inproc_wait+173                 0
+    0.00%    4.55%    0.00%    0.00%    0.00%   0x14     0       1      0x7f66821368f1         0        84         0        2         2  [.] NtReleaseSemaphore          ntdll.so  NtReleaseSemaphore+145          0
+
+  ----------------------------------------------------------------------
+     12       14        6        6        0        0  0xffff8d0c012c0240
+  ----------------------------------------------------------------------
+   57.14%    0.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fa89e4       463         0         0        8         6  [k] pwq_tryinc_nr_active  [kernel.kallsyms]  pwq_tryinc_nr_active+84    0
+   28.57%   16.67%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffb5fa89e7       458       180         0        6         6  [k] pwq_tryinc_nr_active  [kernel.kallsyms]  pwq_tryinc_nr_active+87    0
+    0.00%   33.33%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffb5fa89f2         0       170         0        2         1  [k] pwq_tryinc_nr_active  [kernel.kallsyms]  pwq_tryinc_nr_active+98    0
+    7.14%    0.00%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffb5fa8ac2       324         0         0        3         3  [k] pwq_tryinc_nr_active  [kernel.kallsyms]  pwq_tryinc_nr_active+306   0
+    7.14%    0.00%    0.00%    0.00%    0.00%    0x4     0       1  0xffffffffb5fa97ef       400         0         0        1         1  [k] pwq_dec_nr_in_flight  [kernel.kallsyms]  pwq_dec_nr_in_flight+175   0
+    0.00%   50.00%    0.00%    0.00%    0.00%    0x8     0       1  0xffffffffb7297d47         0        87         0        4         3  [k] _raw_spin_lock        [kernel.kallsyms]  _raw_spin_lock+23          0
+    0.00%    0.00%   16.67%    0.00%    0.00%   0x10     0       1  0xffffffffb5fa8ab6         0         0         0        1         1  [k] pwq_tryinc_nr_active  [kernel.kallsyms]  pwq_tryinc_nr_active+294   0
+    0.00%    0.00%   16.67%    0.00%    0.00%   0x10     0       1  0xffffffffb5fa996f         0         0         0        1         1  [k] pwq_dec_nr_in_flight  [kernel.kallsyms]  pwq_dec_nr_in_flight+559   0
+    0.00%    0.00%   33.33%    0.00%    0.00%   0x18     0       1  0xffffffffb5fa8aa7         0         0         0        2         2  [k] pwq_tryinc_nr_active  [kernel.kallsyms]  pwq_tryinc_nr_active+279   0
+    0.00%    0.00%   33.33%    0.00%    0.00%   0x18     0       1  0xffffffffb5fa9a5e         0         0         0        2         2  [k] pwq_dec_nr_in_flight  [kernel.kallsyms]  pwq_dec_nr_in_flight+798   0
+
+  ----------------------------------------------------------------------
+     13        1       17        0        0        0  0xffff8d0c00bf4300
+  ----------------------------------------------------------------------
+  100.00%   47.06%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283005       482        91         8       11         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+    0.00%   41.18%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283009         0       106         0        8         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+    0.00%    5.88%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7289570         0        90         0        3         1  [k] __schedule                  [kernel.kallsyms]  __schedule+448                   0
+    0.00%    5.88%    0.00%    0.00%    0.00%   0x2c     0       1  0xffffffffb5fd2166         0       152         0        1         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+134              0
+    0.00%    0.00%    0.00%    0.00%    0.00%   0x34     0       1  0xffffffffb728974b         0         0         0        0         1  [k] __schedule                  [kernel.kallsyms]  __schedule+923                   0
+
+  ----------------------------------------------------------------------
+     14        0       17        5        0        0      0x7f6636921d00
+  ----------------------------------------------------------------------
+    0.00%   17.65%    0.00%    0.00%    0.00%    0x0     0       1      0x7f6683b8a046         0        51         0        5         4  [.] 0x000000000009a046  libc.so.6         libc.so.6[9a046]   0
+    0.00%    5.88%    0.00%    0.00%    0.00%    0x0     0       1      0x7f6683b838a4         0        82         0        2         2  [.] 0x00000000000938a4  libc.so.6         libc.so.6[938a4]   0
+    0.00%    5.88%    0.00%    0.00%    0.00%    0x0     0       1      0x7f6683b8b93a         0       390         0        3         2  [.] 0x000000000009b93a  libc.so.6         libc.so.6[9b93a]   0
+    0.00%    0.00%   40.00%    0.00%    0.00%    0x8     0       1      0x7f6683b8a059         0         0         0        2         3  [.] 0x000000000009a059  libc.so.6         libc.so.6[9a059]   0
+    0.00%    0.00%   60.00%    0.00%    0.00%    0x8     0       1      0x7f6683b8b908         0         0         0        3         3  [.] 0x000000000009b908  libc.so.6         libc.so.6[9b908]   0
+    0.00%   64.71%    0.00%    0.00%    0.00%   0x10     0       1      0x7f6683b8a014         0        91         0       17         9  [.] 0x000000000009a014  libc.so.6         libc.so.6[9a014]   0
+    0.00%    5.88%    0.00%    0.00%    0.00%   0x10     0       1      0x7f6683b8b8f4         0        94         0        6         4  [.] 0x000000000009b8f4  libc.so.6         libc.so.6[9b8f4]   0
+
+  ----------------------------------------------------------------------
+     15        0       17        0        0        0        0x1589e0df80
+  ----------------------------------------------------------------------
+    0.00%   41.18%    0.00%    0.00%    0.00%    0x0     0       1         0x14021681d         0       153         2       11         8  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+    0.00%    5.88%    0.00%    0.00%    0.00%    0x0     0       1         0x1401f7942         0        53        15        5         3  [.] 0x00000001401f7942  [JIT] tid 96374   [JIT] tid 96374[1401f7942]   0
+    0.00%   17.65%    0.00%    0.00%    0.00%    0x1     0       1         0x1401f799d         0        87         0        6         4  [.] 0x00000001401f799d  [JIT] tid 96374   [JIT] tid 96374[1401f799d]   0
+    0.00%    5.88%    0.00%    0.00%    0.00%    0x1     0       1         0x14021681d         0        62         0        1         1  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+    0.00%    5.88%    0.00%    0.00%    0.00%    0x8     0       1         0x1401e588e         0        36         0        1         1  [.] 0x00000001401e588e  [JIT] tid 96374   [JIT] tid 96374[1401e588e]   0
+    0.00%   11.76%    0.00%    0.00%    0.00%   0x10     0       1         0x1401e587a         0        68         0        5         5  [.] 0x00000001401e587a  [JIT] tid 96374   [JIT] tid 96374[1401e587a]   0
+    0.00%   11.76%    0.00%    0.00%    0.00%   0x18     0       1         0x1401e58a7         0        62         0        5         4  [.] 0x00000001401e58a7  [JIT] tid 96374   [JIT] tid 96374[1401e58a7]   0
+
+  ----------------------------------------------------------------------
+     16       10        6        3        0        0      0x7fff1a90c040
+  ----------------------------------------------------------------------
+    0.00%    0.00%   33.33%    0.00%    0.00%    0x0     0       1      0x7fc2c1146154         0         0         0        1         1  [.] 0x0000000000009154  amdgpu_drv.so                 amdgpu_drv.so[9154]              0
+  100.00%  100.00%    0.00%    0.00%    0.00%    0x8     0       1      0x7fc2c18d039c       422        62       172       23        10  [.] 0x000000000009339c  libc.so.6                     libc.so.6[9339c]                 0
+    0.00%    0.00%   33.33%    0.00%    0.00%   0x20     0       1      0x7fc2c1145dc0         0         0         0        1         1  [.] 0x0000000000008dc0  amdgpu_drv.so                 amdgpu_drv.so[8dc0]              0
+    0.00%    0.00%   33.33%    0.00%    0.00%   0x30     0       1      0x7fc2bdd48944         0         0         0        1         1  [.] 0x0000000000148944  libgallium-26.0.1-arch1.1.so  libgallium-26.0.1-arch1.1.so[1   0
+    0.00%    0.00%    0.00%    0.00%    0.00%   0x38     0       1      0x7fc2bdd48e1a         0         0         0        0         1  [.] 0x0000000000148e1a  libgallium-26.0.1-arch1.1.so  libgallium-26.0.1-arch1.1.so[1   0
+
+  ----------------------------------------------------------------------
+     17        0       14        0        0        0  0xffff8d0c00c24300
+  ----------------------------------------------------------------------
+    0.00%   57.14%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283009         0       114         0        8         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+    0.00%   35.71%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283005         0        89         4        9         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+    0.00%    7.14%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fd6473         0        99         0        1         1  [k] call_function_single_prep_  [kernel.kallsyms]  call_function_single_prep_ipi+   0
+
+  ----------------------------------------------------------------------
+     18        8        6        0        0        0      0x7ffc9a48cf80
+  ----------------------------------------------------------------------
+  100.00%  100.00%    0.00%    0.00%    0.00%    0x8     0       1      0x7effe702e39c       356        56        10       20         9  [.] 0x000000000009339c  libc.so.6         libc.so.6[9339c]   0
+
+  ----------------------------------------------------------------------
+     19        0       14        3        0        0            0x11f0c0
+  ----------------------------------------------------------------------
+    0.00%    0.00%   33.33%    0.00%    0.00%    0x0     0       1      0x6ffffc71c93f         0         0         0        1         1  [.] 0x00006ffffc71c93f  [JIT] tid 95905   [JIT] tid 95905[6ffffc71c93f]   0
+    0.00%    0.00%   66.67%    0.00%    0.00%   0x10     0       1      0x6ffffc66d420         0         0         0        2         2  [.] 0x00006ffffc66d420  [JIT] tid 95905   [JIT] tid 95905[6ffffc66d420]   0
+    0.00%  100.00%    0.00%    0.00%    0.00%   0x20     0       1      0x6ffffc71c990         0        63        11       19         9  [.] 0x00006ffffc71c990  [JIT] tid 95905   [JIT] tid 95905[6ffffc71c990]   0
+
+  ----------------------------------------------------------------------
+     20        0       14        0        0        0         0x5945e6dc0
+  ----------------------------------------------------------------------
+    0.00%    7.14%    0.00%    0.00%    0.00%   0x28     0       1         0x1401eb952         0        55         0        1         1  [.] 0x00000001401eb952  [JIT] tid 96374   [JIT] tid 96374[1401eb952]   0
+    0.00%   50.00%    0.00%    0.00%    0.00%   0x29     0       1         0x1401eabaf         0        84         0       11         8  [.] 0x00000001401eabaf  [JIT] tid 96374   [JIT] tid 96374[1401eabaf]   0
+    0.00%   28.57%    0.00%    0.00%    0.00%   0x29     0       1         0x1401ea9ce         0        98         0        6         5  [.] 0x00000001401ea9ce  [JIT] tid 96374   [JIT] tid 96374[1401ea9ce]   0
+    0.00%   14.29%    0.00%    0.00%    0.00%   0x29     0       1         0x1401ea9c5         0        66        30        6         5  [.] 0x00000001401ea9c5  [JIT] tid 96374   [JIT] tid 96374[1401ea9c5]   0
+
+  ----------------------------------------------------------------------
+     21        7        6        1        0        0  0xffff8d0c00c28000
+  ----------------------------------------------------------------------
+   57.14%   50.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283009       605        93         9       10         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+   28.57%   16.67%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283005       322        78         0        7         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+    0.00%   16.67%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fd6485         0        73         0        1         1  [k] call_function_single_prep_  [kernel.kallsyms]  call_function_single_prep_ipi+   0
+   14.29%    0.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb600a280       362         0         0        3         1  [k] do_idle                     [kernel.kallsyms]  do_idle+272                      0
+    0.00%   16.67%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb600a323         0        52         0        2         1  [k] do_idle                     [kernel.kallsyms]  do_idle+435                      0
+    0.00%    0.00%  100.00%    0.00%    0.00%   0x34     0       1  0xffffffffb7289860         0         0         0        1         1  [k] __schedule                  [kernel.kallsyms]  __schedule+1200                  0
+
+  ----------------------------------------------------------------------
+     22       13        0        1        0        0  0xffff8d0d6116ee40
+  ----------------------------------------------------------------------
+   46.15%    0.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffc06668bd       422         0         0        7         4  [k] drm_sched_run_job_work      [kernel.kallsyms]  drm_sched_run_job_work+829     0
+   15.38%    0.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffc0668d17       406         0         0        2         2  [k] drm_sched_entity_pop_job    [kernel.kallsyms]  drm_sched_entity_pop_job+23    0
+   30.77%    0.00%    0.00%    0.00%    0.00%   0x10     0       1  0xffffffffc0666898       420         0         0        7         4  [k] drm_sched_run_job_work      [kernel.kallsyms]  drm_sched_run_job_work+792     0
+    7.69%    0.00%    0.00%    0.00%    0.00%   0x28     0       1  0xffffffffc066689f       431         0         0       16         6  [k] drm_sched_run_job_work      [kernel.kallsyms]  drm_sched_run_job_work+799     0
+    0.00%    0.00%  100.00%    0.00%    0.00%   0x28     0       1  0xffffffffc0668d6a         0         0         0        1         1  [k] drm_sched_entity_pop_job    [kernel.kallsyms]  drm_sched_entity_pop_job+106   0
+
+  ----------------------------------------------------------------------
+     23        0       13        1        0        0      0x7f23fe7fb9c0
+  ----------------------------------------------------------------------
+    0.00%    0.00%  100.00%    0.00%    0.00%    0x0     0       1      0x7f23ea0c0daa         0         0         0        1         1  [.] 0x000000000001adaa  libspa-bluez5.so  libspa-bluez5.so[1adaa]   0
+    0.00%  100.00%    0.00%    0.00%    0.00%   0x18     0       1      0x7f2406199f32         0        43         7       33         2  [.] 0x000000000009ef32  libc.so.6         libc.so.6[9ef32]          0
+
+  ----------------------------------------------------------------------
+     24        0       13        4        0        0            0x11f0c0
+  ----------------------------------------------------------------------
+    0.00%    0.00%   50.00%    0.00%    0.00%   0x10     0       1      0x6ffffc66d420         0         0         0        2         2  [.] 0x00006ffffc66d420  [JIT] tid 96094   [JIT] tid 96094[6ffffc66d420]   0
+    0.00%    0.00%   25.00%    0.00%    0.00%   0x10     0       1      0x6ffffc71c8f5         0         0         0        1         1  [.] 0x00006ffffc71c8f5  [JIT] tid 96094   [JIT] tid 96094[6ffffc71c8f5]   0
+    0.00%    7.69%    0.00%    0.00%    0.00%   0x18     0       1      0x6ffffc71c99a         0        19         0        1         1  [.] 0x00006ffffc71c99a  [JIT] tid 96094   [JIT] tid 96094[6ffffc71c99a]   0
+    0.00%   92.31%    0.00%    0.00%    0.00%   0x20     0       1      0x6ffffc71c990         0        61        11       24        11  [.] 0x00006ffffc71c990  [JIT] tid 96094   [JIT] tid 96094[6ffffc71c990]   0
+    0.00%    0.00%   25.00%    0.00%    0.00%   0x28     0       1      0x6ffffc71c935         0         0         0        1         1  [.] 0x00006ffffc71c935  [JIT] tid 96094   [JIT] tid 96094[6ffffc71c935]   0
+
+  ----------------------------------------------------------------------
+     25        0       13        0        0        0         0x5800219c0
+  ----------------------------------------------------------------------
+    0.00%   53.85%    0.00%    0.00%    0.00%    0x0     0       1         0x14014379c         0       112        52       18         9  [.] 0x000000014014379c  [JIT] tid 96374   [JIT] tid 96374[14014379c]   0
+    0.00%   23.08%    0.00%    0.00%    0.00%    0x0     0       1         0x14014371c         0       103       108        9         7  [.] 0x000000014014371c  [JIT] tid 96374   [JIT] tid 96374[14014371c]   0
+    0.00%   23.08%    0.00%    0.00%    0.00%    0x0     0       1         0x1401437da         0       202        93        4         4  [.] 0x00000001401437da  [JIT] tid 96374   [JIT] tid 96374[1401437da]   0
+
+  ----------------------------------------------------------------------
+     26        1       11        0        0        0  0xffff8d0c00c22180
+  ----------------------------------------------------------------------
+    0.00%   63.64%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283009         0       110       135       13         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+  100.00%   27.27%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283005       448       103         7        8         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+    0.00%    9.09%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fd6485         0        93         0        1         1  [k] call_function_single_prep_  [kernel.kallsyms]  call_function_single_prep_ipi+   0
+
+  ----------------------------------------------------------------------
+     27        0       12        0        0        0  0xffff8d0c3a64c7c0
+  ----------------------------------------------------------------------
+    0.00%   50.00%    0.00%    0.00%    0.00%   0x10     0       1  0xffffffffb6420ebf         0       306         0        6         5  [k] anon_pipe_read  [kernel.kallsyms]  anon_pipe_read+943   0
+    0.00%   50.00%    0.00%    0.00%    0.00%   0x28     0       1  0xffffffffb6420ec3         0       120         0        6         5  [k] anon_pipe_read  [kernel.kallsyms]  anon_pipe_read+947   0
+
+  ----------------------------------------------------------------------
+     28        0       12        3        0        2  0xffff8d0e2b026d40
+  ----------------------------------------------------------------------
+    0.00%   33.33%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffc068fda7         0        46         0       33        12  [k] ntsync_obj_ioctl            [kernel.kallsyms]  ntsync_obj_ioctl+1463    0
+    0.00%    8.33%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffc0690bae         0        46         4        3         3  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+2094   0
+    0.00%    0.00%   33.33%    0.00%    0.00%    0x0     0       1  0xffffffffc068fd93         0         0         0        1         1  [k] ntsync_obj_ioctl            [kernel.kallsyms]  ntsync_obj_ioctl+1443    0
+    0.00%   16.67%    0.00%    0.00%    0.00%   0x10     0       1  0xffffffffc0690cc6         0       107         0        4         3  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+2374   0
+    0.00%    8.33%    0.00%    0.00%    0.00%   0x10     0       1  0xffffffffc0690b80         0        63         0        4         3  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+2048   0
+    0.00%    0.00%   66.67%    0.00%   50.00%   0x10     0       1  0xffffffffc0690cdd         0         0         0        3         2  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+2397   0
+    0.00%    8.33%    0.00%    0.00%    0.00%   0x18     0       1  0xffffffffc06909b6         0        94         0        3         2  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+1590   0
+    0.00%    0.00%    0.00%    0.00%   50.00%   0x18     0       1  0xffffffffc06909e2         0         0         0        1         2  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+1634   0
+    0.00%    8.33%    0.00%    0.00%    0.00%   0x30     0       1  0xffffffffc068fd5c         0        82         0        2         2  [k] ntsync_obj_ioctl            [kernel.kallsyms]  ntsync_obj_ioctl+1388    0
+    0.00%    8.33%    0.00%    0.00%    0.00%   0x30     0       1  0xffffffffc06909a9         0       102         6        3         3  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+1577   0
+    0.00%    8.33%    0.00%    0.00%    0.00%   0x30     0       1  0xffffffffc0690ca0         0        55         0        2         2  [k] ntsync_char_ioctl           [kernel.kallsyms]  ntsync_char_ioctl+2336   0
+
+  ----------------------------------------------------------------------
+     29        0       12        3        0        0        0x158f05c840
+  ----------------------------------------------------------------------
+    0.00%  100.00%    0.00%    0.00%    0.00%    0x0     0       1         0x1401f1125         0       106         0       17        11  [.] 0x00000001401f1125  [JIT] tid 96374   [JIT] tid 96374[1401f1125]   0
+    0.00%    0.00%   33.33%    0.00%    0.00%    0x8     0       1         0x14045f85a         0         0         0        1         1  [.] 0x000000014045f85a  [JIT] tid 96374   [JIT] tid 96374[14045f85a]   0
+    0.00%    0.00%   33.33%    0.00%    0.00%    0x8     0       1         0x14045fa3b         0         0         0        1         1  [.] 0x000000014045fa3b  [JIT] tid 96374   [JIT] tid 96374[14045fa3b]   0
+    0.00%    0.00%   33.33%    0.00%    0.00%   0x28     0       1         0x14045f95e         0         0         0        1         1  [.] 0x000000014045f95e  [JIT] tid 96374   [JIT] tid 96374[14045f95e]   0
+
+  ----------------------------------------------------------------------
+     30        0       12       19        0        0        0x15983d7a80
+  ----------------------------------------------------------------------
+    0.00%   50.00%    0.00%    0.00%    0.00%    0x4     0       1         0x14291de2d         0        76         0       37        12  [.] 0x000000014291de2d  [JIT] tid 96374   [JIT] tid 96374[14291de2d]   0
+    0.00%   33.33%    0.00%    0.00%    0.00%    0x8     0       1         0x14291deee         0        82         0       14         8  [.] 0x000000014291deee  [JIT] tid 96374   [JIT] tid 96374[14291deee]   0
+    0.00%    8.33%    0.00%    0.00%    0.00%    0x8     0       1         0x14291de95         0        93         0       17        10  [.] 0x000000014291de95  [JIT] tid 96374   [JIT] tid 96374[14291de95]   0
+    0.00%    8.33%    0.00%    0.00%    0.00%    0x8     0       1         0x14291de9c         0        74         0       27        10  [.] 0x000000014291de9c  [JIT] tid 96374   [JIT] tid 96374[14291de9c]   0
+    0.00%    0.00%  100.00%    0.00%    0.00%    0x8     0       1         0x14291defe         0         0         0       19        11  [.] 0x000000014291defe  [JIT] tid 96374   [JIT] tid 96374[14291defe]   0
+
+  ----------------------------------------------------------------------
+     31        0       11       39        0        0          0x717afd00
+  ----------------------------------------------------------------------
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x0     0       1         0x140142637         0         0         0        1         1  [.] 0x0000000140142637         [JIT] tid 96374   [JIT] tid 96374[140142637]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x0     0       1         0x14021618c         0         0         0        1         1  [.] 0x000000014021618c         [JIT] tid 96374   [JIT] tid 96374[14021618c]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x0     0       1         0x1402e9c10         0         0         0        1         1  [.] 0x00000001402e9c10         [JIT] tid 96374   [JIT] tid 96374[1402e9c10]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x0     0       1         0x1405d2698         0         0         0        1         1  [.] 0x00000001405d2698         [JIT] tid 96374   [JIT] tid 96374[1405d2698]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x0     0       1      0x6fffe3fb265a         0         0         0        1         1  [.] 0x00006fffe3fb265a         [JIT] tid 96374   [JIT] tid 96374[6fffe3fb265a]   0
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x0     0       1      0x6fffe3fdb070         0         0         0        1         1  [.] 0x00006fffe3fdb070         [JIT] tid 96374   [JIT] tid 96374[6fffe3fdb070]   0
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x4     0       1         0x14024f057         0         0         0        1         1  [.] 0x000000014024f057         [JIT] tid 96374   [JIT] tid 96374[14024f057]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x8     0       1         0x14014263b         0         0         0        1         1  [.] 0x000000014014263b         [JIT] tid 96374   [JIT] tid 96374[14014263b]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%    0x8     0       1         0x1402a677e         0         0         0        1         1  [.] 0x00000001402a677e         [JIT] tid 96374   [JIT] tid 96374[1402a677e]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x10     0       1         0x140142637         0         0         0        1         1  [.] 0x0000000140142637         [JIT] tid 96374   [JIT] tid 96374[140142637]      0
+    0.00%    0.00%   10.26%    0.00%    0.00%   0x10     0       1         0x1401d50d5         0         0         0        4         4  [.] 0x00000001401d50d5         [JIT] tid 96374   [JIT] tid 96374[1401d50d5]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x10     0       1         0x1402438f9         0         0         0        1         1  [.] 0x00000001402438f9         [JIT] tid 96374   [JIT] tid 96374[1402438f9]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x10     0       1         0x1403a81a5         0         0         0        1         1  [.] 0x00000001403a81a5         [JIT] tid 96374   [JIT] tid 96374[1403a81a5]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x10     0       1         0x1409c0673         0         0         0        1         1  [.] 0x00000001409c0673         [JIT] tid 96374   [JIT] tid 96374[1409c0673]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x10     0       1         0x141aecb40         0         0         0        1         1  [.] 0x0000000141aecb40         [JIT] tid 96374   [JIT] tid 96374[141aecb40]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x10     0       1      0x6fffe3fcd923         0         0         0        1         1  [.] 0x00006fffe3fcd923         [JIT] tid 96374   [JIT] tid 96374[6fffe3fcd923]   0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x18     0       1         0x14014263b         0         0         0        1         1  [.] 0x000000014014263b         [JIT] tid 96374   [JIT] tid 96374[14014263b]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x18     0       1         0x14058a6b8         0         0         0        1         1  [.] 0x000000014058a6b8         [JIT] tid 96374   [JIT] tid 96374[14058a6b8]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x18     0       1         0x140a39005         0         0         0        1         1  [.] 0x0000000140a39005         [JIT] tid 96374   [JIT] tid 96374[140a39005]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x18     0       1      0x6fffe3f567fa         0         0         0        1         1  [.] 0x00006fffe3f567fa         [JIT] tid 96374   [JIT] tid 96374[6fffe3f567fa]   0
+    0.00%    0.00%    5.13%    0.00%    0.00%   0x20     0       1         0x1401d50d0         0         0         0        2         2  [.] 0x00000001401d50d0         [JIT] tid 96374   [JIT] tid 96374[1401d50d0]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x20     0       1         0x140469130         0         0         0        1         1  [.] 0x0000000140469130         [JIT] tid 96374   [JIT] tid 96374[140469130]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x20     0       1         0x140623ffa         0         0         0        1         1  [.] 0x0000000140623ffa         [JIT] tid 96374   [JIT] tid 96374[140623ffa]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x20     0       1         0x140aa31cd         0         0         0        1         1  [.] 0x0000000140aa31cd         [JIT] tid 96374   [JIT] tid 96374[140aa31cd]      0
+    0.00%    0.00%    5.13%    0.00%    0.00%   0x20     0       1         0x140d6eac0         0         0         0        2         2  [.] 0x0000000140d6eac0         [JIT] tid 96374   [JIT] tid 96374[140d6eac0]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x20     0       1      0x6fffe3f428c5         0         0         0        1         1  [.] 0x00006fffe3f428c5         [JIT] tid 96374   [JIT] tid 96374[6fffe3f428c5]   0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x26     0       1         0x1401ec86b         0         0         0        1         1  [.] 0x00000001401ec86b         [JIT] tid 96374   [JIT] tid 96374[1401ec86b]      0
+    0.00%    0.00%    5.13%    0.00%    0.00%   0x30     0       1         0x1401fb80b         0         0         0        2         2  [.] 0x00000001401fb80b         [JIT] tid 96374   [JIT] tid 96374[1401fb80b]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x30     0       1         0x14024ede0         0         0         0        1         1  [.] 0x000000014024ede0         [JIT] tid 96374   [JIT] tid 96374[14024ede0]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x30     0       1      0x6fffe3f428c0         0         0         0        1         1  [.] 0x00006fffe3f428c0         [JIT] tid 96374   [JIT] tid 96374[6fffe3f428c0]   0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x30     0       1      0x6fffe3fa0f60         0         0         0        1         1  [.] 0x00006fffe3fa0f60         [JIT] tid 96374   [JIT] tid 96374[6fffe3fa0f60]   0
+    0.00%    0.00%    0.00%    0.00%    0.00%   0x30     0       1      0x7f66821278d8         0         0         0        0         1  [.] __wine_syscall_dispatcher  ntdll.so          __wine_syscall_dispatcher+644   0
+    0.00%    0.00%    0.00%    0.00%    0.00%   0x30     0       1      0x7f66821278db         0         0         0        0         1  [.] __wine_syscall_dispatcher  ntdll.so          __wine_syscall_dispatcher+647   0
+    0.00%  100.00%    0.00%    0.00%    0.00%   0x38     0       1      0x6ffffff3df44         0        93         0       49        12  [.] 0x000000000000df44         ntdll.dll         ntdll.dll[df44]                 0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x38     0       1         0x14015ded7         0         0         0        1         1  [.] 0x000000014015ded7         [JIT] tid 96374   [JIT] tid 96374[14015ded7]      0
+    0.00%    0.00%    2.56%    0.00%    0.00%   0x38     0       1         0x140749c7a         0         0         0        1         1  [.] 0x0000000140749c7a         [JIT] tid 96374   [JIT] tid 96374[140749c7a]      0
+
+  ----------------------------------------------------------------------
+     32        0       11       56        0        0          0x71b2fd00
+  ----------------------------------------------------------------------
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x0     0       1         0x140142f8f         0         0         0        1         1  [.] 0x0000000140142f8f         [JIT] tid 96374   [JIT] tid 96374[140142f8f]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x0     0       1         0x14014c131         0         0         0        1         1  [.] 0x000000014014c131         [JIT] tid 96374   [JIT] tid 96374[14014c131]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x0     0       1         0x1401d50e7         0         0         0        1         1  [.] 0x00000001401d50e7         [JIT] tid 96374   [JIT] tid 96374[1401d50e7]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x0     0       1         0x1401fd18e         0         0         0        1         1  [.] 0x00000001401fd18e         [JIT] tid 96374   [JIT] tid 96374[1401fd18e]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x0     0       1         0x14024398a         0         0         0        1         1  [.] 0x000000014024398a         [JIT] tid 96374   [JIT] tid 96374[14024398a]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x0     0       1         0x1402a7898         0         0         0        1         1  [.] 0x00000001402a7898         [JIT] tid 96374   [JIT] tid 96374[1402a7898]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x0     0       1         0x140b75228         0         0         0        1         1  [.] 0x0000000140b75228         [JIT] tid 96374   [JIT] tid 96374[140b75228]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x0     0       1      0x6ffffff6b553         0         0         0        1         1  [.] 0x000000000003b553         ntdll.dll         ntdll.dll[3b553]                0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x8     0       1         0x140142f8b         0         0         0        1         1  [.] 0x0000000140142f8b         [JIT] tid 96374   [JIT] tid 96374[140142f8b]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x8     0       1         0x140243774         0         0         0        1         1  [.] 0x0000000140243774         [JIT] tid 96374   [JIT] tid 96374[140243774]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x8     0       1         0x14058d1ab         0         0         0        1         1  [.] 0x000000014058d1ab         [JIT] tid 96374   [JIT] tid 96374[14058d1ab]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%    0x8     0       1         0x141aecb42         0         0         0        1         1  [.] 0x0000000141aecb42         [JIT] tid 96374   [JIT] tid 96374[141aecb42]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x10     0       1         0x140130868         0         0         0        1         1  [.] 0x0000000140130868         [JIT] tid 96374   [JIT] tid 96374[140130868]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x10     0       1         0x1401d50d5         0         0         0        1         1  [.] 0x00000001401d50d5         [JIT] tid 96374   [JIT] tid 96374[1401d50d5]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x10     0       1         0x14057aecd         0         0         0        1         1  [.] 0x000000014057aecd         [JIT] tid 96374   [JIT] tid 96374[14057aecd]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x10     0       1         0x14079e74b         0         0         0        1         1  [.] 0x000000014079e74b         [JIT] tid 96374   [JIT] tid 96374[14079e74b]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x10     0       1         0x140a208d7         0         0         0        1         1  [.] 0x0000000140a208d7         [JIT] tid 96374   [JIT] tid 96374[140a208d7]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x10     0       1      0x6fffe3fcd923         0         0         0        1         1  [.] 0x00006fffe3fcd923         [JIT] tid 96374   [JIT] tid 96374[6fffe3fcd923]   0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x10     0       1      0x6fffe4035864         0         0         0        1         1  [.] 0x00006fffe4035864         [JIT] tid 96374   [JIT] tid 96374[6fffe4035864]   0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x18     0       1         0x140142f8b         0         0         0        1         1  [.] 0x0000000140142f8b         [JIT] tid 96374   [JIT] tid 96374[140142f8b]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x18     0       1         0x1402ed385         0         0         0        1         1  [.] 0x00000001402ed385         [JIT] tid 96374   [JIT] tid 96374[1402ed385]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x18     0       1         0x1403c7c27         0         0         0        1         1  [.] 0x00000001403c7c27         [JIT] tid 96374   [JIT] tid 96374[1403c7c27]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x18     0       1         0x140861449         0         0         0        1         1  [.] 0x0000000140861449         [JIT] tid 96374   [JIT] tid 96374[140861449]      0
+    0.00%    0.00%    5.36%    0.00%    0.00%   0x18     0       1         0x140a7dd76         0         0         0        3         3  [.] 0x0000000140a7dd76         [JIT] tid 96374   [JIT] tid 96374[140a7dd76]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x18     0       1      0x6fffe3f6772b         0         0         0        1         1  [.] 0x00006fffe3f6772b         [JIT] tid 96374   [JIT] tid 96374[6fffe3f6772b]   0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x18     0       1      0x6fffe406a692         0         0         0        1         1  [.] 0x00006fffe406a692         [JIT] tid 96374   [JIT] tid 96374[6fffe406a692]   0
+    0.00%    0.00%    5.36%    0.00%    0.00%   0x20     0       1         0x1401d50d0         0         0         0        3         3  [.] 0x00000001401d50d0         [JIT] tid 96374   [JIT] tid 96374[1401d50d0]      0
+    0.00%    0.00%    7.14%    0.00%    0.00%   0x20     0       1         0x1401f575a         0         0         0        4         3  [.] 0x00000001401f575a         [JIT] tid 96374   [JIT] tid 96374[1401f575a]      0
+    0.00%    0.00%    3.57%    0.00%    0.00%   0x20     0       1         0x140428fe4         0         0         0        2         2  [.] 0x0000000140428fe4         [JIT] tid 96374   [JIT] tid 96374[140428fe4]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x20     0       1         0x140839efb         0         0         0        1         1  [.] 0x0000000140839efb         [JIT] tid 96374   [JIT] tid 96374[140839efb]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x20     0       1         0x140b76cc9         0         0         0        1         1  [.] 0x0000000140b76cc9         [JIT] tid 96374   [JIT] tid 96374[140b76cc9]      0
+    0.00%    0.00%    3.57%    0.00%    0.00%   0x20     0       1         0x140d6eac0         0         0         0        2         2  [.] 0x0000000140d6eac0         [JIT] tid 96374   [JIT] tid 96374[140d6eac0]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x20     0       1         0x141ca26cd         0         0         0        1         1  [.] 0x0000000141ca26cd         [JIT] tid 96374   [JIT] tid 96374[141ca26cd]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x28     0       1         0x1402f096d         0         0         0        1         1  [.] 0x00000001402f096d         [JIT] tid 96374   [JIT] tid 96374[1402f096d]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x28     0       1         0x1409c06a6         0         0         0        1         1  [.] 0x00000001409c06a6         [JIT] tid 96374   [JIT] tid 96374[1409c06a6]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x28     0       1         0x1409d9863         0         0         0        1         1  [.] 0x00000001409d9863         [JIT] tid 96374   [JIT] tid 96374[1409d9863]      0
+    0.00%    9.09%    0.00%    0.00%    0.00%   0x30     0       1      0x7f66821278da         0        88         0        1         1  [.] __wine_syscall_dispatcher  ntdll.so          __wine_syscall_dispatcher+646   0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x30     0       1         0x14020d2a7         0         0         0        1         1  [.] 0x000000014020d2a7         [JIT] tid 96374   [JIT] tid 96374[14020d2a7]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x30     0       1         0x1402185e8         0         0         0        1         1  [.] 0x00000001402185e8         [JIT] tid 96374   [JIT] tid 96374[1402185e8]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x30     0       1         0x1402a7891         0         0         0        1         1  [.] 0x00000001402a7891         [JIT] tid 96374   [JIT] tid 96374[1402a7891]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x30     0       1         0x1405f71c7         0         0         0        1         1  [.] 0x00000001405f71c7         [JIT] tid 96374   [JIT] tid 96374[1405f71c7]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x30     0       1      0x6ffffff3df48         0         0         0        1         1  [.] 0x000000000000df48         ntdll.dll         ntdll.dll[df48]                 0
+    0.00%    0.00%    0.00%    0.00%    0.00%   0x30     0       1      0x7f66821278d8         0         0         0        0         1  [.] __wine_syscall_dispatcher  ntdll.so          __wine_syscall_dispatcher+644   0
+    0.00%    0.00%    0.00%    0.00%    0.00%   0x30     0       1      0x7f66821278db         0         0         0        0         1  [.] __wine_syscall_dispatcher  ntdll.so          __wine_syscall_dispatcher+647   0
+    0.00%   90.91%    0.00%    0.00%    0.00%   0x38     0       1      0x6ffffff3df44         0        58         0       36        12  [.] 0x000000000000df44         ntdll.dll         ntdll.dll[df44]                 0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x38     0       1         0x14015ded7         0         0         0        1         1  [.] 0x000000014015ded7         [JIT] tid 96374   [JIT] tid 96374[14015ded7]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x38     0       1         0x1402f0e57         0         0         0        1         1  [.] 0x00000001402f0e57         [JIT] tid 96374   [JIT] tid 96374[1402f0e57]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x38     0       1         0x14039c795         0         0         0        1         1  [.] 0x000000014039c795         [JIT] tid 96374   [JIT] tid 96374[14039c795]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x38     0       1         0x14043c6d7         0         0         0        1         1  [.] 0x000000014043c6d7         [JIT] tid 96374   [JIT] tid 96374[14043c6d7]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x38     0       1         0x1408edb86         0         0         0        1         1  [.] 0x00000001408edb86         [JIT] tid 96374   [JIT] tid 96374[1408edb86]      0
+    0.00%    0.00%    1.79%    0.00%    0.00%   0x38     0       1      0x6fffffc716d9         0         0         0        1         1  [.] 0x00000000000716d9         kernelbase.dll    kernelbase.dll[716d9]           0
+
+  ----------------------------------------------------------------------
+     33        0       11      107        0        0         0x100c0dd40
+  ----------------------------------------------------------------------
+    0.00%   27.27%    0.00%    0.00%    0.00%    0x0     0       1      0x7f66821277f7         0        45         0        9         8  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+419    0
+    0.00%    0.00%   50.47%    0.00%    0.00%    0x0     0       1      0x7f6682127711         0         0         0       54        11  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+189    0
+    0.00%   18.18%    0.00%    0.00%    0.00%   0x10     0       1      0x7f66821277fe         0        72         0       12         6  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+426    0
+    0.00%    0.00%   17.76%    0.00%    0.00%   0x10     0       1      0x7f6682127711         0         0         0       19         9  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+189    0
+    0.00%    0.00%    4.67%    0.00%    0.00%   0x10     0       1      0x7f66821279cf         0         0         0        5         4  [.] __wine_unix_call_dispatche  ntdll.so  __wine_unix_call_dispatcher+75   0
+    0.00%   18.18%    0.00%    0.00%    0.00%   0x20     0       1      0x7f6682127805         0        90         4        8         7  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+433    0
+    0.00%    0.00%    6.54%    0.00%    0.00%   0x20     0       1      0x7f6682127711         0         0         0        7         6  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+189    0
+    0.00%    0.00%    1.87%    0.00%    0.00%   0x20     0       1      0x7f66821279d7         0         0         0        2         2  [.] __wine_unix_call_dispatche  ntdll.so  __wine_unix_call_dispatcher+83   0
+    0.00%   36.36%    0.00%    0.00%    0.00%   0x30     0       1      0x7f668212780d         0        78         0        9         7  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+441    0
+    0.00%    0.00%   14.95%    0.00%    0.00%   0x30     0       1      0x7f6682127711         0         0         0       16         8  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+189    0
+    0.00%    0.00%    3.74%    0.00%    0.00%   0x30     0       1      0x7f66821279e0         0         0         0        4         4  [.] __wine_unix_call_dispatche  ntdll.so  __wine_unix_call_dispatcher+92   0
+
+  ----------------------------------------------------------------------
+     34        0       11        0        0        0         0x143b7d4c0
+  ----------------------------------------------------------------------
+    0.00%   45.45%    0.00%    0.00%    0.00%    0x0     0       1         0x140145521         0       130         3       10         9  [.] 0x0000000140145521  [JIT] tid 96374   [JIT] tid 96374[140145521]   0
+    0.00%   36.36%    0.00%    0.00%    0.00%    0x0     0       1         0x14014542d         0       479        87       12         8  [.] 0x000000014014542d  [JIT] tid 96374   [JIT] tid 96374[14014542d]   0
+    0.00%   18.18%    0.00%    0.00%    0.00%    0x0     0       1         0x140145423         0       114         4        5         4  [.] 0x0000000140145423  [JIT] tid 96374   [JIT] tid 96374[140145423]   0
+
+  ----------------------------------------------------------------------
+     35        0       11        0        0        0         0x1973b9980
+  ----------------------------------------------------------------------
+    0.00%   63.64%    0.00%    0.00%    0.00%   0x28     0       1         0x14023d4e7         0       210        90       10         7  [.] 0x000000014023d4e7  [JIT] tid 96374   [JIT] tid 96374[14023d4e7]   0
+    0.00%   18.18%    0.00%    0.00%    0.00%   0x28     0       1         0x140100bdd         0        92         0        4         3  [.] 0x0000000140100bdd  [JIT] tid 96374   [JIT] tid 96374[140100bdd]   0
+    0.00%    9.09%    0.00%    0.00%    0.00%   0x28     0       1         0x140338876         0        84         0        1         1  [.] 0x0000000140338876  [JIT] tid 96374   [JIT] tid 96374[140338876]   0
+    0.00%    9.09%    0.00%    0.00%    0.00%   0x28     0       1         0x1404bf89d         0       102         0        1         1  [.] 0x00000001404bf89d  [JIT] tid 96374   [JIT] tid 96374[1404bf89d]   0
+
+  ----------------------------------------------------------------------
+     36        9        1        4        0        0  0xffff8d1a9ff72f80
+  ----------------------------------------------------------------------
+   55.56%    0.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fd22a5       130         0       150        5         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+453              0
+   33.33%    0.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb5fd22c3       457         0         0        5         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+483              0
+   11.11%  100.00%    0.00%    0.00%    0.00%    0x8     0       1  0xffffffffb5fd22b5        39        18         0        4         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+469              0
+    0.00%    0.00%  100.00%    0.00%    0.00%    0x8     0       1  0xffffffffb5fd212a         0         0         0        4         1  [k] update_rq_clock             [kernel.kallsyms]  update_rq_clock+74               0
+
+  ----------------------------------------------------------------------
+     37        0       10        0        0        0  0xffffffffb8412940
+  ----------------------------------------------------------------------
+    0.00%   60.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283005         0        96         8        9         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+    0.00%   40.00%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283009         0       113         0        5         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+
+  ----------------------------------------------------------------------
+     38        0       10       47        0        0         0x10040dc00
+  ----------------------------------------------------------------------
+    0.00%    0.00%   19.15%    0.00%    0.00%    0x0     0       1      0x7f6682127661         0         0         0        9         7  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+13     0
+    0.00%    0.00%   17.02%    0.00%    0.00%    0x8     0       1      0x7f6682127697         0         0         0        8         7  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+67     0
+    0.00%    0.00%    4.26%    0.00%    0.00%    0x8     0       1      0x7f66821279b9         0         0         0        2         2  [.] __wine_unix_call_dispatche  ntdll.so  __wine_unix_call_dispatcher+53   0
+    0.00%    0.00%   17.02%    0.00%    0.00%   0x10     0       1      0x7f668212769e         0         0         0        8         6  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+74     0
+    0.00%    0.00%   12.77%    0.00%    0.00%   0x18     0       1      0x7f66821276a4         0         0         0        6         6  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+80     0
+    0.00%    0.00%    4.26%    0.00%    0.00%   0x18     0       1      0x7f66821279c0         0         0         0        2         2  [.] __wine_unix_call_dispatche  ntdll.so  __wine_unix_call_dispatcher+60   0
+    0.00%  100.00%    0.00%    0.00%    0.00%   0x34     0       1      0x7f66821277e9         0        88         2       33        11  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+405    0
+    0.00%    0.00%   12.77%    0.00%    0.00%   0x34     0       1      0x7f6682127667         0         0         0        6         3  [.] __wine_syscall_dispatcher   ntdll.so  __wine_syscall_dispatcher+19     0
+    0.00%    0.00%   12.77%    0.00%    0.00%   0x34     0       1      0x7f6682127993         0         0         0        6         5  [.] __wine_unix_call_dispatche  ntdll.so  __wine_unix_call_dispatcher+15   0
+
+  ----------------------------------------------------------------------
+     39        0       10        0        0        0         0x1a0c31f00
+  ----------------------------------------------------------------------
+    0.00%   50.00%    0.00%    0.00%    0.00%    0x0     0       1         0x140337b4a         0       197         0        5         4  [.] 0x0000000140337b4a  [JIT] tid 96374   [JIT] tid 96374[140337b4a]   0
+    0.00%   30.00%    0.00%    0.00%    0.00%    0x0     0       1         0x14021681d         0       117       490        5         5  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+    0.00%   10.00%    0.00%    0.00%    0.00%    0x0     0       1         0x140216814         0       469       183        3         2  [.] 0x0000000140216814  [JIT] tid 96374   [JIT] tid 96374[140216814]   0
+    0.00%   10.00%    0.00%    0.00%    0.00%   0x14     0       1         0x140337c31         0        85         0        2         2  [.] 0x0000000140337c31  [JIT] tid 96374   [JIT] tid 96374[140337c31]   0
+
+  ----------------------------------------------------------------------
+     40        0       10        5        0        0         0x596f038c0
+  ----------------------------------------------------------------------
+    0.00%   80.00%    0.00%    0.00%    0.00%   0x10     0       1         0x140216814         0       104         0       10         6  [.] 0x0000000140216814  [JIT] tid 96374   [JIT] tid 96374[140216814]   0
+    0.00%   10.00%    0.00%    0.00%    0.00%   0x10     0       1         0x14021681d         0        81         0        3         2  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+    0.00%   10.00%    0.00%    0.00%    0.00%   0x10     0       1         0x1402e9964         0       103         0        1         1  [.] 0x00000001402e9964  [JIT] tid 96374   [JIT] tid 96374[1402e9964]   0
+    0.00%    0.00%  100.00%    0.00%    0.00%   0x3c     0       1         0x140109a87         0         0         0        5         5  [.] 0x0000000140109a87  [JIT] tid 96374   [JIT] tid 96374[140109a87]   0
+
+  ----------------------------------------------------------------------
+     41        0       10        1        0        0        0x15998f2040
+  ----------------------------------------------------------------------
+    0.00%   40.00%    0.00%    0.00%    0.00%   0x14     0       1         0x14023f46b         0       111         4        8         8  [.] 0x000000014023f46b  [JIT] tid 96374   [JIT] tid 96374[14023f46b]   0
+    0.00%   30.00%    0.00%    0.00%    0.00%   0x14     0       1         0x14023f462         0        76         0        8         6  [.] 0x000000014023f462  [JIT] tid 96374   [JIT] tid 96374[14023f462]   0
+    0.00%   20.00%    0.00%    0.00%    0.00%   0x14     0       1         0x14021681d         0       202         0        4         4  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+    0.00%   10.00%    0.00%    0.00%    0.00%   0x14     0       1         0x140240708         0       285         0        1         1  [.] 0x0000000140240708  [JIT] tid 96374   [JIT] tid 96374[140240708]   0
+    0.00%    0.00%  100.00%    0.00%    0.00%   0x18     0       1         0x1402abef6         0         0         0        1         1  [.] 0x00000001402abef6  [JIT] tid 96374   [JIT] tid 96374[1402abef6]   0
+
+  ----------------------------------------------------------------------
+     42        0        9        0        0        0  0xffff8d0c00b6a180
+  ----------------------------------------------------------------------
+    0.00%   66.67%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283009         0       104        13        8         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+    0.00%   33.33%    0.00%    0.00%    0.00%    0x0     0       1  0xffffffffb7283005         0        98         0        4         1  [k] acpi_processor_ffh_cstate_  [kernel.kallsyms]  acpi_processor_ffh_cstate_ente   0
+
+  ----------------------------------------------------------------------
+     43        0        9        0        0        0         0x143445880
+  ----------------------------------------------------------------------
+    0.00%   11.11%    0.00%    0.00%    0.00%    0x4     0       1         0x140144e40         0         0         0        4         2  [.] 0x0000000140144e40  [JIT] tid 96374   [JIT] tid 96374[140144e40]   0
+    0.00%   11.11%    0.00%    0.00%    0.00%    0xc     0       1         0x140144af7         0       122         0        1         1  [.] 0x0000000140144af7  [JIT] tid 96374   [JIT] tid 96374[140144af7]   0
+    0.00%   22.22%    0.00%    0.00%    0.00%   0x18     0       1         0x140144b04         0        35        24        5         4  [.] 0x0000000140144b04  [JIT] tid 96374   [JIT] tid 96374[140144b04]   0
+    0.00%   11.11%    0.00%    0.00%    0.00%   0x18     0       1         0x140144c03         0        21         0        3         3  [.] 0x0000000140144c03  [JIT] tid 96374   [JIT] tid 96374[140144c03]   0
+    0.00%   22.22%    0.00%    0.00%    0.00%   0x28     0       1         0x1401446a3         0        83        37       13         8  [.] 0x00000001401446a3  [JIT] tid 96374   [JIT] tid 96374[1401446a3]   0
+    0.00%   22.22%    0.00%    0.00%    0.00%   0x30     0       1         0x1401446b1         0       100        11        3         3  [.] 0x00000001401446b1  [JIT] tid 96374   [JIT] tid 96374[1401446b1]   0
+
+  ----------------------------------------------------------------------
+     44        0        9        0        0        0         0x143586f00
+  ----------------------------------------------------------------------
+    0.00%   66.67%    0.00%    0.00%    0.00%    0x0     0       1         0x14014bd3f         0        76         0        7         6  [.] 0x000000014014bd3f  [JIT] tid 96374   [JIT] tid 96374[14014bd3f]   0
+    0.00%   11.11%    0.00%    0.00%    0.00%    0x0     0       1         0x14014bf73         0       128         0        4         4  [.] 0x000000014014bf73  [JIT] tid 96374   [JIT] tid 96374[14014bf73]   0
+    0.00%   11.11%    0.00%    0.00%    0.00%   0x10     0       1         0x14014b886         0       111         0        2         2  [.] 0x000000014014b886  [JIT] tid 96374   [JIT] tid 96374[14014b886]   0
+    0.00%   11.11%    0.00%    0.00%    0.00%   0x10     0       1         0x14014bc4b         0       111         0        2         2  [.] 0x000000014014bc4b  [JIT] tid 96374   [JIT] tid 96374[14014bc4b]   0
+
+  ----------------------------------------------------------------------
+     45        0        9        0        0        0        0x159924c880
+  ----------------------------------------------------------------------
+    0.00%   77.78%    0.00%    0.00%    0.00%   0x38     0       1         0x14291dc37         0        93         0        9         6  [.] 0x000000014291dc37  [JIT] tid 96374   [JIT] tid 96374[14291dc37]   0
+    0.00%   22.22%    0.00%    0.00%    0.00%   0x3c     0       1         0x14291dc5f         0        82         0        4         3  [.] 0x000000014291dc5f  [JIT] tid 96374   [JIT] tid 96374[14291dc5f]   0
+
+  ----------------------------------------------------------------------
+     46        0        9        0        0        0        0x159bca0000
+  ----------------------------------------------------------------------
+    0.00%   33.33%    0.00%    0.00%    0.00%   0x34     0       1         0x140216814         0       142         0        3         1  [.] 0x0000000140216814  [JIT] tid 96374   [JIT] tid 96374[140216814]   0
+    0.00%   22.22%    0.00%    0.00%    0.00%   0x34     0       1         0x1401df852         0       122         0        2         1  [.] 0x00000001401df852  [JIT] tid 96374   [JIT] tid 96374[1401df852]   0
+    0.00%   22.22%    0.00%    0.00%    0.00%   0x34     0       1         0x14021681d         0       228         0        3         3  [.] 0x000000014021681d  [JIT] tid 96374   [JIT] tid 96374[14021681d]   0
+    0.00%   11.11%    0.00%    0.00%    0.00%   0x34     0       1         0x1401df55f         0       188         0        1         1  [.] 0x00000001401df55f  [JIT] tid 96374   [JIT] tid 96374[1401df55f]   0
+    0.00%   11.11%    0.00%    0.00%    0.00%   0x34     0       1         0x1401df873         0        58         0        1         1  [.] 0x00000001401df873  [JIT] tid 96374   [JIT] tid 96374[1401df873]   0
