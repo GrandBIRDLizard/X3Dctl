@@ -1,4 +1,4 @@
-.TH X3DCTL 1 "2026" "x3dctl 0.4.1" "User Commands"
+.TH X3DCTL 1 "2026" "x3dctl 1.0.0" "User Commands"
 
 .SH NAME
 x3dctl \- Deterministic workload policy controller for AMD X3D processors
@@ -49,7 +49,20 @@ Applications are mapped to predefined workload profiles using:
 
 Format:
 
+Key=Value
 application=profile
+
+key must match the executable basename passed to run.
+Directory paths are ignored.
+Shell aliases are not resolved.
+
+.EX
+steam
+/usr/bin/steam
+"./steam"
+.EE
+
+Everything above is supported as well as flatpak's containing spaces.
 
 Supported profiles:
 
@@ -64,6 +77,11 @@ Frequency CCD, nice 5, SCHED_BATCH, BE/4 I/O priority.
 .TP
 .B frequency
 Frequency CCD, nice 0, SCHED_OTHER, BE/0 I/O priority.
+
+.TP
+.B unrestricted
+No CPU affinity restriction. The process may run on all available cores.
+Applies a slight priority bias (nice -1).
 
 If no mapping exists, the default profile is "gaming".
 
@@ -83,7 +101,7 @@ Switch global X3D mode to cache-priority and apply IRQ steering.
 
 .TP
 .B performance
-Switch global X3D mode to frequency-priority and restore IRQ distribution.
+Switch global X3D mode to frequency-priority and full mask IRQ distribution.
 
 .TP
 .B toggle
@@ -109,6 +127,10 @@ Suppress informational output.
 Disable GPU IRQ steering and restore GPU IRQ affinity  
 to the full mask for the current invocation.
 
+Example:
+.EX
+x3dctl --no-irq toggle (dissable steering and toggle mode)
+.EE
 This affects only mode commands (gaming, performance, toggle).
 
 .SH CONFIGURATION
@@ -159,14 +181,35 @@ The helper binary:
 - Applies deterministic CPU and IRQ policy
 
 x3dctl defines its own default IRQ baseline (full CPU mask).
-It does not restore the kernel/your original interrupt distribution.
+It does not restore your original interrupt distribution.
 IRQ affinity changes are runtime-only and are not persistent across system reboots.
 
 .SH FILES
 
+Packaging Install(AUR):
+
+.TP
+.I $pkgdir/usr/bin/x3dctl
+Frontend command-line interface.
+
+.TP
+.I $pkgdir/usr/bin/x3dctl-helper
+Privileged helper binary.
+
+.TP
+.I /etc/x3dctl.conf
+Application-to-profile mapping file.
+Profiles affect only launched processes and do not modify global system posture.
+
+.TP
+.I $pkgdir/etc/sudoers.d/x3dctl
+Sudo policy for helper execution.
+ 
+Local Manual Install: 
+
 .TP
 .I /usr/local/bin/x3dctl
-Frontend command-line interface.
+CLI frontend
 
 .TP
 .I /usr/local/bin/x3dctl-helper
@@ -179,7 +222,7 @@ Profiles affect only launched processes and do not modify global system posture.
 
 .TP
 .I /etc/sudoers.d/x3dctl
-Sudo policy for helper execution.
+Sudo policy
 
 .SH EXIT STATUS
 
@@ -208,4 +251,3 @@ Written by GrandBirdLizard.
 
 .SH LICENSE
 MIT
-

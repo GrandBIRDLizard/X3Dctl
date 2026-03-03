@@ -257,6 +257,9 @@ static void trim(char *s) {
 
 static char *query_profile(const char *app) {
 
+	const char *base = strrchr(app, '/');
+	base = base ? base + 1 : app;
+
     if (verify_config_security() != 0)
         return NULL;
 
@@ -344,6 +347,15 @@ static int load_profile(const char *name, struct profile *p) {
         return 0;
     }
 
+	if (strcmp(name, "unrestricted") == 0) {
+		p->core_type = "none";
+		p->nice = -1;
+		p->scheduler = "other";
+		p->io_class	= IOPRIO_CLASS_BE;
+		p->io_level = 0;
+		return 0;
+	}
+
     return 1;
 }
 
@@ -411,6 +423,9 @@ static int apply_policy(pid_t pid, const struct profile *p) {
         mask = &cache_mask;
     else if (strcmp(p->core_type, "frequency") == 0)
         mask = &freq_mask;
+	else if (strcmp(p->core_type, "none") == 0) {
+		mask = NULL;
+	}
     else {
         fprintf(stderr, "Invalid core type\n");
         return 1;
@@ -420,10 +435,16 @@ static int apply_policy(pid_t pid, const struct profile *p) {
         fprintf(stderr, "Topology detection failed\n");
         return 1;
     }
-
-    if (sched_setaffinity(pid, sizeof(cpu_set_t), mask) != 0) {
-        perror("sched_setaffinity");
-        return 1;
+	
+	if (mask != NULL) {
+		if (CPU_COUNT_S(sizeof(cpu_set_t), mask) == 0) {
+			fprintf(stderr, "Topology detection failed\n");
+			return 1;
+		}
+		if (sched_setaffinity(pid, sizeof(cpu_set_t), mask) != 0) {
+			perror("sched_setaffinity");
+			return 1;
+		}
     }
 
     if (apply_scheduler(pid, p->scheduler) != 0)
@@ -436,7 +457,6 @@ static int apply_policy(pid_t pid, const struct profile *p) {
 
     if (apply_ioprio(pid, p->io_class, p->io_level) != 0)
         return 1;
-
 
     return 0;
 }

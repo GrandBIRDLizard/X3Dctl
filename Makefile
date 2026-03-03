@@ -1,5 +1,9 @@
 PREFIX ?= /usr/local
+DESTDIR ?=
+
 BINDIR := $(PREFIX)/bin
+MANDIR := $(PREFIX)/share/man/man1
+
 SUDOERS := /etc/sudoers.d/x3dctl
 SYSTEM_CONFIG := /etc/x3dctl.conf
 PROJECT_CONFIG := etc/x3dctl.conf
@@ -11,47 +15,42 @@ all: x3dctl-helper
 
 x3dctl-helper: x3dctl-helper.c
 	$(CC) $(CFLAGS) $< -o $@
-	@echo -e  "Local build complete.\nFor use outside this dir, 'sudo make install' is required." 
+	@echo -e "Local build complete.\nFor system install, run 'sudo make install'."
 
 install: x3dctl-helper
-	@if [ "$$(id -u)" -ne 0 ]; then \
-		echo "ERROR: Run 'sudo make install' for system installation."; \
-		exit 1; \
-	fi
+	@echo "Installing binaries..."
+	@install -Dm755 x3dctl $(DESTDIR)$(BINDIR)/x3dctl
+	@install -Dm755 x3dctl-helper $(DESTDIR)$(BINDIR)/x3dctl-helper
 
-	@install -Dm755 x3dctl $(BINDIR)/x3dctl
-	@install -Dm755 x3dctl-helper $(BINDIR)/x3dctl-helper
-	
-	@# Install sudoers rule
-	@if [ -n "$$SUDO_USER" ]; then \
-		echo "Installing sudoers rule for user: $$SUDO_USER"; \
-		echo "$$SUDO_USER ALL=(root) NOPASSWD: $(BINDIR)/x3dctl-helper" > $(SUDOERS); \
-	else \
-		echo "Installed as root directly; granting access to %wheel group"; \
-		echo "%wheel ALL=(root) NOPASSWD: $(BINDIR)/x3dctl-helper" > $(SUDOERS); \
-	fi
-	@chmod 440 $(SUDOERS)
+	@echo "Installing man page..."
+	@install -Dm644 man/x3dctl.1 $(DESTDIR)$(MANDIR)/x3dctl.1
 
-	@# Install default config only if missing
-	@if [ ! -f $(SYSTEM_CONFIG) ]; then \
-		echo "Installing default config to $(SYSTEM_CONFIG)"; \
-		install -Dm644 $(PROJECT_CONFIG) $(SYSTEM_CONFIG); \
-	else \
-		echo "$(SYSTEM_CONFIG) already exists — leaving untouched"; \
+	@echo "Installing sudoers policy..."
+	@install -Dm440 packaging/x3dctl.sudoers $(DESTDIR)$(SUDOERS)
+
+	@# Only install default config during real system install
+	@if [ -z "$(DESTDIR)" ]; then \
+		if [ ! -f $(SYSTEM_CONFIG) ]; then \
+			echo "Installing default config to $(SYSTEM_CONFIG)"; \
+			install -Dm644 $(PROJECT_CONFIG) $(SYSTEM_CONFIG); \
+		else \
+			echo "$(SYSTEM_CONFIG) already exists — leaving untouched"; \
+		fi \
 	fi
 
 	@echo "Install complete."
 
 uninstall:
-	@if [ "$$(id -u)" -ne 0 ]; then \
+	@if [ -z "$(DESTDIR)" ] && [ "$$(id -u)" -ne 0 ]; then \
 		echo "ERROR: Run 'sudo make uninstall' for system removal."; \
 		exit 1; \
 	fi
 
-	@rm -f $(BINDIR)/x3dctl
-	@rm -f $(BINDIR)/x3dctl-helper
-	@rm -f $(SUDOERS)
-
+	@echo "Removing installed files..."
+	@rm -f $(DESTDIR)$(BINDIR)/x3dctl
+	@rm -f $(DESTDIR)$(BINDIR)/x3dctl-helper
+	@rm -f $(DESTDIR)$(MANDIR)/x3dctl.1
+	@rm -f $(DESTDIR)$(SUDOERS)
 	@echo "Uninstall complete. Configuration file left intact."
 
 clean:
