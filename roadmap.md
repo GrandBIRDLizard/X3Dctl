@@ -2,73 +2,49 @@
 
 This document outlines development direction and architectural goals for x3dctl.
 
-x3dctl is currently in the 0.x series.  
-Interfaces and behavior may evolve as the project matures.
+x3dctl is currently in the 1.x series.
+Core CLI semantics are stable.
 
 ---
 
-# Current State (0.5.x)
-
-As of v0.5.x, x3dctl provides:
-
-## Implemented Capabilities
-
+# Current Capabilities (1.0.x)
 ### Deterministic Mode Control
-- Explicit cache (gaming) and frequency (performance) X3D mode switching
+- Explicit cache (gaming) and frequency (performance) switching
 - Toggle support
-- No background daemon or automation
+- No background daemon
 
 ### Topology-Aware CCD Detection
-- Automatic detection of cache vs frequency CCD
-- Dynamic CPU mask generation
-- No hardcoded CPU numbering assumptions
+- Dynamic cache vs frequency CCD detection
+- No hardcoded CPU numbering
 
 ### Process Policy Engine
-- Per-process affinity control
+- Affinity control (cache, frequency, unrestricted)
 - Scheduler class selection
-- Nice level management
-- I/O priority configuration
-- Deterministic inheritance model for launched applications
+- Nice management
+- I/O priority management
+- Deterministic inheritance model
 
 ### Mode-Bound GPU IRQ Steering
-- Gaming mode steers GPU IRQs to frequency CCD
-- Performance mode restores full CPU mask
-- Optional `--no-irq` override
-- No state drift between transitions
+- Gaming posture steers GPU IRQs
+- Performance posture restores full CPU mask
+- <--no-irq> override
+- No state drift
 
-### Privilege Separation
-- Restricted helper binary
-- Sudo rule isolation
-- Configuration ownership validation
-- No realtime scheduling exposure
+### Status Inspection
+- Mode reporting
+- IRQ mask audit
+- irqbalance detection
 
-### Improved CLI Feedback
-- Version reporting
-- Extended validation messages
-- Optional inspection tools (topology / IRQ state reporting)[X]
-
----
-
-# Near-Term Goals (0.5.x Direction)
-
-### Profile Refinement
-- Cleaner internal profile model
-- Optional user-defined profile expansion
-- Maintain static validation and deterministic behavior
+### Packaging Support
+- Makefile with DESTDIR
+- AUR-ready build system
+- Static sudoers model
 
 ---
 
-### Steam / Launcher Integration Improvements
-- Clean support for Steam launch options
-- Improved wrapper clarity
-- Better documentation for gaming workflows
-
----
-
-# Mid-Term Goals
+# Mid-Long-Term Goals
 
 ### Extended Hardware Awareness
-- Improved handling for future multi-CCD designs[X]
 - Safer behavior on single-CCD systems
 - Better detection heuristics where needed
 
@@ -82,21 +58,23 @@ Allow users to define reusable workload profiles, such as:
 
 Without introducing runtime automation.
 
-### Packaging Support
-- Distribution packages (AUR and others)
-- Installation improvements
-- Documentation polish
+### Kernel Scheduler Awareness
+- Detect active Linux scheduler at runtime.
+- Adjust profile defaults depending on scheduler type.
+
+### Support for:
+- CFS (default)
+- BMQ
+- BORE
+- Cachy scheduler variants
+
+Preserve deterministic behavior across scheduler implementations.
 
 ---
 
 # Long-Term Exploration
 
 These features are exploratory and may change based on user feedback.
-
-### Optional Inspection Utilities
-- IRQ mask display helpers[X]
-- CCD topology visualization
-- Debug-focused system state reporting[X]
 
 ### Limited Automation (Carefully Scoped)
 - Optional dynamic switching experiments
@@ -122,13 +100,13 @@ x3dctl development follows these core goals:
 
 # Stability Expectations
 
-While in the 0.x release series:
+While in the 1.x release series:
 
-- CLI behavior may evolve
+- CLI behavior will remain stable 
 - Configuration formats may change
-- Backwards compatibility is not guaranteed
+- Backwards compatibility is guaranteed
 
-Major behavior changes will always be documented in release notes.
+Major behavior changes or bug fixes will always be documented in release notes.
 
 ---
 

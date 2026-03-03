@@ -9,7 +9,7 @@ It provides a safe, deterministic interface for:
 - Steering GPU IRQ affinity based on selected mode
 
 x3dctl does not run a daemon and performs no background polling.  
-All behavior is explicit and command-driven.
+All behavior is explicit and command-driven, with no background overhead.
 
 ---
 
@@ -32,12 +32,13 @@ x3dctl performance
 
  - In gaming mode, GPU IRQs are steered to the frequency CCD.
  - In performance mode, GPU IRQs are restored to the full CPU mask.
+ - Unrestricted profile in x3dctl.conf inherits current global steering policy.
  - IRQ steering can be disabled for testing:   
    ```bash
    x3dctl --no-irq gaming
    ```
 
-## Application Launch With CCD-Aware Affinity
+## Application Launch With CCD-Aware Affinity:
 ```bash
 x3dctl gaming steam
 ```
@@ -47,12 +48,12 @@ x3dctl gaming steam
 1. The global X3D mode is set.
 2. CPU topology is detected (cache CCD vs frequency CCD).
 3. The launching process is pinned to the appropriate CCD.
-4. the application is executed.
+4. The application is executed.
 5. All child processes inherit the assigned CPU affinity.
 
-## Altertively:
+## Alternatively:
 ```bash
-xedctl run steam
+x3dctl run steam
 ```
 
 - <run> applies the configured profile without changing global mode.
@@ -68,25 +69,60 @@ x3dctl -v gaming <command>
 ```bash
 man x3dctl
 ```
-    
-## Build and Install
+
+---
+
+## Local Build and Install
 ```bash
 make
 sudo make install
 sudo make uninstall
 ```
   
-### Installation:
+### Install:
 
-- Installs binaries to `/usr/local/bin`
-- Installs a restricted sudoers rule for x3dctl-helper
-- Installs a default `/etc/x3dctl.conf` if one does not already exist
+- Installs binaries to `/usr/local/bin`.
+- Installs a restricted sudoers rule for x3dctl-helper `etc/sudoers.d`.
+- Installs a default `/etc/x3dctl.conf` if one does not already exist.
+- Installs man page to `/usr/local/share/man/man1`.
 
 ### Uninstall 
 - Program will clean itself from your system.
 - Remove binaries at `usr/local/bin`.
 - Remove sudoers rule for helper.
 - Program does not remove config at `/etc/x3dctl.conf` per UNIX tradition
+
+## AUR(helper):
+```bash
+helper -S x3dctl
+```
+### This will:
+
+Build the package
+Install binaries to `/usr/bin`.
+Install the man page.
+Install the sudoers policy for x3dctl-helper.
+Install `/etc/x3dctl.conf` (if not already present).
+
+## AUR(manual):
+```bash
+git clone https://aur.archlinux.org/x3dctl.git
+cd x3dctl
+makepkg -si
+```
+
+## Uninstalling(AUR):
+```bash
+sudo pacman -R x3dctl
+```
+
+### This removes:
+
+`/usr/bin/x3dctl`
+`/usr/bin/x3dctl-helper`
+Man page
+Sudoers policy file
+The configuration file will be preserved.
 
 ---
 
@@ -111,13 +147,54 @@ sudo make uninstall
   ```ini
   application=profile
   ```
+- <status> displays:
+. Current X3D mode
+. GPU IRQ steering state
+. irqbalance service status
+
+
+### Note on irqbalance:
+
+The irqbalance service distributes hardware interrupts across available CPUs.
+It dynamically migrates IRQs to improve load balancing on multi-core systems.
+
+On heterogeneous CPU designs (such as AMD X3D processors), automatic IRQ
+migration may introduce cache-to-cache latency depending on workload and
+configuration.
+
+x3dctl applies deterministic GPU IRQ affinity when switching modes. If
+irqbalance is active, it may override these affinity settings.
+
+For fully deterministic behavior, it is recommended to disable or appropriately
+configure irqbalance while using x3dctl.
+
+IRQ affinity changes made by x3dctl are runtime-only and do not persist across
+system reboots.
+
 
 ### Supported profiles:
 
-- <gaming> → Cache CCD, nice -5, SCHED_OTHER
-- <workstation> → Frequency CCD, nice 5, SCHED_BATCH
-- <frequency> → Frequency CCD, nice 0, SCHED_OTHER
-- Profiles are enforced inside the privileged helper and cannot be defined dynamically or during runtime.
+
+| Profile      | CPU Affinity | Nice | Scheduler   | IO   |
+| ------------ | ------------ | ---- | ----------- | ---- |
+| gaming       | cache CCD    | -5   | SCHED_OTHER | BE/0 |
+| unrestricted | none         | -1   | SCHED_OTHER | BE/0 |
+| frequency    | freq CCD     | 0    | SCHED_OTHER | BE/0 |
+| workstation  | freq CCD     | 5    | SCHED_BATCH | BE/4 |
+
+gaming → aggressive foreground
+unrestricted → mild bias
+frequency → neutral
+workstation → background throughput
+
+The unrestricted profile does not modify CPU affinity, 
+allowing execution across all cores, while applying a slight priority bias.
+(some games may run better on this mode depending on workload and system usage)
+
+Profiles are enforced inside the privileged helper, 
+and cannot be defined dynamically or during runtime.
+The application key must match the executable basename. 
+Directory paths are ignored.
 
 ---
 
@@ -147,7 +224,8 @@ sudo make uninstall
 
 ## Stability Notice
 
-- x3dctl is currently in the 0,x release series.
-- Behavior may change between releases
-- CLI semantics may evolve
-- Backwards compatibility is not garanteed
+- x3dctl is currently in the 1.x release series.
+- Behavior should not change between releases.
+- CLI semantics will not evolve.
+- Backwards compatibility is guaranteed.
+- Consult Mid-long term goals for the project in the roadmap for more details.
