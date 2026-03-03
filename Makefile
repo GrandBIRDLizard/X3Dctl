@@ -4,10 +4,6 @@ DESTDIR ?=
 BINDIR := $(PREFIX)/bin
 MANDIR := $(PREFIX)/share/man/man1
 
-SUDOERS := /etc/sudoers.d/x3dctl
-SYSTEM_CONFIG := /etc/x3dctl.conf
-PROJECT_CONFIG := etc/x3dctl.conf
-
 CC = gcc
 CFLAGS = -O2 -Wall -Wextra -Werror -std=gnu11 -D_GNU_SOURCE
 
@@ -25,19 +21,6 @@ install: x3dctl-helper
 	@echo "Installing man page..."
 	@install -Dm644 man/x3dctl.1 $(DESTDIR)$(MANDIR)/x3dctl.1
 
-	@echo "Installing sudoers policy..."
-	@install -Dm440 packaging/x3dctl.sudoers $(DESTDIR)$(SUDOERS)
-
-	@# Only install default config during real system install
-	@if [ -z "$(DESTDIR)" ]; then \
-		if [ ! -f $(SYSTEM_CONFIG) ]; then \
-			echo "Installing default config to $(SYSTEM_CONFIG)"; \
-			install -Dm644 $(PROJECT_CONFIG) $(SYSTEM_CONFIG); \
-		else \
-			echo "$(SYSTEM_CONFIG) already exists — leaving untouched"; \
-		fi \
-	fi
-
 	@echo "Install complete."
 
 uninstall:
@@ -50,8 +33,7 @@ uninstall:
 	@rm -f $(DESTDIR)$(BINDIR)/x3dctl
 	@rm -f $(DESTDIR)$(BINDIR)/x3dctl-helper
 	@rm -f $(DESTDIR)$(MANDIR)/x3dctl.1
-	@rm -f $(DESTDIR)$(SUDOERS)
-	@echo "Uninstall complete. Configuration file left intact."
+	@echo "Uninstall complete."
 
 clean:
 	@rm -f x3dctl-helper
