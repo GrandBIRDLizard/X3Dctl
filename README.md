@@ -1,4 +1,5 @@
-# X3Dctl
+<img width="1408" height="538" alt="X3Dctl_logo_final_butcltleft" src="https://github.com/user-attachments/assets/4ae01d22-af40-4112-a47a-4791f61a98e1" />
+
 
 x3dctl is a lightweight command-line utility for controlling AMD X3D CPU operating modes on Linux systems.
 
