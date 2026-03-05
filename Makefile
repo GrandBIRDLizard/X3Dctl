@@ -21,6 +21,9 @@ install: x3dctl-helper
 	@echo "Installing man page..."
 	@install -Dm644 man/x3dctl.1 $(DESTDIR)$(MANDIR)/x3dctl.1
 
+	@echo "Installing sudoers file..."
+	@install -Dm440 packaging/x3dctl.sudoers $(DESTDIR)/etc/sudoers.d/x3dctl
+
 	@echo "Install complete."
 
 uninstall:
@@ -33,6 +36,7 @@ uninstall:
 	@rm -f $(DESTDIR)$(BINDIR)/x3dctl
 	@rm -f $(DESTDIR)$(BINDIR)/x3dctl-helper
 	@rm -f $(DESTDIR)$(MANDIR)/x3dctl.1
+	@rm -f $(DESTDIR)/etc/sudoers.d/x3dctl
 	@echo "Uninstall complete."
 
 clean:
