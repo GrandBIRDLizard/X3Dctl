@@ -4,11 +4,6 @@ set -euo pipefail
 SCRIPT_NAME="x3dctl"
 HELPER="$(command -v x3dctl-helper)"
 
-[[ -x "$HELPER" ]] || {
-  echo "[x3dctl] ERROR: x3dctl-helper not found in PATH" >&2
-  exit 1
-}
-
 QUIET=0
 VERBOSE=0
 NO_IRQ=0
@@ -30,7 +25,10 @@ die() {
   exit 1
 }
 
-[[ -x "$HELPER" ]] || die "Helper not found at $HELPER"
+
+HELPER="$(command -v x3dctl-helper || true)"
+[[ -n "$HELPER" && -x "$HELPER" ]] || die "x3dctl-helper not found in PATH"
+
 
 # Global Flag Parsing
 while [[ "${1:-}" == -* ]]; do
