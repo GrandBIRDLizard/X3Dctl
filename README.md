@@ -147,8 +147,10 @@ The configuration file will be preserved.
 - Format:
   ```ini
   application=profile
-  ```
-- <status> displays:
+  ``
+
+  <status> displays:
+
 . Current X3D mode
 . GPU IRQ steering state
 . irqbalance service status
