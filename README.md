@@ -150,10 +150,12 @@ The configuration file will be preserved.
   ``
 ---
 
-- Cmd *status* displays:
+- Cmd **status** displays:
 
 . Current X3D mode
+
 . GPU IRQ steering state
+
 . irqbalance service status
 
 
