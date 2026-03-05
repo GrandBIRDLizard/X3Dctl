@@ -153,7 +153,7 @@ The configuration file will be preserved.
 
 
 
-  <status> displays:
+:  <status> displays:
 
 . Current X3D mode
 . GPU IRQ steering state
