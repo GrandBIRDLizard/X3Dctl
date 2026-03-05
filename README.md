@@ -148,6 +148,7 @@ The configuration file will be preserved.
   ```ini
   application=profile
   ``
+---
 
   <status> displays:
 
