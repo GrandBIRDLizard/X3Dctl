@@ -147,10 +147,10 @@ The configuration file will be preserved.
 - Format:
   ```ini
   application=profile
-  ``
+  ```
 ---
 
-- Cmd **status** displays:
+- `status` displays:
 
 . Current X3D mode
 
