@@ -68,20 +68,26 @@ int read_mode(const char *path) {
 //   Topology detection
 
 static void init_topology(void) {
-    if (topology_initialized) return;
+    if (topology_initialized)
+        return;
 
     CPU_ZERO(&cache_mask);
     CPU_ZERO(&freq_mask);
 
     DIR *dir = opendir(CPU_BASE);
-    if (!dir) return;
+    if (!dir)
+        return;
 
     struct dirent *entry;
     char path[PATH_MAX];
 
     while ((entry = readdir(dir))) {
         int cpu_id;
+
         if (sscanf(entry->d_name, "cpu%d", &cpu_id) != 1)
+            continue;
+
+        if (cpu_id >= CPU_SETSIZE)
             continue;
 
         snprintf(path, sizeof(path),
@@ -89,7 +95,8 @@ static void init_topology(void) {
                  CPU_BASE, cpu_id);
 
         FILE *f = fopen(path, "r");
-        if (!f) continue;
+        if (!f)
+            continue;
 
         char buf[64];
         long size_kb = 0;
@@ -106,8 +113,15 @@ static void init_topology(void) {
     }
 
     closedir(dir);
+
+	if (CPU_COUNT(&cache_mask) == 0 && CPU_COUNT(&freq_mask) > 0) {
+		cache_mask = freq_mask;
+	}
+
+
     topology_initialized = 1;
 }
+
 
 
 //   IRQ Steering
@@ -151,6 +165,7 @@ static void cpuset_to_hexmask(const cpu_set_t *set, char *out, size_t out_size)
         ptr += written;
         remaining -= written;
     }
+    *ptr = '\0';
 }
 
 static int is_gpu_irq_line(const char *line)
@@ -289,6 +304,10 @@ static char *query_profile(const char *app) {
 
         trim(key);
         trim(val);
+        
+        if (*key == '\0' || *val == '\0') {
+        	continue;
+        } 
 
         // Ignore inline comments in value
         char *comment = strchr(val, '#');
@@ -297,7 +316,7 @@ static char *query_profile(const char *app) {
             trim(val);
         }
 
-        if (strcmp(key, app) == 0) {
+        if (strcmp(key, base) == 0) {
             fclose(f);
             return strdup(val);
         }
@@ -355,7 +374,6 @@ static int load_profile(const char *name, struct profile *p) {
 		p->io_level = 0;
 		return 0;
 	}
-
     return 1;
 }
 
@@ -382,7 +400,6 @@ static int apply_scheduler(pid_t pid, const char *policy_str) {
         perror("sched_setscheduler");
         return 1;
     }
-
     return 0;
 }
 
@@ -407,7 +424,6 @@ static int apply_ioprio(pid_t pid, int io_class, int io_level) {
         perror("ioprio_set");
         return 1;
     }
-
     return 0;
 }
 
