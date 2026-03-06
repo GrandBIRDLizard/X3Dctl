@@ -1,3 +1,4 @@
+
 PREFIX ?= /usr/local
 DESTDIR ?=
 
@@ -11,7 +12,6 @@ all: x3dctl-helper
 
 x3dctl-helper: x3dctl-helper.c
 	$(CC) $(CFLAGS) $< -o $@
-	@echo -e "Local build complete.\nFor system install, run 'sudo make install'."
 
 install: x3dctl-helper
 	@echo "Installing binaries..."
@@ -22,10 +22,12 @@ install: x3dctl-helper
 	install -Dm644 man/x3dctl.1 $(DESTDIR)$(MANDIR)/x3dctl.1
 
 	@echo "Installing sudoers file..."
+	install -dm750 $(DESTDIR)/etc/sudoers.d
 	sed 's|@BINDIR@|$(BINDIR)|g' packaging/x3dctl.sudoers.in | \
 	install -Dm440 /dev/stdin $(DESTDIR)/etc/sudoers.d/x3dctl
 
 	@echo "Install complete."
+
 
 uninstall:
 	@if [ -z "$(DESTDIR)" ] && [ "$$(id -u)" -ne 0 ]; then \
@@ -41,6 +43,6 @@ uninstall:
 	@echo "Uninstall complete."
 
 clean:
-	rm -f x3dctl-helper
+	.PHONY: all install uninstall clean
 
 .PHONY: all install uninstall clean
