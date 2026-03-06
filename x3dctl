@@ -2,7 +2,6 @@
 set -euo pipefail
 
 SCRIPT_NAME="x3dctl"
-HELPER="$(command -v x3dctl-helper)"
 
 QUIET=0
 VERBOSE=0
