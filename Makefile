@@ -5,7 +5,7 @@ BINDIR := $(PREFIX)/bin
 MANDIR := $(PREFIX)/share/man/man1
 
 CC ?= gcc
-CFLAGS ?= -O2 -Wall -Wextra -Werror -std=gnu11 -D_GNU_SOURCE
+CFLAGS ?= -O2 -Wall -Wextra -Werror -std=gnu11
 
 all: x3dctl-helper
 
@@ -20,6 +20,10 @@ install: x3dctl-helper
 
 	@echo "Installing man page..."
 	install -Dm644 man/x3dctl.1 $(DESTDIR)$(MANDIR)/x3dctl.1
+
+	@echo "Installing sudoers file..."
+	sed 's|@BINDIR@|$(BINDIR)|g' packaging/x3dctl.sudoers.in | \
+	install -Dm440 /dev/stdin $(DESTDIR)/etc/sudoers.d/x3dctl
 
 	@echo "Install complete."
 

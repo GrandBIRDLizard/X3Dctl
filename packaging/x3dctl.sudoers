@@ -1,1 +1,1 @@
-%wheel ALL=(root) NOPASSWD: /usr/bin/x3dctl-helper 
+%wheel ALL=(root) NOPASSWD: @BINDIR@/x3dctl-helper 

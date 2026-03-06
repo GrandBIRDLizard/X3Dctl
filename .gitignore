@@ -1,3 +1,5 @@
-*x3dctl-helper.c
 /Case_study 
-
+x3dctl-helper
+*.pkg.tar.zst
+pkg/
+src/
