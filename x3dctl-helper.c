@@ -202,7 +202,7 @@ static void steer_gpu_irqs(const cpu_set_t *target_mask)
 
     char line[512];
 
-    /* Large enough for CPU_SETSIZE bits */
+    // Large enough for CPU
     char hexmask[CPU_SETSIZE / 4 + 32];
     cpuset_to_hexmask(target_mask, hexmask, sizeof(hexmask));
 
@@ -260,19 +260,19 @@ static void trim(char *s) {
     char *start = s;
     char *end;
 
-    // Skip leading whitespace
     while (*start && isspace((unsigned char)*start))
         start++;
 
     if (start != s)
         memmove(s, start, strlen(start) + 1);
 
-    // Trim trailing whitespace
+    if (*s == '\0')
+        return;
+
     end = s + strlen(s) - 1;
     while (end >= s && isspace((unsigned char)*end))
         *end-- = '\0';
 }
-
 
 static char *query_profile(const char *app) {
 
@@ -319,6 +319,8 @@ static char *query_profile(const char *app) {
             *comment = '\0';
             trim(val);
         }
+		if(*val == '\0')
+			continue;
 
         if (strcmp(key, base) == 0) {
             fclose(f);
@@ -443,28 +445,23 @@ static int apply_policy(pid_t pid, const struct profile *p) {
         mask = &cache_mask;
     else if (strcmp(p->core_type, "frequency") == 0)
         mask = &freq_mask;
-	else if (strcmp(p->core_type, "none") == 0) {
-		mask = NULL;
-	}
+    else if (strcmp(p->core_type, "none") == 0)
+        mask = NULL;
     else {
         fprintf(stderr, "Invalid core type\n");
         return 1;
     }
 
-    if (CPU_COUNT_S(sizeof(cpu_set_t), mask) == 0) {
-        fprintf(stderr, "Topology detection failed\n");
-        return 1;
-    }
-	
-	if (mask != NULL) {
-		if (CPU_COUNT_S(sizeof(cpu_set_t), mask) == 0) {
-			fprintf(stderr, "Topology detection failed\n");
-			return 1;
-		}
-		if (sched_setaffinity(pid, sizeof(cpu_set_t), mask) != 0) {
-			perror("sched_setaffinity");
-			return 1;
-		}
+    if (mask != NULL) {
+        if (CPU_COUNT_S(sizeof(cpu_set_t), mask) == 0) {
+            fprintf(stderr, "Topology detection failed\n");
+            return 1;
+        }
+
+        if (sched_setaffinity(pid, sizeof(cpu_set_t), mask) != 0) {
+            perror("sched_setaffinity");
+            return 1;
+        }
     }
 
     if (apply_scheduler(pid, p->scheduler) != 0)
@@ -612,24 +609,31 @@ int main(int argc, char *argv[]) {
     	return 0;
 	}
 
-	if (strcmp(argv[1], "frequency") == 0) {
+if (strcmp(argv[1], "frequency") == 0) {
 
-	    if (argc > 3)
-    	    return 1;
+    int disable_irq = 0;
 
-    	if (write_mode(sysfs_path, "frequency") != 0)
-    	    return 1;
+    if (argc == 3 && strcmp(argv[2], "--no-irq") == 0)
+        disable_irq = 1;
+    else if (argc > 2)
+        return 1;
 
-    	init_topology();
+    if (write_mode(sysfs_path, "frequency") != 0)
+        return 1;
 
-    	cpu_set_t full_mask;
-    	build_full_mask(&full_mask);
+    init_topology();
 
-    	// Always restore full mask
-    	steer_gpu_irqs(&full_mask);
+    cpu_set_t full_mask;
+    build_full_mask(&full_mask);
 
-    	return 0;
-	}
+    /* Both normal and --no-irq restore full mask */
+    (void)disable_irq;
+    steer_gpu_irqs(&full_mask);
+
+    return 0;
+}
+
+
 
 if (strcmp(argv[1], "status") == 0) {
 

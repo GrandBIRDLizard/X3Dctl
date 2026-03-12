@@ -24,10 +24,8 @@ die() {
   exit 1
 }
 
-
 HELPER="$(command -v x3dctl-helper || true)"
 [[ -n "$HELPER" && -x "$HELPER" ]] || die "x3dctl-helper not found in PATH"
-
 
 # Global Flag Parsing
 while [[ "${1:-}" == -* ]]; do
@@ -134,7 +132,11 @@ case "$COMMAND" in
     log "Switched to $NEW_MODE"
 
     if [[ $# -gt 0 ]]; then
-      apply_profile_to_self "$NEW_MODE"
+      if [[ "$NEW_MODE" == "cache" ]]; then
+        apply_profile_to_self "gaming"
+      else
+        apply_profile_to_self "frequency"
+      fi
       exec "$@"
     fi
     ;;
