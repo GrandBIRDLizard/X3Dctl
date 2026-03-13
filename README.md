@@ -1,5 +1,6 @@
 <img width="1408" height="538" alt="X3Dctl_logo_final_butcltleft" src="https://github.com/user-attachments/assets/4ae01d22-af40-4112-a47a-4791f61a98e1" />
 
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/GrandBIRDLizard/X3Dctl?sort=semver)](https://github.com/GrandBIRDLizard/X3Dctl/tags)
 
 [![RelatedRepos](https://img.shields.io/badge/related-repos-yellow)](https://relatedrepos.com/gh/GrandBIRDLizard/X3Dctl)
 
