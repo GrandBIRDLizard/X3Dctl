@@ -71,7 +71,7 @@ Applications are mapped in:
  ```bash
 x3dctl status 
 ```
--displays:
+- displays:
 
 . Current X3D mode
 
@@ -147,26 +147,26 @@ sudo make uninstall
 `/usr/local/share/man/man1` 
 
 ### Install from the AUR
-.Using an AUR helper
+.Using an AUR helper.
 ```bash
 yay -S x3dctl
 ```
--Manual AUR install:
+- Manual AUR install:
 ```bash
 git clone https://aur.archlinux.org/x3dctl.git
 cd x3dctl
 makepkg -si
 ```
--Remove AUR package
+- Remove AUR package
 ```bash
 sudo pacman -R x3dctl
 ```
-The package removes installed binaries, man page, and sudoers policy.
-The configuration file is preserved.
+.The package removes installed binaries, man page, and sudoers policy.
+.The configuration file is preserved.
 
 ---
 
-## Design Goals
+## Design Goals:
 
 - Deterministic behavior
 - No daemon
