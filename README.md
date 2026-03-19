@@ -116,10 +116,10 @@ x3dctl does not depend on irqbalance, it only reports whether the service is act
 | frequency    | freq CCD     | 0    | SCHED_OTHER | BE/0 |
 | workstation  | freq CCD     | 5    | SCHED_BATCH | BE/4 |
 
-gaming → aggressive foreground/cache-focused.
-unrestricted → full core mild bias, no CPU pinning.
-frequency → neutral frequency-CCD policy.
-workstation → background throughput/sustained workloads.
+- gaming → aggressive foreground/cache-focused.
+- unrestricted → full core mild bias, no CPU pinning.
+- frequency → neutral frequency-CCD policy.
+- workstation → background throughput/sustained workloads.
 
 unrestricted does not disable policy application, 
 it skips CPU affinity while still applying scheduler, niceness, and I/O priority.
