@@ -184,6 +184,7 @@ sudo pacman -R x3dctl
 - sudo configured for helper execution
 - GCC for building helper binary
 - Make
+- CFS or EEVDF scheduler 
 
 ---  
 
