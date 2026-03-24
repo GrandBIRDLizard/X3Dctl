@@ -27,6 +27,23 @@ die() {
 HELPER="$(command -v x3dctl-helper || true)"
 [[ -n "$HELPER" && -x "$HELPER" ]] || die "x3dctl-helper not found in PATH"
 
+helper_can_control() {
+  "$HELPER" can-control >/dev/null 2>&1
+}
+
+run_helper() {
+  if helper_can_control; then
+    if "$HELPER" "$@"; then
+      return 0
+    fi
+
+    vlog "Direct helper execution failed; falling back to sudo"
+  fi
+
+  sudo "$HELPER" "$@"
+}
+
+
 # Global Flag Parsing
 while [[ "${1:-}" == -* ]]; do
   case "$1" in
@@ -51,7 +68,7 @@ shift
 
 # Helpers
 get_current_mode() {
-  sudo "$HELPER" status | awk '/^Mode:/ {print $2}'
+  "$HELPER" status | awk '/^Mode:/ {print $2}'
 }
 
 toggle_mode() {
@@ -65,7 +82,7 @@ toggle_mode() {
 apply_profile_to_self() {
   local profile="$1"
   vlog "Applying profile: $profile"
-  sudo "$HELPER" apply "$$" "$profile"
+  run_helper apply "$$" "$profile"
 }
 
 # Command Dispatch
@@ -77,7 +94,7 @@ case "$COMMAND" in
     APP_KEY="$*"
     vlog "Querying profile for: $APP_KEY"
 
-    PROFILE=$(sudo "$HELPER" query "$APP_KEY" 2>/dev/null || true)
+    PROFILE=$("$HELPER" query "$APP_KEY" 2>/dev/null || true)
 
     if [[ -z "$PROFILE" ]]; then
       vlog "No profile found; defaulting to 'gaming'"
@@ -85,16 +102,16 @@ case "$COMMAND" in
     fi
 
     vlog "Applying profile: $PROFILE"
-    sudo "$HELPER" apply "$$" "$PROFILE" || exit 1
+    run_helper apply "$$" "$PROFILE" || exit 1
 
     exec "$@"
     ;;
 
   gaming)
     if [[ "$NO_IRQ" -eq 1 ]]; then
-      sudo "$HELPER" cache --no-irq || exit 1
+      run_helper cache --no-irq || exit 1
     else
-      sudo "$HELPER" cache || exit 1
+      run_helper cache || exit 1
     fi
 
     log "Switched to cache"
@@ -107,9 +124,9 @@ case "$COMMAND" in
 
   performance)
     if [[ "$NO_IRQ" -eq 1 ]]; then
-      sudo "$HELPER" frequency --no-irq || exit 1
+      run_helper frequency --no-irq || exit 1
     else
-      sudo "$HELPER" frequency || exit 1
+      run_helper frequency || exit 1
     fi
 
     log "Switched to frequency"
@@ -124,9 +141,9 @@ case "$COMMAND" in
     NEW_MODE=$(toggle_mode)
 
     if [[ "$NO_IRQ" -eq 1 ]]; then
-      sudo "$HELPER" "$NEW_MODE" --no-irq || exit 1
+      run_helper "$NEW_MODE" --no-irq || exit 1
     else
-      sudo "$HELPER" "$NEW_MODE" || exit 1
+      run_helper "$NEW_MODE" || exit 1
     fi
 
     log "Switched to $NEW_MODE"
@@ -142,7 +159,7 @@ case "$COMMAND" in
     ;;
 
   status)
-    sudo "$HELPER" status
+    "$HELPER" status
     ;;
 
   *)
