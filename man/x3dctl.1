@@ -1,4 +1,4 @@
-.TH X3DCTL 1 "2026" "x3dctl 1.0.0" "User Commands"
+.TH X3DCTL 1 "2026" "x3dctl 1.4.0" "User Commands"
 
 .SH NAME
 x3dctl \- Deterministic workload policy controller for AMD X3D processors
@@ -8,8 +8,9 @@ x3dctl \- Deterministic workload policy controller for AMD X3D processors
 .RI [ options ] " command " [ application ... ]
 
 .SH DESCRIPTION
-x3dctl is a command-line utility for controlling AMD X3D CPU operating modes
-and applying deterministic workload policies on Linux systems.
+x3dctl is intentionally built as a small UNIX-style system utility:
+explicit commands, plain text configuration, clear privilege boundaries,
+and no background daemon.
 
 It provides a lightweight interface for:
 
@@ -24,7 +25,7 @@ Privileged operations are delegated to a restricted helper binary executed via s
 
 .SH MODE MODEL
 
-x3dctl defines system posture using two global modes:
+x3dctl defines system posture using two explicit global modes:
 
 .TP
 .B gaming
@@ -89,7 +90,11 @@ If no mapping exists, the default profile is "gaming".
 
 .TP
 .B run
-Launch an application and apply its configured profile.
+command applies process-level policy only.
+It does not change the current global X3D mode.
+
+This allows multiple workloads to run concurrently with different
+process policy while a separate global mode remains active.
 
 Example:
 
@@ -129,9 +134,9 @@ to the full mask for the current invocation.
 
 Example:
 .EX
-x3dctl --no-irq toggle (dissable steering and toggle mode)
+x3dctl --no-irq run steam (disable manual steering and launch steam from profile
+mapped in .conf)
 .EE
-This affects only mode commands (gaming, performance, toggle).
 
 .SH CONFIGURATION
 
@@ -149,7 +154,7 @@ Rules:
 
 Example:
 .EX
-steam=cache
+steam=gaming
 blender=frequency
 flatpak run com.obsproject.Studio = workstation (is also permitted)
 .EE
@@ -157,17 +162,23 @@ flatpak run com.obsproject.Studio = workstation (is also permitted)
 The key must match the application's basename.
 Profiles are enforced inside the privileged helper and cannot be defined dynamically.
 
-.SH APPLICATION PASSTHROUGH
+.SH RUN BEHAVIOR
 
-When an application is specified after a command:
+When an application is specified after run command:
 
 .EX
 x3dctl run steam
 .EE
 
-1. Switches the global X3D mode.
-2. Pins the current shell to the appropriate CCD.
-3. Executes the application via exec.
+- Resolves the application basename
+- Looks up the configured built-in profile (defaults to gaming if no match)
+- Applies process policy to the current shell context
+- Replaces the shell with the target application via exec
+
+- This does not change the global X3D mode
+- This allows multiple concurrent workloads to run with different process policies
+- separate global mode remains active
+
 
 .SH SECURITY
 
@@ -183,6 +194,24 @@ The helper binary:
 x3dctl defines its own default IRQ baseline (full CPU mask).
 It does not restore your original interrupt distribution.
 IRQ affinity changes are runtime-only and are not persistent across system reboots.
+
+For process-only policy application(Local install), capability-based helper execution
+(e.g. CAP_SYS_NICE, CAP_SYS_ADMIN) may be used as an optional convenience path.
+Global mode changes still use the normal privileged path as fall back.
+
+Set no-password: (enable/disable)
+
+.SH PASSWORD-LESS(Manual) 
+.EX
+sudo make pw-install
+sudo make pw-uninstall
+.EE
+
+.SH PASSWORD-LESS(AUR) 
+.EX
+sudo setcap 'cap_sys_nice,cap_sys_admin=ep' /usr/bin/x3dctl-helper
+sudo setcap -r /usr/bin/x3dctl-helper
+.EE
 
 .SH FILES
 
@@ -238,6 +267,7 @@ Invalid usage or runtime failure
 
 x3dctl prioritizes:
 
+- Maintain a small, UNIX-oriented command surface
 - Deterministic behavior
 - Clear privilege separation
 - Minimal runtime overhead

@@ -1,5 +1,10 @@
-/Case_study 
-x3dctl-helper
-*.pkg.tar.zst
+Case_study/ 
 pkg/
-src/
+*.pkg.tar.zst
+*.pkg.tar.zst.sig
+*.tar.zst
+*.tar.gz
+*.log
+*.o
+*.so
+x3dctl-helper
