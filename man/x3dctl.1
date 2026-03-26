@@ -134,9 +134,9 @@ to the full mask for the current invocation.
 
 Example:
 .EX
-x3dctl --no-irq toggle (dissable steering and toggle mode)
+x3dctl --no-irq run steam (disable manual steering and launch steam from profile
+mapped in .conf)
 .EE
-This affects only mode commands (gaming, performance, toggle).
 
 .SH CONFIGURATION
 
@@ -195,9 +195,23 @@ x3dctl defines its own default IRQ baseline (full CPU mask).
 It does not restore your original interrupt distribution.
 IRQ affinity changes are runtime-only and are not persistent across system reboots.
 
-For process-only policy application, capability-based helper execution
-(e.g. CAP_SYS_NICE) may be used as an optional convenience path.
-Global mode changes still use the normal privileged path.
+For process-only policy application(Local install), capability-based helper execution
+(e.g. CAP_SYS_NICE, CAP_SYS_ADMIN) may be used as an optional convenience path.
+Global mode changes still use the normal privileged path as fall back.
+
+Set no-password: (enable/disable)
+
+.SH PASSWORD-LESS(Manual) 
+.EX
+sudo make pw-install
+sudo make pw-uninstall
+.EE
+
+.SH PASSWORD-LESS(AUR) 
+.EX
+sudo setcap 'cap_sys_nice,cap_sys_admin=ep' /usr/bin/x3dctl-helper
+sudo setcap -r /usr/bin/x3dctl-helper
+.EE
 
 .SH FILES
 

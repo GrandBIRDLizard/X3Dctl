@@ -71,7 +71,7 @@ Applications are mapped in:
 
 ---
 
- ```bash
+```bash
 x3dctl status 
 ```
 - displays:
@@ -136,7 +136,7 @@ The application key must match the executable basename.
 
 ---
 
-## Instalation:
+## Installation:
 
 ### Local Build and Install/uninstall
 ```bash 
@@ -144,6 +144,25 @@ make
 sudo make install
 sudo make uninstall
 ```
+### Optional Passwordless Convenience Mode
+
+x3dctl supports an optional capability-based convenience path for users who want to
+reduce or eliminate password prompts on manual install.
+
+Extended mode (advanced, best effort):
+cap_sys_nice + cap_sys_admin may enable broader passwordless behavior for global mode
+operations, depending on kernel and permission model.
+
+Enable:
+```bash
+sudo make pw-install
+```
+Disable:
+```bash
+sudo make pw-uninstall
+``` 
+
+to remove capabilities and return to the default sudo/sudoers behavior.
 
 - Local install places files under:
 `/usr/local/bin`
@@ -166,6 +185,27 @@ sudo pacman -R x3dctl
 ```
 .The package removes installed binaries, man page, and sudoers policy.
 .The configuration file is preserved.
+
+### NOTE:
+```bash
+sudo make pw-install
+``` 
+is a source-install convenience target and is not used during
+AUR/package installs.
+
+AUR users can enable the same extended capability mode after install with:
+
+Enable:
+```bash
+sudo setcap 'cap_sys_nice,cap_sys_admin=ep' /usr/bin/x3dctl-helper
+```
+Disable:
+```bash
+sudo setcap -r /usr/bin/x3dctl-helper
+```
+
+- A future update is planned to add frontend commands for enabling or disabling
+capability mode after package install.
 
 ---
 
