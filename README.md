@@ -75,40 +75,67 @@ Applications are mapped in:
 x3dctl status 
 ```
 - displays:
-
 . Current X3D mode
-
 . GPU IRQ steering state
-
 . irqbalance service status
+
+
+<img width="433" height="265" alt="good_status_pic" src="https://github.com/user-attachments/assets/70f7213c-61c4-4009-aa5c-6b42ba022490" />
 
 
 ### Note on irqbalance:
 
-The irqbalance service distributes hardware interrupts across available CPUs.
+The **irqbalance** service distributes hardware interrupts across available CPUs.
 It dynamically migrates IRQs to improve load balancing on multi-core systems.
 
-On heterogeneous CPU designs (such as AMD X3D processors), automatic IRQ
-migration may introduce cache-to-cache latency depending on workload and
+On heterogeneous CPU designs (such as AMD X3D processors), **automatic IRQ
+migration may introduce cache-to-cache latency** depending on workload and
 configuration.
 
 x3dctl applies deterministic GPU IRQ affinity when switching modes. If
-irqbalance is active, it may override these affinity settings.
+**irqbalance is active**, it may **override these affinity settings**.
 
-For fully deterministic behavior, it is recommended to disable or appropriately
-configure irqbalance while using x3dctl.
+For fully deterministic behavior, it is recommended to **disable** or **appropriately
+configure irqbalance** while using x3dctl.
 
 IRQ affinity changes made by x3dctl are runtime-only and do not persist across
 system reboots.
 
 The irqbalance service may override manually applied IRQ affinity.
 - For the most deterministic behavior:
-disable irqbalance.
+**disable irqbalance.
 or.
-configure it appropriately for your system.
+configure it appropriately** for your system.
 
 x3dctl does not depend on irqbalance, it only reports whether the service is active.
 
+---
+
+### Note on amd_pstate / CPPC Preferred Cores
+
+x3dctl relies on the Linux scheduler and firmware interface to make correct placement decisions on supported AMD X3D
+systems.
+
+For intended behavior, **`amd_pstate` should be active and CPPC Preferred Cores should be set to `Driver` in BIOS
+firmware** where applicable.
+
+This allows the kernel to receive and use the platform’s preferred-core guidance instead of relying entirely on
+firmware-managed selection.
+
+If CPPC Preferred Cores is not set to `Driver`, workload placement may be inconsistent or may not reflect the
+intended X3D-aware behavior.
+
+BIOS wording may vary by vendor. Common labels include:
+
+- **CPPC**
+- **CPPC Preferred Cores**
+- **Preferred Cores**
+- **AMD P-State / CPPC control**
+
+x3dctl does not enable this automatically. This is a platform prerequisite and should be verified before testing or
+reporting behavior.
+
+>Update with links to irqbalance and amd_pstate documentation will be added by the next update.
 
 ### Supported profiles:
 
@@ -160,7 +187,7 @@ sudo make pw-install
 Disable:
 ```bash
 sudo make pw-uninstall
-``` 
+```
 
 to remove capabilities and return to the default sudo/sudoers behavior.
 
@@ -227,7 +254,8 @@ capability mode after package install.
 - sudo configured for helper execution
 - GCC for building helper binary
 - Make
-- CFS or EEVDF scheduler 
+- CFS or EEVDF scheduler
+- libcap
 
 ---  
 
