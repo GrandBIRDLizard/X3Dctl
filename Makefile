@@ -58,13 +58,16 @@ install: x3dctl-helper
 		fi; \
 	fi
 
+	@if [ -z "$(DESTDIR)" ]; then \
+		echo ""; \
+		echo "Optional passwordless convenience mode:"; \
+		echo "  sudo make pw-install PREFIX=$(PREFIX)"; \
+		echo ""; \
+		echo "This applies extended capabilities to x3dctl-helper."; \
+		echo "Default sudo/sudoers behavior remains the recommended baseline."; \
+        fi
+
 	@echo "Install complete."
-	@echo ""
-	@echo "Optional passwordless convenience mode:"
-	@echo "  sudo make pw-install PREFIX=$(PREFIX)"
-	@echo ""
-	@echo "This applies extended capabilities to x3dctl-helper."
-	@echo "Default sudo/sudoers behavior remains the recommended baseline."
 
 pw-install: install
 	@if [ -n "$(DESTDIR)" ]; then \
