@@ -46,6 +46,9 @@ man x3dctl
 | status      | Display current X3D operating mode                        |
 | run         | Launch application using policy from `/etc/x3dctl.conf`   |
 
+### **run** launches concurrent workloads with distinct per-process policy, without forcing a single global behavior.
+- This allows different workloads to run at the same time with different process-level behavior, even while a separate global X3D mode remains active.
+
 ---
 
 x3dctl supports two system postures:

@@ -6,7 +6,6 @@
 /*
  * Validate /etc/x3dctl.conf ownership and permissions.
  *
- * Current v1.3.0 rules:
  *   - must be owned by root
  *   - must not be writable by group or others
  *
@@ -17,7 +16,6 @@ int config_verify_security(void);
 /*
  * Query a profile name for the provided application string.
  *
- * Current v1.3.0 behavior:
  *   - matches by basename only
  *   - ignores blank lines and comments
  *   - trims whitespace around key/value
@@ -29,4 +27,4 @@ int config_verify_security(void);
  */
 char *config_query_profile_for_app(const char *app);
 
-#endif /* X3DCTL_CONFIG_H */
+#endif 

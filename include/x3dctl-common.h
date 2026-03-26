@@ -25,4 +25,4 @@
 #define CPU_BASE     "/sys/devices/system/cpu"
 #define CONFIG_PATH  "/etc/x3dctl.conf"
 
-#endif /* X3DCTL_COMMON_H */
+#endif 

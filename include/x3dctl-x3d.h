@@ -26,4 +26,4 @@ int x3d_write_mode(const char *path, const char *mode);
  */
 int x3d_read_mode(const char *path, char *buf, size_t size);
 
-#endif /* X3DCTL_X3D_H */
+#endif 

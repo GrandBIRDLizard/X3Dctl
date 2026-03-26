@@ -1,155 +1,179 @@
-# x3dctl Roadmap:
+# x3dctl Roadmap
 
-This document outlines development direction and architectural goals for x3dctl.
+This document outlines the development direction and architectural goals for **x3dctl**.
 
-x3dctl is currently in the 1.x release series.  
-Core CLI behavior is expected to remain stable.
+x3dctl is currently in the **1.x release series**.
+Core CLI behavior is expected to remain stable while the project continues to mature around deterministic control, clearer privilege boundaries, and future scheduler-aware backend support.
+
+---
+
+# Current Progress Snapshot
+
+Recent work has focused on stabilizing the current command model and tightening predictable system behavior:
+
+- Stable global mode control via:
+  - `gaming`
+  - `performance`
+  - `toggle`
+- Stable **process-only** policy application via:
+  - `run`
+- Dynamic topology-aware CCD detection
+- Safe single-CCD fallback behavior
+- Deterministic GPU IRQ steering with explicit full-mask restore behavior
+- PATH-aware helper resolution for both local and packaged installs
+- Cleaner install / uninstall behavior for local and AUR-style packaging
+- Optional capability-based convenience path for passwordless process policy (`x3dctl run`) via `cap_sys_nice`
+- Continued refinement of documentation, privilege boundaries, and packaging behavior
+
+The current helper layout is being kept intentionally stable while future scheduler/backend work is planned.
 
 ---
 
 # Current Capabilities (1.x.x)
 
-### Deterministic Mode Control:
-- Explicit cache, (`gaming`) and frequency, (`performance`) switching.
-- Toggle support.
-- No background daemon.
+## Deterministic Mode Control
+- Explicit cache (`gaming`) and frequency (`performance`) switching
+- Toggle support
+- No background daemon
+- No hidden automatic switching
 
-### Topology-Aware CCD Detection:
-- Dynamic cache vs frequency CCD detection.
-- No hardcoded CPU numbering.
-- Simple single-CCD fallback behavior.
+## Topology-Aware CCD Detection
+- Dynamic cache vs frequency CCD detection
+- No hardcoded CPU numbering
+- Simple single-CCD fallback behavior
 
-### Process Policy Engine
-- Affinity control (`gaming`, `frequency`, `workstation`, `unrestricted`).
-- Scheduler class selection.
-- Nice management.
-- I/O priority management.
-- Exec-based policy application for launched processes.
+## Process Policy Engine
+- Affinity control (`gaming`, `frequency`, `workstation`, `unrestricted`)
+- Scheduler class selection
+- Nice management
+- I/O priority management
+- Exec-based policy application for launched processes
+- Multiple concurrent workloads can run with distinct per-process policy while a separate global mode remains active
 
-### Mode-Bound GPU IRQ Steering:
-- `gaming` posture steers GPU IRQs away from the cache CCD.
-- `performance` posture restores deterministic full CPU mask routing.
-- `--no-irq` override restores deterministic full-mask baseline.
-- No state drift between mode changes.
+## Mode-Bound GPU IRQ Steering
+- `gaming` posture steers GPU IRQs away from the cache CCD
+- `performance` posture restores deterministic full CPU mask routing
+- `--no-irq` override restores deterministic full-mask baseline
+- No state drift between mode changes
 
-### Status Inspection:
-- Mode reporting.
-- GPU IRQ mask audit.
-- irqbalance service detection.
-- CPU model reporting.
+## Status Inspection
+- Mode reporting
+- GPU IRQ mask audit
+- `irqbalance` service detection
+- CPU model reporting
 
-### Packaging Support:
-- DESTDIR-aware Makefile.
-- AUR-compatible packaging layout.
-- Static sudoers policy install.
-- Local install and packaged install path support.
+## Packaging Support
+- DESTDIR-aware Makefile
+- AUR-compatible packaging layout
+- Static sudoers policy install
+- Local install and packaged install path support
+- Optional capability-based convenience path for passwordless `run`
 
 ---
 
 # Near-Term Focus
 
-### Stability and Validation:
+## Stability and Validation
 - Continue real-world validation on dual-CCD X3D systems
 - Refine status output and mismatch reporting where useful
 - Improve edge-case handling for unusual launch wrappers
+- Keep the current helper layout stable until scheduler/backend work begins
 
-### Documentation Polish:
-- Keep README focused on usage and design
-- Keep detailed parsing behavior in `man x3dctl` and `/etc/x3dctl.conf`
+## Documentation and UX Polish
+- Keep the README concise and front-page focused
+- Keep full operational details in `man x3dctl`
 - Expand examples for Steam, launchers, and `unrestricted`
+- Continue clarifying the distinction between:
+  - global mode commands
+  - process-only policy application
 
-### Packaging Maintenance:
-- Keep AUR package aligned with tagged releases.
-- Maintain clean install/uninstall behavior.
-- Keep local install and packaged install behavior consistent.
+## Packaging Maintenance
+- Keep the AUR package aligned with tagged releases
+- Maintain clean install / uninstall behavior
+- Keep local install and packaged install behavior consistent
+- Maintain optional capability-based convenience for `run` without making it a hard requirement
 
 ---
 
-# Mid-Long-Term Goals
+# Mid-Term Goals
 
-### Extended Hardware Awareness:
-- Safer behavior on single-CCD systems.
-- Better topology heuristics where needed.
-- More defensive handling for unusual CPU layouts.
-
-## Built-In Profile Expansion:
+## Built-In Profile Expansion
 Expand the built-in profile model without introducing arbitrary runtime scheduling rules.
 
 Possible future additions may include:
-- streaming.
-- content creation.
-- background encode / render.
-- mixed-load desktop presets.
 
-## Kernel Scheduler Awareness:
-- Detect active Linux scheduler at runtime.
-- Adjust profile defaults depending on scheduler type.
-- Preserve deterministic behavior across scheduler implementations.
+- streaming
+- content creation
+- background encode / render
+- mixed-load desktop presets
+
+## Extended Hardware Awareness
+- Safer behavior on single-CCD systems
+- Better topology heuristics where needed
+- More defensive handling for unusual CPU layouts
+- Continued validation across additional X3D and non-X3D edge cases where practical
+
+## Scheduler-Aware Backend Support
+x3dctl is being developed with the long-term goal of supporting multiple Linux scheduler behaviors **without changing its core command model**.
+
+The intent is to keep the user-facing workflow stable while allowing built-in profile behavior to adapt more intelligently to the active scheduler backend.
+
+Planned goals include:
+
+- Detect the active scheduler or kernel scheduling model at runtime where practical
+- Preserve deterministic process policy behavior across scheduler implementations
+- Adjust built-in profile defaults where scheduler behavior materially changes affinity or wakeup characteristics
+- Avoid introducing arbitrary runtime tuning or opaque heuristics into the frontend
+
+Initial support and testing focus is expected to center around:
+
+- **CFS / EEVDF** (mainline default behavior)
+- **BMQ** (primary research focus)
+- **BORE**
+- **CacULE**
+
+Scheduler support will be treated as a **backend-awareness problem**, not as a redesign of the core CLI.
 
 ---
 
-## Planned Scheduler Support:
-- CFS (default)
-- BMQ(BMQ research has shown most promising specifically with Zen Kernel via SCHED_ALT custom patch).
-- BMQ will lead the rounds of tests pressing forward.
-I may kill a few birds with one stone and bench them with Cachy kernel as I bielieve they have patches for most of these scheduler types as well as (BORE/CacULE) built in. and will provide a large blanket of info for those curious enough to be on Cachy 
+# Kernel Research / Related Work (Experimental)
 
-### Scheduler coices:
-I assume you are already familiar with how the Completely Fair Scheduler(CFS and its modern EEVDF replacement) operates.
-The difference between BMQ, BORE, and CacULE fundamentally comes down to how much "thinking" the kernel does to calculat.
-fairness, and how that interacts with modern hardware.
+In parallel with x3dctl itself, related kernel-side experimentation is underway around Zen-focused scheduler behavior and topology-aware workload control.
 
-### Here is a breakdown of how BORE and CacULE operate. 
-- why BMQ often delivers tighter performance and lower latency. 
+## Bitmap-Basilisk (Work in Progress)
+**Bitmap-Basilisk** is an experimental Zen-oriented kernel patch / research effort currently being explored alongside x3dctl development.
 
-- Both BORE/CacULE attempt to fix the responsiveness issues of standard CFS/EEVDF, but they do so by adding more logic, 
-not less.
+Current intent:
 
-### BORE(Burst-Oriented Response Enhancer): 
-- BORE is built directly on top of EEVDF. 
-- It introduces a dynamic "burstiness" score. 
-- If a task yields the CPU frequently (like a game waiting on GPU sync), BORE lowers its burst score, 
-- granting it a longer timeslice and aggressive wakeup preemption. However, underneath this scoring system, 
-- it is still EEVDF; it still maintains a Red-Black tree and calculates virtual deadlines to maintain overarching system fairness.
+- Investigate scheduler behavior that better respects strict affinity and manual topology-aware workload placement
+- Explore low-latency behavior on dual-CCD X3D systems
+- Evaluate how scheduler simplicity interacts with explicit CPU affinity and IRQ steering
+- Inform future scheduler-aware profile behavior inside x3dctl
 
-### CacULE:
-- This scheduler was inspired by FreeBSD’s ULE scheduler. 
-- It replaces the CFS RB-Tree with a linked list and relies heavily on calculating an "interactivity score." 
-- If a task’s interactivity score is high enough, it forcefully preempts the running task.
+Important notes:
 
+- **Bitmap-Basilisk is experimental**
+- **It is not currently a dependency of x3dctl**
+- **It may change substantially or not ship at all**
+- x3dctl will continue to support stable workflows independently of this work
 
-### Why BMQ Outperforms Them for Low Latency:
-- BMQ abandons the concept of mathematical fairness entirely. 
-- It does not calculate burstiness, virtual deadlines, or interactivity scores. 
-- It just checks a bitmap and runs the highest-priority queue.
-
-### This absolute simplicity provides massive advantages in highly tuned environments:
-
-1. No Heuristic Guessing Games
-BORE and CacULE rely on heuristics—they observe how a task behaves and "guess" if it is an interactive game thread or a background compiling job. Heuristics are inherently reactive; they take a few CPU cycles to adapt to sudden changes in load. BMQ doesn't guess. It relies on strict, predefined priority rules. When a heavy engine thread wakes up, BMQ immediately snaps it to the CPU without spending cycles recalculating its burst score.
-
-2. Zero Friction with Manual CPU Topology Management
-This is perhaps the most significant advantage on modern asymmetric processors, particularly those featuring dual CCDs where one handles dense 3D V-Cache and the other handles higher clock frequencies.
-Complex schedulers like EEVDF and BORE inherently want to load-balance. 
-They frequently attempt to migrate tasks across the entire CPU topology to prevent one core from doing all the work. 
-If you are already running custom scripts or C-based daemons to read CPU topology, audit system states, and aggressively pin specific game threads directly to the cache-heavy CCD, an overactive scheduler will actively fight you. It will attempt to pull threads off the pinned cores in the name of "fairness."
-
-BMQ is a much "dumber" and therefore more obedient scheduler. It respects strict CPU affinity much better because it lacks the aggressive, overarching load-balancing logic of EEVDF. It leaves your carefully pinned threads exactly where you put them.
-
-3. Frametime Consistency Under Saturation
-When running demanding, geometrically complex titles that saturate the CPU with heavy NPC logic and asset streaming, frametime variance (1% and 0.1% lows) is often caused by micro-stutters when the scheduler briefly interrupts the game to serve a background daemon. BORE will try to give that background task a tiny slice of time to be fair. BMQ will happily let the background task starve until the game thread actually goes to sleep, resulting in a significantly flatter frametime graph.
+This research is intended to improve understanding of how different scheduler models interact with x3dctl’s deterministic design goals.
 
 ---
 
 # Long-Term Exploration
 
-These features are exploratory and may change based on user feedback.
+These areas are intentionally exploratory and may change based on testing, measurement, and user feedback.
 
-### Limited Automation (Carefully Scoped)
+## Carefully Scoped Automation
 - Optional dynamic switching experiments
 - Only if deterministic guarantees can be preserved
+- No automation at the expense of predictability
 
-Automation will not be added at the expense of predictability.
+## Broader Backend Maturity
+- Clear scheduler/backend abstraction inside the helper
+- Cleaner backend-specific profile behavior
+- Future internal refactoring when scheduler support becomes concrete enough to justify it
 
 ---
 
@@ -157,23 +181,26 @@ Automation will not be added at the expense of predictability.
 
 x3dctl development follows these core goals:
 
-- Keep the tool lightweight and script-friendly.
-- Maintain strict privilege separation.
-- Prefer deterministic behavior over automation.
-- Avoid background daemons.
-- Avoid PID chasing or polling.
-- Maintain predictable and transparent configuration.
-- Minimize runtime dependencies.
+- Keep the tool lightweight and script-friendly
+- Maintain strict privilege separation
+- Prefer deterministic behavior over automation
+- Avoid background daemons
+- Avoid PID chasing or polling
+- Maintain predictable and transparent configuration
+- Minimize runtime dependencies
+- Favor plain text, inspectable workflows
+- Preserve a small, UNIX-oriented command surface
 
 ---
 
 # Stability Expectations
 
-While in the 1.x release series:
+While in the **1.x release series**:
 
-- Core CLI behavior should remain stable.
-- Configuration formats may evolve carefully.
-- Behavioral changes and bug fixes will be documented in release notes.
+- Core CLI behavior should remain stable
+- Configuration formats may evolve carefully
+- Behavioral changes and bug fixes will be documented in release notes
+- Larger internal restructuring should follow real backend needs, not happen for its own sake
 
 ---
 
@@ -185,4 +212,10 @@ Feedback is welcome through:
 - Feature discussions
 - Pull requests
 
-Measurement-driven feedback (performance impact, workload results) is especially valuable.
+Measurement-driven feedback is especially valuable, particularly around:
+
+- scheduler behavior
+- mixed workload results
+- frametime consistency
+- IRQ routing outcomes
+- X3D topology edge cases

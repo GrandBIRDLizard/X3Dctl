@@ -7,7 +7,6 @@
 /*
  * Print the current x3dctl system status report.
  *
- * Current v1.3.0 output includes:
  *   - banner
  *   - CPU model
  *   - current X3D mode
@@ -21,4 +20,4 @@
  */
 int status_print_report(const char *sysfs_path, struct x3d_topology *topo);
 
-#endif /* X3DCTL_STATUS_H */
+#endif 

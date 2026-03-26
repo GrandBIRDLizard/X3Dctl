@@ -13,7 +13,7 @@ struct x3d_topology {
  * Initialize topology masks once.
  *
  * Detects cache CCD vs frequency CCD by L3 size heuristics.
- * Preserves current v1.3.0 single-CCD fallback behavior:
+ * Preserves single-CCD fallback behavior:
  * if cache_mask is empty but freq_mask is populated, cache_mask = freq_mask.
  *
  * Returns 0 on success, non-zero on failure.
@@ -31,4 +31,4 @@ void topology_build_full_mask(const struct x3d_topology *topo, cpu_set_t *out);
  */
 void topology_cpuset_to_hexmask(const cpu_set_t *set, char *out, size_t out_size);
 
-#endif /* X3DCTL_TOPOLOGY_H */
+#endif 
