@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: x3dctl Discussions
+    url: https://github.com/GrandBIRDLizard/X3Dctl/discussions
+    about: Use Discussions for usage questions, tuning help, benchmark results, and design ideas that are not confirmed bugs.
