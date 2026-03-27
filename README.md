@@ -113,29 +113,18 @@ x3dctl does not depend on irqbalance, it only reports whether the service is act
 
 ### Note on amd_pstate / CPPC Preferred Cores
 
-x3dctl relies on the Linux scheduler and firmware interface to make correct placement decisions on supported AMD X3D
-systems.
+x3dctl applies explicit workload placement and policy on supported AMD X3D systems. Its core functionality does not depend entirely on firmware preferred-core guidance.
 
-For intended behavior, **`amd_pstate` should be active and CPPC Preferred Cores should be set to `Driver` in BIOS
-firmware** where applicable.
+For best results, **`amd_pstate` should be active and CPPC Preferred Cores should be set to `Driver` in BIOS/firmware** where applicable.
 
-This allows the kernel to receive and use the platform’s preferred-core guidance instead of relying entirely on
-firmware-managed selection.
+This allows the kernel and scheduler to make better use of preferred-core information alongside x3dctl’s explicit placement logic.
 
-If CPPC Preferred Cores is not set to `Driver`, workload placement may be inconsistent or may not reflect the
-intended X3D-aware behavior.
+If CPPC Preferred Cores is not set to `Driver`, x3dctl can still function, but behavior may be less consistent or may fall back toward more generic scheduler behavior
+depending on workload, kernel, scheduler, and firmware handling.
 
-BIOS wording may vary by vendor. Common labels include:
+BIOS wording may vary by vendor. x3dctl does not modify this setting at runtime.
 
-- **CPPC**
-- **CPPC Preferred Cores**
-- **Preferred Cores**
-- **AMD P-State / CPPC control**
-
-x3dctl does not enable this automatically. This is a platform prerequisite and should be verified before testing or
-reporting behavior.
-
->Update with links to irqbalance and amd_pstate documentation will be added by the next update.
+>Update with links to irqbalance and amd_pstate documentation will be added to readme by the next update usage will be in the man page.
 
 ### Supported profiles:
 
