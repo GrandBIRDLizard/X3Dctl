@@ -1,8 +1,8 @@
 # Contributing to x3dctl
 
-Thanks for your interest in x3dctl.
+Thanks for your interest in x3dctl!
 
-x3dctl is intentionally a small, explicit, native UNIX-style utility for deterministic workload policy on AMD X3D systems. Contributions, bug reports, testing, and documentation feedback are all welcome — but the project is intentionally scoped and not every request will fit the design.
+x3dctl is intentionally a small, explicit, native UNIX-style utility for deterministic workload policy on AMD X3D systems. Contributions, bug reports, testing, and documentation feedback are all welcome - but the project is intentionally scoped and not every request will fit the design.
 
 ---
 
@@ -197,7 +197,7 @@ To keep the project focused:
 or closed if they cannot be reproduced.
 - Design decisions typically favor simplicity and explicitness over convenience.
 
-This is not meant to discourage contributions — it is meant to keep x3dctl aligned with its design goals.
+This is not meant to discourage contributions - it is meant to keep x3dctl aligned with its design goals.
 
 ---
 
