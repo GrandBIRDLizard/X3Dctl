@@ -1,5 +1,5 @@
 pkgname=x3dctl
-pkgver=1.4.0
+pkgver=1.4.1
 pkgrel=1
 pkgdesc="Lightweight utility for AMD X3D mode switching, IRQ steering, and per-process policy"
 arch=('x86_64')
